@@ -5,4 +5,6 @@ $id = $_GET['id'];
 		$result2 = mysqli_query($con,$sql2);
 	header("Location:SY_frame.php");
 
+//test
+
 ?>
