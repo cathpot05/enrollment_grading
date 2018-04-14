@@ -1,0 +1,11 @@
+<?php
+session_start();
+if(empty($_SESSION['adminID']))
+{
+	header('Location:../../login.php');
+}
+else
+{
+	$adminID=$_SESSION['adminID'];
+}
+?>

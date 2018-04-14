@@ -1,0 +1,11 @@
+<?php
+session_start();
+if(empty($_SESSION['studentID']))
+{
+	header('Location:../../login.php');
+}
+else
+{
+	$studentID=$_SESSION['studentID'];
+}
+?>
