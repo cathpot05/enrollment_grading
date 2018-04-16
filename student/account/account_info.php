@@ -161,19 +161,50 @@ else
         <div id="page-wrapper">
             <div class="row">
                 <!-- Page Header -->
-                <div class="col-lg-12">
+                <div class="col-lg-10">
                     <h1 class="page-header">Account Information</h1>
                 </div>
+				<div class="col-lg-2">
+							<div style="float:right; margin-top:40px" >
+                            <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#changePasswordModal" >
+                                Change Password
+                            </button>
+							</div>
+							
+                </div>
+				<div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="myModalLabel">Change Password</h4>
+                                        </div>
+										<form role="form" action="changePassword.php?id=<?php echo $studentID; ?>" method=post required>
+                                        <div class="modal-body">
+										<label>Old Password</label>	
+										<input type=password class="form-control" name="oldPassword" required> 
+										<label>New Password</label>	
+										<input type=password class="form-control"  name="newPassword" required>
+										<label>Confirm New Password</label>	
+										<input type=password class="form-control"  name="newPassword2" required>
+                                        </div>
+                                        <div class="modal-footer">
+											<button type="submit" class="btn btn-primary">Save</button>
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        </div>
+										</form>
+                                    </div>
+                                </div>
+                            </div>
                 <!--End Page Header -->
             </div>
 			<div class="row">
 			<div class="col-lg-2">
 			</div>
                 <div class="col-lg-8">
-											<div class="well well-lg">
-											<h4>Edit Account Info</h4>
-										<form role="form" action="editStudent.php?id=<?php echo $studentID; ?>" method=post>
-            <div class="modal-body">
+					<div class="well well-lg">
+						<h4>Edit Account Info</h4>
+					<form role="form" action="editStudent.php?id=<?php echo $studentID; ?>" method=post>
+					<div class="modal-body">
 			
 			<?php
 			
@@ -181,16 +212,12 @@ else
 			$result = mysqli_query($con,$sql);
 			while($row = mysqli_fetch_array($result))
 			{
-				$bday = date($row['bday']);   
+				$bday = date($row['birthdate']);   
 				?>
 				
                                         <div class="modal-body">
 										<label>Username</label>	
 										<input type=text class="form-control" name="username" value="<?php echo $row['username']; ?>" required>
-										<label>Password</label>	
-										<input type=password class="form-control" name="password"  >
-										<label>Confirm Password</label>	
-										<input type=password class="form-control" name="password2" >
 										<label>Last Name</label>	
 										<input type=text class="form-control" name="Lname" value="<?php echo $row['Lname']; ?>" readonly required>
 										<label>First Name</label>	
@@ -201,39 +228,21 @@ else
 										<input type=text class="form-control" name="address" value="<?php echo $row['address']; ?>" required>
 										<label>Religion</label>	
 										<input type=text class="form-control" name="religion" value="<?php echo $row['religion']; ?>" required>
-										<label>Phone No.</label>	
-										<input type=text class="form-control" name="phoneNo" value="<?php echo $row['phoneNo']; ?>" required>
-										<label>Birthday</label>	
-										<input type=date class="form-control" name="bday" value="<?php echo $bday; ?>" required>
-										<label>Age</label>	
-										<input type=number class="form-control" name="age" value="<?php echo $row['age']; ?>" required>
-										<div class="form-group">
-										<label>Gender</label>
-                                        <div class="radio">
-                                                <label>
-                                                    <input type="radio" name="gender" id="optionsRadios1" value="Male" <?php if($row['gender']=="Male")echo "checked";?> >Male
-                                                </label>
-                                            </div>	
-                                            <div class="radio">
-                                                <label>
-                                                    <input type="radio" name="gender" id="optionsRadios2" value="Female" <?php if($row['gender']=="Female")echo "checked";?>>Female
-                                                </label>
-                                            </div>
+										<label>Contact No.</label>	
+										<input type=text class="form-control" name="phoneNo" value="<?php echo $row['contactno']; ?>" required>
 										</div>
-										<label>General Avg.</label>	
-										<input type=number step="0.01" class="form-control" name="genAvg" value="<?php echo $row['genAvg']; ?>" required>
-                                        </div>
-										
+										<div class="modal-footer">
+											<button type="submit" class="btn btn-primary">Save</button>
+											<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>										
+										</div>
+                                    </div>
+										</form>
 			<?php
 			}
 			?>
 			</div>
-			<div class="modal-footer">
-			<button type="submit" class="btn btn-primary">Save</button>
-			<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-														
-			</div>
-			</form>
+		
+			
 			</div>
                     <!--End Advanced Tables -->
                 </div>

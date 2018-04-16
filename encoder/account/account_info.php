@@ -1,9 +1,9 @@
 <?php
 
 include "../../dbcon.php";
-include "../sessionTeacher.php";
+include "../sessionEncoder.php";
 $username='';
-$sql = "Select *from teacher where ID=$teacherID";
+$sql = "Select *from encoder where ID=$encoderID";
 $result = mysqli_query($con,$sql);
 if(mysqli_num_rows($result)>0)
 {
@@ -19,6 +19,15 @@ else
 ?>
 <!DOCTYPE html>
 <html>
+<style>
+#icon{
+    font-size:1.1em;
+}
+#icon:hover{
+    font-size:1.3em;
+     
+}
+</style>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,15 +57,17 @@ else
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand"  href="#">
-                     <img style="height:60px; width:60px; " src="../../pdfmnhs.png" alt="" /><strong style="color:white; font-size:1.2em">&nbsp;&nbsp;PRUDENCIA D. FULE MEMORIAL NATIONAL HIGH SCHOOL</strong>
+                    <img style="height:60px; width:60px; " src="../../pdfmnhs.png" alt="" /><strong style="color:white; font-size:1.2em">&nbsp;&nbsp;PRUDENCIA D. FULE MEMORIAL NATIONAL HIGH SCHOOL</strong>
                 </a>
             </div>
             <!-- end navbar-header -->
             <!-- navbar-top-links -->
             <ul class="nav navbar-top-links navbar-right">
                 <!-- main dropdown -->
+
+
                 <li class="dropdown">
-                    <a href="../logoutSessionTeacher.php">
+                    <a href="../logoutSessionEncoder.php">
                         <i class="fa fa-sign-out fa-3x"></i>
                     </a>
                     <!-- dropdown user-->
@@ -80,7 +91,7 @@ else
                             <div class="user-info">
                                 <div><a href="../account/account_info.php"><strong><?php echo $username; ?></strong></a></div>
                                 <div class="user-text-online" align="left">
-                                    <span></span>&nbsp;Teacher
+                                    <span></span>&nbsp;Encoder
                                 </div>
 								
                             </div>
@@ -89,55 +100,13 @@ else
 						
                         <!--end user image section-->
                     </li>
-				<li>
+<li>
                         <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
                     </li>
-					 <li>
-                        <a href="#"><i class="fa fa-sitemap fa-fw"></i>School Year<span class="fa arrow"></span></a>
-						
-                        <ul class="nav nav-second-level">
-						<?php
-										$sql = "Select sy.schoolYear, sy.ID from sy_section_subject 
-												JOIN sy_section ON sy_section_subject.sy_section_ID = sy_section.ID
-												JOIN sy ON sy_section.sy_ID = sy.ID
-												where sy_section_subject.teacher_ID = $teacherID GROUP BY sy_section.sy_ID";
-										$result = mysqli_query($con,$sql);
-										if(mysqli_num_rows($result)>0)
-										{
-											
-											while($row = mysqli_fetch_array($result))
-											{
-												$sy_sectionID=$row['ID'];
-												?>
-												<li>
-												<a href="#">&nbsp;&nbsp;<?php echo $row['schoolYear']; ?> <span class="fa arrow"></span></a>
-												
-												 <ul class="nav nav-third-level">
-												 <?php
-												$sql2 = "Select subject.subject,section.year,section.section,sy_section_subject.ID from sy_section_subject 
-												JOIN subject ON sy_section_subject.subject_ID = subject.ID
-												JOIN sy_section ON sy_section_subject.sy_section_ID = sy_section.ID
-												JOIN section ON sy_section.section_ID = section.ID
-												JOIN sy ON sy_section.sy_ID = sy.ID
-												where sy_section_subject.teacher_ID = $teacherID AND sy.ID = $sy_sectionID ";
-												$result2 = mysqli_query($con,$sql2);
-												if(mysqli_num_rows($result2)>0)
-												{
-													while($row2 = mysqli_fetch_array($result2))
-													{
-														?>
-														<li><a href="../grades/grade_frame.php?id=<?php echo $row2['ID'];?>">&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $row2['subject']."  (".$row2['year']."-".$row2['section'].")" ;?></a></li>
-														<?php
-													}
-												}
-												?>
-												 </ul>
-												
-												</li>
-												<?php
-											}
-										}
-									?>
+					<li>
+                        <a href="../encode/encode_frame.php"><i class="fa fa-users fa-fw"></i>Encode</a>
+                        <!-- second-level-items -->
+                    </li>
                         </ul>
                         <!-- second-level-items -->
                     </li>
@@ -154,7 +123,7 @@ else
                 <div class="col-lg-10">
                     <h1 class="page-header">Account Information</h1>
                 </div>
-								<div class="col-lg-2">
+                <div class="col-lg-2">
 							<div style="float:right; margin-top:40px" >
                             <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#changePasswordModal" >
                                 Change Password
@@ -168,10 +137,10 @@ else
                                         <div class="modal-header">
                                             <h4 class="modal-title" id="myModalLabel">Change Password</h4>
                                         </div>
-										<form role="form" action="changePassword.php?id=<?php echo $teacherID; ?>" method=post required>
+										<form role="form" action="changePassword.php?id=<?php echo $encoderID; ?>" method=post required>
                                         <div class="modal-body">
 										<label>Old Password</label>	
-										<input type=password class="form-control" name="oldPassword" required> 
+										<input type=text class="form-control" name="oldPassword" required> 
 										<label>New Password</label>	
 										<input type=password class="form-control"  name="newPassword" required>
 										<label>Confirm New Password</label>	
@@ -190,38 +159,33 @@ else
 			<div class="row">
 			<div class="col-lg-2">
 			</div>
-                <div class="col-lg-8">
-				
-				
-			
+                <div class="col-lg-8"> 
 									<?php
-									$sql = "Select *from teacher where ID=$teacherID";
+									$sql = "Select *from encoder where ID=$encoderID";
 									$result = mysqli_query($con,$sql);
 									if(mysqli_num_rows($result)>0)
 									{
 										while($row = mysqli_fetch_array($result))
 										{	
 										?>
-											<div class="well well-lg">
-											<h3>Edit Account Information</h3>
-											<br>
-											<form role="form" action="editTeacher.php?id=<?php echo $teacherID; ?>" method=post>
-											<label>Employee No.</label>	
-											<input type=text class="form-control" value="<?php echo $row['employeeNo']; ?>" name="employeeNo" required>
-											<label>Last Name</label>	
-											<input type=text class="form-control" value="<?php echo $row['Lname']; ?>" name="Lname" readonly required>
-											<label>First Name</label>	
-											<input type=text class="form-control" value="<?php echo $row['Fname']; ?>" name="Fname" readonly required>
-											<label>Middle Name</label>	
-											<input type=text class="form-control" value="<?php echo $row['Mname']; ?>" name="Mname" readonly required>
-											<label>Contact No.</label>	
-											<input type=text class="form-control" value="<?php echo $row['contactNo']; ?>" name="contactNo" required>
-											<div class="modal-footer">
-											<button type="submit" class="btn btn-primary">Save</button>
-                                            
-                                        </div>
-										</form>
-										
+										<div class="well well-lg">
+										<h3>Edit Account Information</h3>
+										<br>
+											<form role="form" action="editEncoder.php?id=<?php echo $encoderID; ?>" method=post>
+												<label>Employee No.</label>	
+												<input type=text class="form-control" value="<?php echo $row['employeeNo']; ?>" name="employeeNo" required>
+												<label>Last Name</label>	
+												<input type=text class="form-control" value="<?php echo $row['Lname']; ?>" name="Lname" readonly required>
+												<label>First Name</label>	
+												<input type=text class="form-control" value="<?php echo $row['Fname']; ?>" name="Fname" readonly required>
+												<label>Middle Name</label>	
+												<input type=text class="form-control" value="<?php echo $row['Mname']; ?>" name="Mname" readonly required>
+												<label>Contact No.</label>	
+												<input type=text class="form-control" value="<?php echo $row['contactNo']; ?>" name="contactNo" required>
+												<div class="modal-footer">
+													<button type="submit" class="btn btn-primary">Save</button>                                           
+												</div>
+											</form>										
 										</div>
 										<?php
 										}
@@ -229,6 +193,7 @@ else
 									}
 									
 									?>
+                    <!--End Advanced Tables -->
                     <!--End Advanced Tables -->
                 </div>
 				<div class="col-lg-2">

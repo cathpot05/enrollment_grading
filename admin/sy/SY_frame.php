@@ -474,6 +474,12 @@ if(isset($_POST['selectSY']))
 		document.getElementById("syTo").value = parseInt(syFrom) + 1;
 		
 	}
+	function editSY_to()
+	{
+		var syFrom  = document.getElementById("syFrom_edit").value;
+		document.getElementById("syTo_edit").value = parseInt(syFrom) + 1;
+		
+	}
 	</script>
 
 </body>

@@ -8,40 +8,30 @@ if($type=="delete"){
 }
 else if($type=="edit")
 {
-	$sql = "Select *from section where ID=$id";
-	$result = mysqli_query($con,$sql);
-	$row = mysqli_fetch_array($result);	
-			
-			?>
-			<form role="form" action="editSection.php?id=<?php echo $id; ?>" method=post>
-            <div class="modal-body">
-				<label>Year</label>
-				<select class="form-control" name="year">
-				<?php
-					$sql2 = "Select *from level ORDER BY RIGHT(level,2) ASC";
-					$result2 = mysqli_query($con,$sql2);
-					if(mysqli_num_rows($result2)>0)
-					{
-						while($row2 = mysqli_fetch_array($result2))
-						{
-						?>
-							<option value="<?php echo $row2['ID']; ?>" <?php if($row['level_id'] == $row2['ID']) echo "Selected";  ?>><?php echo $row2['level']; ?></option>
-						<?php
-						}
-					}
-						?>	
-				</select>
-				<label>Section</label>
-				<input type=text class="form-control" name="section" value="<?php echo $row['section']; ?>">
+$sql = "Select *from admin where ID=$id";
+$result = mysqli_query($con,$sql);
+$row = mysqli_fetch_array($result);
+	?>
+	<form role="form" action="editAdmin.php?id=<?php echo $id; ?>" method=post>
+	<div class="modal-body">
+		<form role="form" action="addAdmin.php" method=post>
+			<div class="modal-body">
+				<label>Username</label>
+				<input type=text class="form-control" name="username" value="<?php echo $row['username']; ?>" required>
+				<label>Last Name</label>
+				<input type=text class="form-control" name="Lname" value="<?php echo $row['Lname']; ?>" required>
+				<label>First Name</label>
+				<input type=text class="form-control" name="Fname" value="<?php echo $row['Fname']; ?>" required>
+				<label>Middle Name</label>
+				<input type=text class="form-control" name="Mname" value="<?php echo $row['Mname']; ?>" required>
 			</div>
 			<div class="modal-footer">
-			<button type="submit" class="btn btn-primary">Save</button>
-			<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>										
+				<button type="submit" class="btn btn-primary">Save</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>                          
 			</div>
-			</form>
-			<?php
-		
-	
+		</form>
+	</div>
+	<?php
 }
 else if($type=="all"){
 	?>

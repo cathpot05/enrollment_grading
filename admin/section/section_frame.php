@@ -297,17 +297,24 @@ if(isset($_POST['selectSY']))
                                         <div class="modal-header">
                                             <h4 class="modal-title" id="myModalLabel">Add New Section</h4>
                                         </div>
-										<form role="form" action="addSection.php?type=new" method=post>
+										<form role="form" action="addSection.php" method=post>
                                         <div class="modal-body">
 										<label>Year</label>
-										<select  class="form-control" name="year">
-										<option value="Grade 11">Grade 11</option>
-										<option value="Grade 12">Grade 12</option>
-										<option value="1">1st Year</option>
-										<option value="2">2nd Year</option>
-										<option value="3">3rd Year</option>
-										<option value="4">4th Year</option>
-
+										<select class="form-control" name="year">
+										<?php
+										$sql = "Select *from level ORDER BY RIGHT(level,2) ASC";
+										$result = mysqli_query($con,$sql);
+										if(mysqli_num_rows($result)>0)
+										{
+											
+											while($row = mysqli_fetch_array($result))
+											{
+												?>
+												<option value="<?php echo $row['ID']; ?>"><?php echo $row['level']; ?></option>
+												<?php
+											}
+										}
+										?>	
 										</select>
 										<label>Section</label>
 										<input type=text class="form-control" name="section">
@@ -338,6 +345,7 @@ if(isset($_POST['selectSY']))
                                 <table class="table table-hover" id="dataTables-example">
                                     <thead>
                                         <tr>
+											<th>Year Level</th>
                                             <th>Section</th>
 											<th width=5%>Edit</th>
 											<th width=5%>Delete</th>
@@ -345,7 +353,8 @@ if(isset($_POST['selectSY']))
                                     </thead>
                                     <tbody>
 									<?php
-									$sql = "Select *from section";
+									$sql = "Select A.*, B.level from section as A
+									INNER JOIN level as B ON A.level_id = B.ID";
 									$result = mysqli_query($con,$sql);
 
 									if(mysqli_num_rows($result)>0)
@@ -354,13 +363,13 @@ if(isset($_POST['selectSY']))
 										{	
 										?>
 											<tr>
-                                            <td><?php echo $row['year']."-".$row['section']; ?></td>
+											<td><?php echo $row['level']; ?></td>
+                                            <td><?php echo $row['section']; ?></td>
 											<td><center><span id="icon" class="fa fa-edit fa-fw" data-toggle="modal" data-target="#editModal"  onclick="changeID(<?php echo $row['ID']; ?>,'edit');"></span></center></td>
 											<td><center><span id="icon"class="fa fa-times fa-fw" data-toggle="modal" data-target="#deleteModal" onclick="changeID(<?php echo $row['ID']; ?>,'delete');"></span></center></td>
 											</tr>
 										<?php
 										}
-										
 									}
 									
 									?>

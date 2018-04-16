@@ -1,10 +1,10 @@
 <?php
 
 include "../../dbcon.php";
-include "../sessionTeacher.php";
-
+include "../sessionEncoder.php";
+$id=$_GET['id'];
 $username='';
-$sql = "Select *from teacher where ID=$teacherID";
+$sql = "Select *from encoder where ID=$encoderID";
 $result = mysqli_query($con,$sql);
 if(mysqli_num_rows($result)>0)
 {
@@ -13,21 +13,7 @@ if(mysqli_num_rows($result)>0)
 		$username=$row['Fname']." ".$row['Lname'];
 	}
 }
-else
-{
 
-}
-$totalSubjects=0;
-$since=0;
-$sql2 = "Select *from teacher where ID=$teacherID";
-	$result2 = mysqli_query($con,$sql2);
-	if(mysqli_num_rows($result2)>0)
-	{
-		while($row2 = mysqli_fetch_array($result2))
-		{
-			$since=date($row2['dateCreated']); 									
-		}
-	}
 ?>
 <!DOCTYPE html>
 <html>
@@ -45,6 +31,15 @@ $sql2 = "Select *from teacher where ID=$teacherID";
     <!-- Page-Level CSS -->
     <link href="../../assets/plugins/morris/morris-0.4.3.min.css" rel="stylesheet" />
 </head>
+<style>
+#icon{
+    font-size:1.1em;
+}
+#icon:hover{
+    font-size:1.3em;
+     
+}
+</style>
 <body>
     <!--  wrapper -->
     <div id="wrapper">
@@ -59,7 +54,7 @@ $sql2 = "Select *from teacher where ID=$teacherID";
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand"  href="#">
-                    <img style="height:60px; width:60px; " src="../../pdfmnhs.png" alt="" /><strong style="color:white; font-size:1.2em">&nbsp;&nbsp;PRUDENCIA D. FULE MEMORIAL NATIONAL HIGH SCHOOL</strong>
+                   <div class="hidden-sm"> <img style="height:60px; width:60px; " src="../../pdfmnhs.png" alt="" /><strong style="color:white; font-size:1.2em">&nbsp;&nbsp;PRUDENCIA D. FULE MEMORIAL NATIONAL HIGH SCHOOL</strong></div>
                 </a>
             </div>
             <!-- end navbar-header -->
@@ -69,7 +64,7 @@ $sql2 = "Select *from teacher where ID=$teacherID";
 
 
                 <li class="dropdown">
-                    <a href="../logoutSessionTeacher.php">
+                    <a href="../logoutSessionEncoder.php">
                         <i class="fa fa-sign-out fa-3x"></i>
                     </a>
                     <!-- dropdown user-->
@@ -93,7 +88,7 @@ $sql2 = "Select *from teacher where ID=$teacherID";
                             <div class="user-info">
                                 <div><a href="../account/account_info.php"><strong><?php echo $username; ?></strong></a></div>
                                 <div class="user-text-online" align="left">
-                                    <span></span>&nbsp;Teacher
+                                    <span></span>&nbsp;Encoder
                                 </div>
 								
                             </div>
@@ -102,54 +97,11 @@ $sql2 = "Select *from teacher where ID=$teacherID";
 						
                         <!--end user image section-->
                     </li>
-					 <li class="selected">
-                        <a href="dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
-                    </li>
 					 <li>
-                        <a href="#"><i class="fa fa-sitemap fa-fw"></i>School Year<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-						<?php
-										$sql = "Select sy.schoolYear, sy.ID from sy_section_subject 
-												JOIN sy_section ON sy_section_subject.sy_section_ID = sy_section.ID
-												JOIN sy ON sy_section.sy_ID = sy.ID
-												where sy_section_subject.teacher_ID = $teacherID GROUP BY sy_section.sy_ID";
-										$result = mysqli_query($con,$sql);
-										if(mysqli_num_rows($result)>0)
-										{
-											
-											while($row = mysqli_fetch_array($result))
-											{
-												$sy_sectionID=$row['ID'];
-												?>
-												<li>
-												<a href="#">&nbsp;&nbsp;<?php echo $row['schoolYear']; ?> <span class="fa arrow"></span></a>
-												 <ul class="nav nav-third-level">
-												 <?php
-												$sql2 = "Select subject.subject,section.year,section.section,sy_section_subject.ID from sy_section_subject 
-												JOIN subject ON sy_section_subject.subject_ID = subject.ID
-												JOIN sy_section ON sy_section_subject.sy_section_ID = sy_section.ID
-												JOIN section ON sy_section.section_ID = section.ID
-												JOIN sy ON sy_section.sy_ID = sy.ID
-												where sy_section_subject.teacher_ID = $teacherID AND sy.ID = $sy_sectionID ";
-												$result2 = mysqli_query($con,$sql2);
-												if(mysqli_num_rows($result2)>0)
-												{
-													
-													while($row2 = mysqli_fetch_array($result2))
-													{
-														?>
-														<li><a href="../grades/grade_frame.php?id=<?php echo $row2['ID'];?>">&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $row2['subject']."  (".$row2['year']."-".$row2['section'].")" ;?></a></li>
-														<?php
-													}
-												}
-												?>
-												 </ul>
-												</li>
-												<?php
-											}
-										}
-									?>
-                        </ul>
+                        <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
+                    </li>
+					<li class="selected">
+                        <a href="../encode/encode_frame.php"><i class="fa fa-users fa-fw"></i>Encode</a>
                         <!-- second-level-items -->
                     </li>
                 </ul>
@@ -162,38 +114,113 @@ $sql2 = "Select *from teacher where ID=$teacherID";
         <div id="page-wrapper">
             <div class="row">
                 <!-- Page Header -->
-                <div class="col-lg-12">
-                    <h1 class="page-header">Dashboard</h1>
+                <div class="col-lg-10">
+                    <h1 class="page-header">Student Information</h1>
                 </div>
+				<div class="col-lg-2">
+							<div style="float:right; margin-top:40px" >
+                            <button class="btn btn-primary btn-md" onclick="window.location.href='encode_frame.php'" >
+                                Encode More
+                            </button>
+							</div>
+				</div>
                 <!--End Page Header -->
             </div>
 			<div class="row">
-                <!-- Welcome -->
-                <div class="col-lg-12">
-                    <div class="alert alert-info">
-                        <i class="fa fa-folder-open"></i><b>&nbsp;Hello ! </b>Welcome Back <b><?php echo $username; ?></b>
-						
-                    </div>
-                </div>
-                <!--end  Welcome -->
-            </div>
-			<div class="row">
-				<div class="col-md-12">
-					<div class="row">
-					<div class="col-md-3">
-                    <div class="alert alert-danger text-center">
-                        <i class="fa fa-book fa-3x"></i>&nbsp;<b> <?php echo $totalSubjects;  ?></b> Total Subjects Handled since <?php echo date("Y",strtotime($since))?>
-                    </div>
-					</div>
-					<div class="col-md-3">
-						<div class="alert alert-success text-center">
-							<i class="fa fa-calendar fa-3x"></i>&nbsp;<b> <?php echo date("Y")-date("Y",strtotime($since));  ?></b> year/s of teaching students passionately.
-						</div>
-					</div>
-						</div>
+				<div class="col-lg-12">
+				<div class="well">
+				<?php
+					$sql = "Select *from student where ID=$id";
+					$result = mysqli_query($con,$sql);
+					$row = mysqli_fetch_array($result);
 					
+				?>
+                   <table class="table table-striped" width=100% >
+						<tr>
+							<td width=25%></td>
+							<td width=25%></td>
+							<td width=25%></td>
+							<td width=25%></td>
+						</tr>
+						<tr>
+							<td><strong>Name</strong></td>
+							<td><?php echo $row['Fname']." ".$row['Mname']." ".$row['Lname']; ?></td>
+							<td><strong>LRN</strong></td>
+							<td><?php echo $row['LRN']; ?></td>
+						</tr>
+						<tr>
+							<td><strong>Classification</strong></td>
+							<td><?php echo $row['classification']; ?></td>
+							<td><strong>Religion</strong></td>
+							<td><?php echo $row['religion']; ?></td>
+						</tr>
+						<tr>
+							<td colspan=1><strong>Address</strong></td>
+							<td colspan=3><?php echo $row['address']; ?></td>
+						</tr>
+						<tr>
+							<td><strong>Contact No.</strong></td>
+							<td><?php echo $row['contactno']; ?></td>
+							<td><strong>Gender</strong></td>
+							<td><?php echo $row['gender']; ?></td>
+						</tr>
+						<tr>
+							<td><strong>Birthdate</strong></td>
+							<td><?php echo $row['birthdate']; ?></td>
+							<td><strong>Age</strong></td>
+							<td><?php echo $row['age']; ?></td>
+						</tr>
+						<tr>
+							<td colspan=1><strong>Name of Mother</strong></td>
+							<td colspan=3><?php echo $row['nameMother']; ?></td>
+						</tr>
+						<tr>
+							<td><strong>Ocuupation</strong></td>
+							<td><?php echo $row['occupationMother']; ?></td>
+							<td><strong>Contact No.</strong></td>
+							<td><?php echo $row['contactMother']; ?></td>
+						</tr>
+						<tr>
+							<td colspan=1><strong>Name of Father</strong></td>
+							<td colspan=3><?php echo $row['nameFather']; ?></td>
+						</tr>
+						<tr>
+							<td><strong>Occupation</strong></td>
+							<td><?php echo $row['occupationFather']; ?></td>
+							<td><strong>Contact No.</strong></td>
+							<td><?php echo $row['contactFather']; ?></td>
+						</tr>
+						<tr>
+							<td><strong>Name of Guardian</strong></td>
+							<td><?php echo $row['nameGuardian']; ?></td>
+							<td><strong>Contact No.</strong></td>
+							<td><?php echo $row['contactGuardian']; ?></td>
+						</tr>
+						<tr>
+							<td colspan=1><strong>Previous School Attended</strong></td>
+							<td colspan=3><?php echo $row['prevSchool']; ?></td>
+						</tr>
+						<tr>
+							<td><strong>Last School Year</strong></td>
+							<td><?php echo $row['prevSY']; ?></td>
+							<td><strong>Year Level Last Attended</strong></td>
+							<td><?php echo $row['prevLevel']; ?></td>
+						</tr>
+						<tr>
+							<td><strong>General Average</strong></td>
+							<td><?php echo $row['average']; ?></td>
+							<td><strong>Documents Submitted</strong></td>
+							<td><?php echo $row['docs']; ?></td>
+						</tr>
+						<tr>
+							<td colspan=1><strong>Remarks</strong></td>
+							<td colspan=3><?php echo $row['remarks']; ?></td>
+						</tr>
+						
+				   </table>
+                </div>
 				</div>
-			</div>
+            </div>
         </div>
         <!-- end page-wrapper -->
 
@@ -215,7 +242,7 @@ $sql2 = "Select *from teacher where ID=$teacherID";
     document.getElementById("myform").submit();
     }
 	</script>
-	
+
 	
 </body>
 

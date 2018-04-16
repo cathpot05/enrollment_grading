@@ -12,10 +12,12 @@ if(mysqli_num_rows($result)>0)
 		$username=$row['Fname']." ".$row['Lname'];
 	}
 }
-else
+$sySel = "";
+if(isset($_GET['sySel']))
 {
-
+	$sySel = $_GET['sySel'];
 }
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -34,6 +36,15 @@ else
     <link href="../../assets/plugins/morris/morris-0.4.3.min.css" rel="stylesheet" />
 	<link href="../../assets/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet" />
 </head>
+<style>
+#icon{
+    font-size:1.1em;
+}
+#icon:hover{
+    font-size:1.3em;
+     
+}
+</style>
 <body>
     <!--  wrapper -->
     <div id="wrapper">
@@ -48,13 +59,15 @@ else
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand"  href="#">
-                     <img style="height:60px; width:60px; " src="../../pdfmnhs.png" alt="" /><strong style="color:white; font-size:1.2em">&nbsp;&nbsp;PRUDENCIA D. FULE MEMORIAL NATIONAL HIGH SCHOOL</strong>
+                    <img style="height:60px; width:60px; " src="../../pdfmnhs.png" alt="" /><strong style="color:white; font-size:1.2em">&nbsp;&nbsp;PRUDENCIA D. FULE MEMORIAL NATIONAL HIGH SCHOOL</strong>
                 </a>
             </div>
             <!-- end navbar-header -->
             <!-- navbar-top-links -->
             <ul class="nav navbar-top-links navbar-right">
                 <!-- main dropdown -->
+
+
                 <li class="dropdown">
                     <a href="../logoutSessionTeacher.php">
                         <i class="fa fa-sign-out fa-3x"></i>
@@ -89,7 +102,7 @@ else
 						
                         <!--end user image section-->
                     </li>
-				<li>
+					 <li>
                         <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
                     </li>
 					 <li>
@@ -123,10 +136,11 @@ else
 												$result2 = mysqli_query($con,$sql2);
 												if(mysqli_num_rows($result2)>0)
 												{
+													
 													while($row2 = mysqli_fetch_array($result2))
 													{
 														?>
-														<li><a href="../grades/grade_frame.php?id=<?php echo $row2['ID'];?>">&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $row2['subject']."  (".$row2['year']."-".$row2['section'].")" ;?></a></li>
+														<li class=<?php if($row2['ID']==$id){echo "selected";} ?>><a href="../grades/grade_frame.php?id=<?php echo $row2['ID'];?>">&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $row2['subject']."  (".$row2['year']."-".$row2['section'].")" ;?></a></li>
 														<?php
 													}
 												}
@@ -152,87 +166,106 @@ else
             <div class="row">
                 <!-- Page Header -->
                 <div class="col-lg-10">
-                    <h1 class="page-header">Account Information</h1>
-                </div>
-								<div class="col-lg-2">
-							<div style="float:right; margin-top:40px" >
-                            <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#changePasswordModal" >
-                                Change Password
-                            </button>
-							</div>
-							
-                </div>
-				<div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h4 class="modal-title" id="myModalLabel">Change Password</h4>
-                                        </div>
-										<form role="form" action="changePassword.php?id=<?php echo $teacherID; ?>" method=post required>
-                                        <div class="modal-body">
-										<label>Old Password</label>	
-										<input type=password class="form-control" name="oldPassword" required> 
-										<label>New Password</label>	
-										<input type=password class="form-control"  name="newPassword" required>
-										<label>Confirm New Password</label>	
-										<input type=password class="form-control"  name="newPassword2" required>
-                                        </div>
-                                        <div class="modal-footer">
-											<button type="submit" class="btn btn-primary">Save</button>
-                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                        </div>
-										</form>
-                                    </div>
-                                </div>
-                            </div>
-                <!--End Page Header -->
-            </div>
-			<div class="row">
-			<div class="col-lg-2">
-			</div>
-                <div class="col-lg-8">
-				
-				
-			
-									<?php
-									$sql = "Select *from teacher where ID=$teacherID";
-									$result = mysqli_query($con,$sql);
-									if(mysqli_num_rows($result)>0)
-									{
-										while($row = mysqli_fetch_array($result))
-										{	
-										?>
-											<div class="well well-lg">
-											<h3>Edit Account Information</h3>
-											<br>
-											<form role="form" action="editTeacher.php?id=<?php echo $teacherID; ?>" method=post>
-											<label>Employee No.</label>	
-											<input type=text class="form-control" value="<?php echo $row['employeeNo']; ?>" name="employeeNo" required>
-											<label>Last Name</label>	
-											<input type=text class="form-control" value="<?php echo $row['Lname']; ?>" name="Lname" readonly required>
-											<label>First Name</label>	
-											<input type=text class="form-control" value="<?php echo $row['Fname']; ?>" name="Fname" readonly required>
-											<label>Middle Name</label>	
-											<input type=text class="form-control" value="<?php echo $row['Mname']; ?>" name="Mname" readonly required>
-											<label>Contact No.</label>	
-											<input type=text class="form-control" value="<?php echo $row['contactNo']; ?>" name="contactNo" required>
-											<div class="modal-footer">
-											<button type="submit" class="btn btn-primary">Save</button>
-                                            
-                                        </div>
-										</form>
-										
-										</div>
-										<?php
-										}
-										
-									}
-									
-									?>
-                    <!--End Advanced Tables -->
+                    <h1 class="page-header"> Student Grades</h1>
                 </div>
 				<div class="col-lg-2">
-			</div>
+					<div style="float:right; margin-top:40px" >
+                       <form action='subject_frame.php' method ="get" id="sySelForm"> 
+							<label> SY: <label> 
+							<select name="sySel" class="form-control" onchange="reload()">
+							<?php
+							$sql = "Select *from sy ORDER BY RIGHT(schoolYear,4) DESC";
+							$result = mysqli_query($con,$sql);
+							if(mysqli_num_rows($result)>0)
+							{
+								while($row = mysqli_fetch_array($result))
+								{
+									?>
+									<option value="<?php echo $row['ID']?>" ><?php echo $row['schoolYear']; ?></option>
+									<?php
+								}
+							}
+							?>
+							</select>
+						</form> 
+					</div>
+				</div>
+                <!--End Page Header -->
+            </div>
+			
+				<div class="row">
+                <div class="col-lg-12">
+                    <!-- Advanced Tables -->
+					<?php
+					echo $sql = "Select B.* from sy_level A 
+							INNER JOIN level B ON A.level_ID = B.ID
+							where A.sy_ID = $sySel";
+					$result = mysqli_query($con,$sql);
+					if(mysqli_num_rows($result)>0)
+					{
+						while($row = mysqli_fetch_array($result))
+						{
+							?>
+							
+							    <div class="panel panel-default">
+								<div class="panel-heading">
+									List of Students
+								</div>
+								<div class="panel-body">
+									<div class="table-responsive">
+										<table class="table table-hovered" id="dataTables-example">
+											<thead>
+												<tr>
+													<th>Subject</th>
+													<th>Section</th>
+													<th>Grades</th>
+												</tr>
+											</thead>
+											<tbody>
+											<?php
+											$sql2 = "Select B.*,E.subject,F.section from teacher_section_subject A
+											INNER JOIN teacher  B ON A.teacher_ID = B.ID
+											INNER JOIN sy_level_subject C ON A.sy_level_subject_ID = C.ID
+											INNER JOIN sy_level_section D ON A.sy_level_section_ID = D.ID
+											INNER JOIN subject E ON C.subject_ID = E.ID
+											INNER JOIN section F ON D.section_ID = F.ID
+											where B.ID = $teacherID";
+											$result2 = mysqli_query($con,$sql2);
+											if(mysqli_num_rows($result2)>0)
+											{
+												while($row2 = mysqli_fetch_array($result2))
+												{
+													?>
+													<tr>
+														<td><?php echo $row2['subject']; ?></td>
+														<td><?php echo $row2['section']; ?></td>
+														<td><span  id="icon" class="fa fa-lock fa-fw" data-toggle="modal" data-target="#gradeModal"  onclick="changeID(<?php echo $row2['ID']; ?>,'password');"></span></td>
+													</tr>
+													
+													<?php
+												}
+											}
+											?>
+												
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<?php
+						}
+					}
+					?>
+					
+					
+					
+
+                    <!--End Advanced Tables -->
+                </div>
+            
+				
+                 
+                
             </div>
         </div>
         <!-- end page-wrapper -->
@@ -256,30 +289,46 @@ else
     </script>
 	<script type="text/javascript">
     function reload(){
-    document.getElementById("myform").submit();
+		alert();
+    document.getElementById("sySelForm").submit();
     }
 	
 	function changeID(newID,type){
         var xhr;
+
 			if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers 
 			else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
-			var url = 'changeID.php?postID='+newID+'&actiontype='+type;
+			var url = 'changeID.php?postID='+newID+'&sssID=<?php echo $id; ?>&actiontype='+type+'&sy_section_subjectID=<?php echo $id; ?>';
 			xhr.open('GET', url, false);
 			xhr.onreadystatechange = function () {
-                            if(type==='edit')
+				  if(type==='grade'||type==='grade2')
                             {
-                         document.getElementById("editform").innerHTML = xhr.responseText;
+                         document.getElementById("gradeform").innerHTML = xhr.responseText;
                      }
-                    else if(type==='delete')
-                      {
-                         document.getElementById("delForm").action = "deleteStudent.php?delID="+xhr.responseText+"";
+					  else if(type==='printgrade')
+                            {
+                        document.getElementById("printTable").innerHTML = xhr.responseText;
+						  printData();
                      }
+
+                     
 			}
 			xhr.send();
 			// ajax stop
 			return false;
   
     }
+	
+	function printData()
+		{
+			
+	
+		   var divToPrint=document.getElementById("printTable");
+		   newWin= window.open("");
+		   newWin.document.write(divToPrint.outerHTML);
+		   newWin.print();
+		   newWin.close();
+		}
 
 	</script>
 

@@ -1,10 +1,10 @@
 <?php
 
 include "../../dbcon.php";
-include "../sessionStudent.php";
+include "../sessionEncoder.php";
 
 $username='';
-$sql = "Select *from student where ID=$studentID";
+$sql = "Select *from encoder where ID=$encoderID";
 $result = mysqli_query($con,$sql);
 if(mysqli_num_rows($result)>0)
 {
@@ -13,50 +13,24 @@ if(mysqli_num_rows($result)>0)
 		$username=$row['Fname']." ".$row['Lname'];
 	}
 }
-else
-{
 
-}
-$totalSubjects=0;
-$highestGrade=0;
-$sql2 = "SELECT MAX(grade.final) AS final from grade JOIN enrolled_student ON grade.enrolled_student_ID = enrolled_student.ID 
-										JOIN student ON enrolled_student.student_ID = student.ID where student.ID = $studentID";
-$result2 = mysqli_query($con,$sql2);
-if(mysqli_num_rows($result2)>0)
-{
-while($row2 = mysqli_fetch_array($result2))
-{	
 
-$highestGrade = $row2['final'];													
-												
-}
-}
 
-$passedSubject=0;
-$sql2 = "SELECT COUNT(grade.final) AS final from grade JOIN enrolled_student ON grade.enrolled_student_ID = enrolled_student.ID 
-										JOIN student ON enrolled_student.student_ID = student.ID 
-										where student.ID = $studentID AND grade.final>=75";
-$result2 = mysqli_query($con,$sql2);
-if(mysqli_num_rows($result2)>0)
-{
-while($row2 = mysqli_fetch_array($result2))
-{	
+$sql = "Select *from student";
+$result = mysqli_query($con,$sql);
+$studentCount = mysqli_num_rows($result);
 
-$passedSubject = $row2['final'];													
-												
-}
-}
-$since=0;
-$sql2 = "Select *from student where ID=$studentID";
-	$result2 = mysqli_query($con,$sql2);
-	if(mysqli_num_rows($result2)>0)
-	{
-		while($row2 = mysqli_fetch_array($result2))
-		{
-			$since=date($row2['dateCreated']); 									
-		}
-	}
+$sql = "Select *from teacher";
+$result = mysqli_query($con,$sql);
+$teacherCount = mysqli_num_rows($result);
 
+$sql = "Select *from section";
+$result = mysqli_query($con,$sql);
+$sectionCount = mysqli_num_rows($result);
+
+$sql = "Select *from subject";
+$result = mysqli_query($con,$sql);
+$subjectCount = mysqli_num_rows($result);
 
 ?>
 <!DOCTYPE html>
@@ -108,7 +82,7 @@ $sql2 = "Select *from student where ID=$studentID";
 
 
                 <li class="dropdown">
-                    <a href="../logoutSessionStudent.php">
+                    <a href="../logoutSessionEncoder.php">
                         <i class="fa fa-sign-out fa-3x"></i>
                     </a>
                     <!-- dropdown user-->
@@ -132,7 +106,7 @@ $sql2 = "Select *from student where ID=$studentID";
                             <div class="user-info">
                                 <div><a href="../account/account_info.php"><strong><?php echo $username; ?></strong></a></div>
                                 <div class="user-text-online" align="left">
-                                    <span></span>&nbsp;Student
+                                    <span></span>&nbsp;Encoder
                                 </div>
 								
                             </div>
@@ -142,54 +116,10 @@ $sql2 = "Select *from student where ID=$studentID";
                         <!--end user image section-->
                     </li>
 					 <li class="selected">
-                        <a href="dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
+                        <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
                     </li>
-					 <li>
-                        <a href="#"><i class="fa fa-sitemap fa-fw"></i>School Year<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-						<?php
-										$sql = "Select sy.schoolYear, sy.ID from enrolled_student 
-												JOIN sy_section ON enrolled_student.sy_section_ID = sy_section.ID
-												JOIN sy ON sy_section.sy_ID = sy.ID
-												JOIN student ON enrolled_student.student_ID = student.ID
-												where student.ID = $studentID GROUP BY sy_section.sy_ID";
-										$result = mysqli_query($con,$sql);
-										if(mysqli_num_rows($result)>0)
-										{
-											
-											while($row = mysqli_fetch_array($result))
-											{
-												$syID=$row['ID'];
-												?>
-												<li>
-												<a href="#">&nbsp;&nbsp;<?php echo $row['schoolYear']; ?> <span class="fa arrow"></span></a>
-												 <ul class="nav nav-third-level">
-												 <?php
-												$sql2 = "Select section.year, section.section,enrolled_student.ID from enrolled_student
-												JOIN student ON enrolled_student.student_ID = student.ID
-												JOIN sy_section ON enrolled_student.sy_section_ID = sy_section.ID
-												JOIN section ON sy_section.section_ID = section.ID
-												JOIN sy ON sy_section.sy_ID = sy.ID
-												where enrolled_student.student_ID = $studentID AND sy.ID = $syID ";
-												$result2 = mysqli_query($con,$sql2);
-												if(mysqli_num_rows($result2)>0)
-												{
-													
-													while($row2 = mysqli_fetch_array($result2))
-													{
-														?>
-														<li><a href="../grades/grade_frame.php?id=<?php echo $row2['ID'];?>">&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $row2['year']."-".$row2['section'] ;?></a></li>
-														<?php
-													}
-												}
-												?>
-												 </ul>
-												</li>
-												<?php
-											}
-										}
-									?>
-                        </ul>
+					<li>
+                        <a href="../encode/encode_frame.php"><i class="fa fa-users fa-fw"></i>Encode</a>
                         <!-- second-level-items -->
                     </li>
                 </ul>
@@ -218,29 +148,69 @@ $sql2 = "Select *from student where ID=$studentID";
                 </div>
                 <!--end  Welcome -->
             </div>
-			<div class="row">
+						<div class="row">
 				<div class="col-lg-12">
 					<div class="row">
-					<div class="col-lg-3">
-                    <div class="alert alert-danger text-center">
-                        <i class="fa fa-book fa-3x"></i>&nbsp;<b><?php echo $totalSubjects; ?> </b> Total subject taken since <?php echo date("Y",strtotime($since))?>.
-
-                    </div>
-                </div>
-				                <div class="col-lg-3">
-                    <div class="alert alert-success text-center">
-                        <i class="fa  fa-certificate fa-3x"></i>&nbsp;<b><?php echo $highestGrade; ?></b> Highest grade recieved since <?php echo date("Y",strtotime($since))?>.
-                    </div>
-                </div>
-				<div class="col-lg-3">
-                    <div class="alert alert-info text-center">
-                        <i class="fa fa-thumbs-up fa-3x"></i>&nbsp;<b><?php echo $passedSubject; ?></b> Total Subjects Passed since <?php echo date("Y",strtotime($since))?>.
-
-                    </div>
-                </div>
-						
+						<div class="col-lg-4">
+							<div class="panel panel-primary text-center no-boder">
+								<div class="panel-body yellow">
+									<h1><?php echo $sectionCount; ?></h1>
+									<h3>Total number of section</h3>
+								</div>
+								<div class="panel-footer">
+									<a href="../section/section_frame.php"><span class="panel-eyecandy-title">Sections List
+									</span></a>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-4">
+							<div class="panel panel-primary text-center no-boder">
+								<div class="panel-body blue">
+									<h1><?php echo $subjectCount; ?></h1>
+									<h3>Total number of subjects</h3>
+								</div>
+								<div class="panel-footer">
+									<a href="../subject/subject_frame.php"><span class="panel-eyecandy-title">Subjects List
+									</span></a>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-4">
+							<div class="panel panel-primary text-center no-boder">
+								<div class="panel-body green">
+									<h1><?php echo $teacherCount; ?></h1>
+									<h3>Total number of teachers</h3>
+								</div>
+								<div class="panel-footer">
+									<a href="../teacher/teacher_frame.php"><span class="panel-eyecandy-title">Teachers List
+									</span></a>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-4">
+							<div class="panel panel-primary text-center no-boder">
+								<div class="panel-body red">
+									<h1><?php echo $studentCount; ?></h1>
+									<h3>Total number of students</h3>
+								</div>
+								<div class="panel-footer">
+									<a href="../student/student_frame.php"><span class="panel-eyecandy-title">Students List
+									</span></a>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
+				<div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" style="width:80%">
+                                    
+										<div id=requestform>
+										</div>
+
+                                  
+									
+                                </div>
+                            </div>
 			</div>
         </div>
         <!-- end page-wrapper -->

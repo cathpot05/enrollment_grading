@@ -1,16 +1,16 @@
 <?php
 
 include "../../dbcon.php";
-include "../sessionAdmin.php";
+include "../sessionEncoder.php";
 $chosenSY = '';
 $username='';
-$sql = "Select *from admin where ID=$adminID";
+$sql = "Select *from encoder where ID=$encoderID";
 $result = mysqli_query($con,$sql);
 if(mysqli_num_rows($result)>0)
 {
 	while($row = mysqli_fetch_array($result))
 	{
-		$username=$row['username'];
+		$username=$row['employeeNo'];
 	}
 }
 

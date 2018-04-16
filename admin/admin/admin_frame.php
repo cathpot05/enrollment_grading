@@ -11,57 +11,73 @@ if(mysqli_num_rows($result)>0)
 	while($row = mysqli_fetch_array($result))
 	{
 		$username=$row['username'];
+		$status = $row['status'];
 	}
 }
+else
+{
 
+}
+if(isset($_SESSION['selectSY']))
+{
+	
+}
+else{
+	
+	$_SESSION['selectSY']='';
+}
+if(isset($_POST['selectSY']))
+{
+	$_SESSION['selectSY']=$_POST['selectSY'];
+}
 ?>
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>PDFMNHS</title>
-			<link rel="shortcut icon" href="../../pdfmnhs.png" type="image/png">
-		<!-- Core CSS - Include with every page -->
-		<link href="../../assets/plugins/bootstrap/bootstrap.css" rel="stylesheet" />
-		<link href="../../assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
-		<link rel="stylesheet" href="../../assets/font-awesome/css/font-awesome.min.css">
-		<link href="../../assets/plugins/pace/pace-theme-big-counter.css" rel="stylesheet" />
-		<link href="../../assets/css/style.css" rel="stylesheet" />
-		<link href="../../assets/css/main-style.css" rel="stylesheet" />
-		<!-- Page-Level CSS -->
-		<link href="../../assets/plugins/morris/morris-0.4.3.min.css" rel="stylesheet" />
-		<link href="../../assets/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet" />
-	</head>
-	<style>
-	#icon{
-		font-size:1.1em;
-	}
-	#icon:hover{
-		font-size:1.3em;
-		 
-	}
-	</style>
-	<body>
-		<!--  wrapper -->
-		<div id="wrapper">
-			<!-- navbar top -->
-			<nav class="navbar navbar-default navbar-fixed-top" role="navigation" id="navbar">
-				<!-- navbar-header -->
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
-						<span class="sr-only">Toggle navigation</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand"  href="#" >
-						<img style="height:60px; width:60px; " src="../../pdfmnhs.png" alt="" /><strong style="color:white; font-size:1.2em">&nbsp;&nbsp;PRUDENCIA D. FULE MEMORIAL NATIONAL HIGH SCHOOL</strong>
-					</a>
-				</div>
-				<!-- end navbar-header -->
-				<!-- navbar-top-links -->
-				<ul class="nav navbar-top-links navbar-right">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDFMNHS</title>
+		<link rel="shortcut icon" href="../../pdfmnhs.png" type="image/png">
+    <!-- Core CSS - Include with every page -->
+    <link href="../../assets/plugins/bootstrap/bootstrap.css" rel="stylesheet" />
+    <link href="../../assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../../assets/font-awesome/css/font-awesome.min.css">
+    <link href="../../assets/plugins/pace/pace-theme-big-counter.css" rel="stylesheet" />
+    <link href="../../assets/css/style.css" rel="stylesheet" />
+    <link href="../../assets/css/main-style.css" rel="stylesheet" />
+    <!-- Page-Level CSS -->
+    <link href="../../assets/plugins/morris/morris-0.4.3.min.css" rel="stylesheet" />
+	<link href="../../assets/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet" />
+</head>
+<style>
+#icon{
+    font-size:1.1em;
+}
+#icon:hover{
+    font-size:1.3em;
+     
+}
+</style>
+<body>
+    <!--  wrapper -->
+    <div id="wrapper">
+        <!-- navbar top -->
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation" id="navbar">
+            <!-- navbar-header -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">
+                    <img style="height:60px; width:60px; " src="../../pdfmnhs.png" alt="" /><strong style="color:white; font-size:1.2em">&nbsp;&nbsp;PRUDENCIA D. FULE MEMORIAL NATIONAL HIGH SCHOOL</strong>
+                </a>
+            </div>
+            <!-- end navbar-header -->
+            <!-- navbar-top-links -->
+            <ul class="nav navbar-top-links navbar-right">
                 <!-- main dropdown -->
 
 				<li class="dropdown">
@@ -86,7 +102,6 @@ if(mysqli_num_rows($result)>0)
 					INNER JOIN student ON enrolled_student.student_ID = student.ID
 					ORDER BY DATE DESC LIMIT 6";
 					$resultnotif = mysqli_query($con,$sqlnotif);
-					
 					if(mysqli_num_rows($resultnotif)>0)
 					{
 						while($rownotif = mysqli_fetch_array($resultnotif))
@@ -183,29 +198,30 @@ if(mysqli_num_rows($result)>0)
                 </li>
                 <!-- end main dropdown -->
             </ul>
-				<!-- end navbar-top-links -->
+            <!-- end navbar-top-links -->
+            <!-- end navbar-top-links -->
 
-			</nav>
-			<!-- end navbar top -->
-			<!-- navbar side -->
-			<nav class="navbar-default navbar-static-side" role="navigation">
-				<!-- sidebar-collapse -->
-				<div class="sidebar-collapse">
-					<!-- side-menu -->
-					<ul class="nav" id="side-menu">
-						<li>
-							<!-- user image section-->
-							<div class="user-section">
-								<div class="user-info">
-									<div><strong><a href="../account/account_info.php"><?php echo $username; ?></strong></a></div>
-									<div class="user-text-online" align="left">
-										<span></span>&nbsp;Admin
-									</div>
-								</div>
-							</div>
-							<!--end user image section-->
-						</li>
-						 <li>
+        </nav>
+        <!-- end navbar top -->
+        <!-- navbar side -->
+        <nav class="navbar-default navbar-static-side" role="navigation">
+            <!-- sidebar-collapse -->
+            <div class="sidebar-collapse">
+                <!-- side-menu -->
+                <ul class="nav" id="side-menu">
+                    <li>
+                        <!-- user image section-->
+                        <div class="user-section">
+                            <div class="user-info">
+                                <div><a href="../account/account_info.php"><strong><?php echo $username; ?></strong></a></div>
+                                <div class="user-text-online" align="left">
+                                    <span></span>&nbsp;Admin
+                                </div>
+                            </div>
+                        </div>
+                        <!--end user image section-->
+                    </li>
+                    <li>
                         <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
                     </li>
                     <li>
@@ -215,13 +231,13 @@ if(mysqli_num_rows($result)>0)
 					<li>
                         <a href="../sy/sy_frame.php">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>School Years</a>
                     </li>
-                    <li >
+                    <li class="selected">
                         <a href="../section/section_frame.php">&nbsp;&nbsp;<i class="fa fa-list-ul fa-fw"></i>Sections</a>
                     </li>
                     <li>
                         <a href="../subject/subject_frame.php">&nbsp;&nbsp;<i class="fa fa-book fa-fw"></i>Subjects</a>
                     </li>
-                    <li  class="selected">
+                    <li>
                         <a href="../teacher/teacher_frame.php">&nbsp;&nbsp;<i class="fa fa-users fa-fw"></i>Teachers</a>
                     </li>
 					<li>
@@ -239,7 +255,6 @@ if(mysqli_num_rows($result)>0)
 										$result = mysqli_query($con,$sql);
 										if(mysqli_num_rows($result)>0)
 										{
-											
 											while($row = mysqli_fetch_array($result))
 											{
 												?>
@@ -257,110 +272,141 @@ if(mysqli_num_rows($result)>0)
 					<li>
 						<a target="_blank" href="../DatabaseBackup/phpExport.php" ><i class="fa fa-database fa-fw"></i>Backup Database</a>
 					</li>
-					</ul>
-					<!-- end side-menu -->
-				</div>
-				<!-- end sidebar-collapse -->
-			</nav>
-			<!-- end navbar side -->
-			<!--  page-wrapper -->
-			<div id="page-wrapper">
-				<div class="row">
-					<!-- Page Header -->
-					<div class="col-lg-10">
-						<h1 class="page-header">Teachers</h1>
-					</div>
-					<div class="col-lg-2">
+                </ul>
+                <!-- end side-menu -->
+            </div>
+            <!-- end sidebar-collapse -->
+        </nav>
+        <!-- end navbar side -->
+        <!--  page-wrapper -->
+        <div id="page-wrapper">
+            <div class="row">
+                <!-- Page Header -->
+                <div class="col-lg-10">
+                    <h1 class="page-header">Admin Accounts</h1>
+                </div>
+				<div class="col-lg-2">
 							<div style="float:right; margin-top:40px" >
                             <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#addModal" >
-                                Add New Teacher
+                                Add Admin Account
                             </button>
 							</div>
                             <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h4 class="modal-title" id="myModalLabel">Add New Teacher</h4>
+                                            <h4 class="modal-title" id="myModalLabel">Add Admin Account</h4>
                                         </div>
-										<form role="form" action="addTeacher.php" method=post>
+										<form role="form" action="addAdmin.php" method=post>
                                         <div class="modal-body">
-										<label>Employee No.</label>	
-										<input type=text class="form-control" name="employeeNo" required> 
-										<label>Password</label>	
-										<input type=password class="form-control"  name="password" required>
-										<label>Confirm Password</label>	
-										<input type=password class="form-control"  name="password2" required>
-										<label>Last Name</label>	
+										<label>Username</label>
+										<input type=text class="form-control" name="username" required>
+										<label>Password</label>
+										<input type=password class="form-control" name="password" required>
+										<label>Confirm Password</label>
+										<input type=password class="form-control" name="password2"  required>
+										<label>Last Name</label>
 										<input type=text class="form-control" name="Lname" required>
-										<label>First Name</label>	
+										<label>First Name</label>
 										<input type=text class="form-control" name="Fname" required>
-										<label>Middle Name</label>	
+										<label>Middle Name</label>
 										<input type=text class="form-control" name="Mname" required>
-										<label>Contact No.</label>	
-										<input type=text class="form-control" name="contactNo" required>
                                         </div>
                                         <div class="modal-footer">
 											<button type="submit" class="btn btn-primary">Save</button>
                                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                            
                                         </div>
 										</form>
                                     </div>
                                 </div>
                             </div>
 				</div>
-					<!--End Page Header -->
-				</div>
-				<div class="row">
-					<div class="col-lg-12">
-						<!-- Advanced Tables -->
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								List of Teachers
-							</div>
-							<div class="panel-body">
-								<div class="table-responsive">
-									<table class="table table-hover" id="dataTables-example">
-										<thead>
+
+
+                <!--End Page Header -->
+            </div>
+			<div class="row">
+                <div class="col-lg-12">
+                    <!-- Advanced Tables -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                             List of Admins
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="dataTables-example">
+                                    <thead>
+                                        <tr>
+                                            <th>Username</th>
+											<th>Name</th>
+											<th width=5%>Edit</th>
+											<th width=5%>Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+									<?php
+									$sql = "Select *from admin";
+									$result = mysqli_query($con,$sql);
+
+									if(mysqli_num_rows($result)>0)
+									{
+										while($row = mysqli_fetch_array($result))
+										{	
+										?>
 											<tr>
-												<th>Employee No.</th>
-												<th>Name</th>
-												<th>Contact No.</th>
-												<th width=5%>Edit</th>
-												<th width=5%>Delete</th>
-											</tr>
-										</thead>
-										<tbody>
-											<?php
-											$sql = "Select *from teacher";
-											$result = mysqli_query($con,$sql);
-											if(mysqli_num_rows($result)>0)
+                                            <td><?php echo $row['username']; ?></td>
+											<td><?php echo $row['Fname']." ".$row['Mname']." ".$row['Lname']; ?></td>
+											
+											
+											<?php if($status == 1) 
 											{
-												while($row = mysqli_fetch_array($result))
-												{	
-													?>
-														<tr>
-														<td><?php echo $row['employeeNo']; ?></td>
-														<?php $mid = $row['Mname'];?>
-														<td><?php echo $row['Lname'].", ".$row['Fname']." ".$mid[0]."." ?></td>
-														<td><?php echo $row['contactNo']; ?></td>
-														<td>
-														<center><span  id="icon" class="fa fa-lock fa-fw" data-toggle="modal" data-target="#changePasswordModal"  onclick="changeID(<?php echo $row['ID']; ?>,'password');"></span>
-														<span  id="icon" class="fa fa-edit fa-fw" data-toggle="modal" data-target="#editModal"  onclick="changeID(<?php echo $row['ID']; ?>,'edit');"></span>
-														</center></td>
-														<td><center><span id="icon" class="fa fa-times fa-fw" data-toggle="modal" data-target="#deleteModal" onclick="changeID(<?php echo $row['ID']; ?>,'delete');"></span></center></td>
-														</tr>
-													<?php
-												}
+												?>
+												<td>
+													<center>
+														<span id="icon" class="fa fa-edit fa-fw" data-toggle="modal" data-target="#editModal"  onclick="changeID(<?php echo $row['ID']; ?>,'edit');"></span>
+													</center>
+												</td>
+												<td>
+													<center>
+														<span id="icon"class="fa fa-times fa-fw" data-toggle="modal" data-target="#deleteModal" onclick="changeID(<?php echo $row['ID']; ?>,'delete');"></span>
+													</center>
+												</td>
+											
+												<?php
 											}
-											?>
-										</tbody>
-									</table>
+											else
+											{
+												?>
+												<td>
+													<center class="disabled">
+														<span class="fa fa-edit fa-fw" style="color:grey"></span>
+													</center>
+												</td>
+												<td>
+													<center>
+														<span class="fa fa-times fa-fw" style="color:grey"></span>
+													</center>
+												</td>
+												<?php
+											}?>
+											
+											
+											</tr>
+										<?php
+										}
+										
+									}
 									
-									<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+									?>
+                                       
+                                    </tbody>
+                                </table>
+								<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h4 class="modal-title" id="myModalLabel">Delete Teacher</h4>
+                                            <h4 class="modal-title" id="myModalLabel">Delete Admin</h4>
                                         </div>
 										<form role="form" action="" method=post id=delForm>
                                         <div class="modal-body">
@@ -379,77 +425,51 @@ if(mysqli_num_rows($result)>0)
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h4 class="modal-title" id="myModalLabel">Edit Teacher</h4>
+                                            <h4 class="modal-title" id="myModalLabel">Edit Section</h4>
                                         </div>
 										<div id=editform>
 										</div>
                                     </div>
                                 </div>
-									
-									
-								</div>
-							</div>
-						</div>
-						<!--End Advanced Tables -->
-					</div>
-				</div>
-			</div>
-			<div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            </div>
+                            
+                        </div>
+                    </div>
+					<div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" style="width:80%">
                                     
 										<div id=requestform>
 										</div>
-
-                                  
-									
-                                </div>
-            </div>
-			
-			<div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h4 class="modal-title" id="myModalLabel">Change Password</h4>
-                                        </div>
-										<form role="form" action="" method=post id="changePasswordForm">
-                                        <div class="modal-body">
-										<label>New Password</label>	
-										<input type=password class="form-control"  name="newPassword" required>
-										<label>Confirm New Password</label>	
-										<input type=password class="form-control"  name="newPassword2" required>
-                                        </div>
-                                        <div class="modal-footer">
-											<button type="submit" class="btn btn-primary">Save</button>
-                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                        </div>
-										</form>
-                                    </div>
                                 </div>
                             </div>
-			<!-- end page-wrapper -->
-		</div>
-		<!-- end wrapper -->
+                    <!--End Advanced Tables -->
+                </div>
+            </div>
+        </div>
+        <!-- end page-wrapper -->
 
-		<!-- Core Scripts - Include with every page -->
-		<script src="../../assets/plugins/jquery-1.10.2.js"></script>
-		<script src="../../assets/plugins/bootstrap/bootstrap.min.js"></script>
-		<script src="../../assets/plugins/metisMenu/jquery.metisMenu.js"></script>
-		<script src="../../assets/plugins/pace/pace.js"></script>
-		<script src="../../assets/scripts/siminta.js"></script>
-		<!-- Page-Level Plugin Scripts-->
-		<script src="../../assets/plugins/dataTables/jquery.dataTables.js"></script>
-		<script src="../../assets/plugins/dataTables/dataTables.bootstrap.js"></script>
-		<script>
-			$(document).ready(function () {
-				$('#dataTables-example').dataTable();
-			});
-		</script>
-		<script type="text/javascript">
+    </div>
+    <!-- end wrapper -->
+
+    <script src="../../assets/plugins/jquery-1.10.2.js"></script>
+    <script src="../../assets/plugins/bootstrap/bootstrap.min.js"></script>
+    <script src="../../assets/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="../../assets/plugins/pace/pace.js"></script>
+    <script src="../../assets/scripts/siminta.js"></script>
+    <!-- Page-Level Plugin Scripts-->
+    <script src="../../assets/plugins/dataTables/jquery.dataTables.js"></script>
+    <script src="../../assets/plugins/dataTables/dataTables.bootstrap.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#dataTables-example').dataTable();
+        });
+    </script>
+	<script type="text/javascript">
     function reload(){
     document.getElementById("myform").submit();
     }
-	
 	function changeID(newID,type){
+
         var xhr;
 			if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers 
 			else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
@@ -462,11 +482,7 @@ if(mysqli_num_rows($result)>0)
                      }
                     else if(type==='delete')
                       {
-                         document.getElementById("delForm").action = "deleteTeacher.php?delID="+xhr.responseText+"";
-                     }
-					 else if(type==='password')
-                      {
-                         document.getElementById("changePasswordForm").action = "changePassword.php?id="+xhr.responseText+"";
+                         document.getElementById("delForm").action = "deleteAdmin.php?delID="+xhr.responseText+"";
                      }
 					 else if(type==='all')
                       {
@@ -478,10 +494,8 @@ if(mysqli_num_rows($result)>0)
 			return false;
   
     }
-	
-	
 	</script>
 
-	</body>
+</body>
 
 </html>

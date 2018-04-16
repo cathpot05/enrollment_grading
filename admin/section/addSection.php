@@ -3,7 +3,7 @@ include "../../dbcon.php";
 include "../sessionAdmin.php";
 	$year = $_POST['year'];
 	$section = $_POST['section'];
-	echo $sql = "INSERT INTO section(year,section) VALUES('$year','$section')";
+	$sql = "INSERT INTO section(level_ID,section) VALUES($year,'$section')";
 	$result = mysqli_query($con,$sql);
 	
 	$username='';
@@ -16,14 +16,9 @@ include "../sessionAdmin.php";
 			$username=$rowAdmin['username'];
 		}
 	}
-	
-	
-	
 	$sql2 = "INSERT INTO log(user,userType,logType) VALUES('$username','Admin','Added new Section')";
 	$result2 = mysqli_query($con,$sql2);
 	
 	header('Location:section_frame.php');
-	
-	
 	
 ?>

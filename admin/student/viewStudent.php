@@ -2,8 +2,9 @@
 
 include "../../dbcon.php";
 include "../sessionAdmin.php";
-
+$chosenSY = '';
 $username='';
+$id =$_GET['id'];
 $sql = "Select *from admin where ID=$adminID";
 $result = mysqli_query($con,$sql);
 if(mysqli_num_rows($result)>0)
@@ -16,6 +17,18 @@ if(mysqli_num_rows($result)>0)
 else
 {
 
+}
+if(isset($_SESSION['selectSY']))
+{
+	
+}
+else{
+	
+	$_SESSION['selectSY']='';
+}
+if(isset($_POST['selectSY']))
+{
+	$_SESSION['selectSY']=$_POST['selectSY'];
 }
 ?>
 <!DOCTYPE html>
@@ -64,7 +77,7 @@ else
             </div>
             <!-- end navbar-header -->
             <!-- navbar-top-links -->
-            <ul class="nav navbar-top-links navbar-right">
+             <ul class="nav navbar-top-links navbar-right">
                 <!-- main dropdown -->
 
 				<li class="dropdown">
@@ -154,13 +167,13 @@ else
 									
 									
 								}
-								
 							?>
 							
 							
 							<?php
 						}
-					}			
+					}
+					
 					
 					
 					
@@ -186,7 +199,7 @@ else
                 <!-- end main dropdown -->
             </ul>
             <!-- end navbar-top-links -->
-								
+
         </nav>
         <!-- end navbar top -->
         <!-- navbar side -->
@@ -201,39 +214,37 @@ else
                             <div class="user-info">
                                 <div><a href="../account/account_info.php"><strong><?php echo $username; ?></strong></a></div>
                                 <div class="user-text-online" align="left">
-                                    <span></span>&nbsp;Admin
+                                   <span></span>&nbsp;Admin
                                 </div>
-								
                             </div>
-							
                         </div>
-						
                         <!--end user image section-->
                     </li>
-					 <li >
+                    <li>
                         <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
                     </li>
                     <li>
 					 <a href="#"><i class="fa fa-sitemap fa-fw"></i>Initials<span class="fa arrow"></span></a>
+					 <div class="nav-collapse">
                         <ul class="nav nav-second-level">
-                    
-                   
 					<li>
                         <a href="../sy/sy_frame.php">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>School Years</a>
                     </li>
-                    <li>
+                    <li >
                         <a href="../section/section_frame.php">&nbsp;&nbsp;<i class="fa fa-list-ul fa-fw"></i>Sections</a>
                     </li>
                     <li>
                         <a href="../subject/subject_frame.php">&nbsp;&nbsp;<i class="fa fa-book fa-fw"></i>Subjects</a>
                     </li>
-                    <li>
+                    <li  >
                         <a href="../teacher/teacher_frame.php">&nbsp;&nbsp;<i class="fa fa-users fa-fw"></i>Teachers</a>
                     </li>
-					<li>
+					<li class="selected">
                         <a href="../student/student_frame.php">&nbsp;&nbsp;<i class="fa fa-users fa-fw"></i>Students</a>
                     </li>
+					
 					</ul>
+					</div>
 					</li>
 					
 					 <li>
@@ -252,11 +263,11 @@ else
 												<?php
 											}
 										}
-						?>
+									?>
                         </ul>
                         <!-- second-level-items -->
                     </li>
-					<li class="selected">
+					<li>
 						<a href="../log/log_frame.php" ><i class ="fa fa-industry fa-fw"></i>Log Activities</a>
 					</li>
 					<li>
@@ -272,71 +283,141 @@ else
         <div id="page-wrapper">
             <div class="row">
                 <!-- Page Header -->
-                <div class="col-lg-10">
-                    <h1 class="page-header">Log Activities</h1>
+                <div class="col-lg-12">
+                    <h1 class="page-header">Student Information</h1>
                 </div>
+				
                 <!--End Page Header -->
             </div>
 			<div class="row">
-                <div class="col-lg-12">
-                    <!-- Advanced Tables -->
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                             List of Log Activies
-                        </div>
-                        <div class="panel-body">
-                            <div class="table-responsive">
-                                <table class="table table-hover" id="dataTables-example" >
-                                    <thead>
-                                        <tr>
-											<th class="hidden">ID</th>
-                                            <th>User</th>
-											<th width=20%>Type</th>
-											<th width=40%>Action</th>
-											<th width=20%>Log Time</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-									<?php
-									$sql = "Select *from log ORDER BY ID DESC";
-									$result = mysqli_query($con,$sql);
-
-									if(mysqli_num_rows($result)>0)
-									{
-										while($row = mysqli_fetch_array($result))
-										{	
-										?>
-											<tr>
-											<td class="hidden"><?php echo $row['ID']; ?></td>
-                                            <td><?php echo $row['user']; ?></td>
-											<td><?php echo $row['userType']; ?></td>
-											<td><?php echo "<strong>".$row['logType']." </strong>";  ?></td>
-											<td><i><?php 
-											echo date("M d, Y - h:i",strtotime($row['Date']));
-											?></i></td>
-											</tr>
-										<?php
-										}
-										
-									}
-									
-									?>
-                                       
-                                    </tbody>
-                                </table>
-                            
-                        </div>
-                    </div>
-                    <!--End Advanced Tables -->
+				<div class="col-lg-1">
+				</div>
+				<div class="col-lg-10">
+				<div class="well">
+				<?php
+					$sql = "Select *from student where ID=$id";
+					$result = mysqli_query($con,$sql);
+					$row = mysqli_fetch_array($result);
+					
+				?>
+                   <table class="table table-striped" width=100% >
+						<tr>
+							<td width=25%></td>
+							<td width=25%></td>
+							<td width=25%></td>
+							<td width=25%></td>
+						</tr>
+						<tr>
+							<td><strong>Name</strong></td>
+							<td><?php echo $row['Fname']." ".$row['Mname']." ".$row['Lname']; ?></td>
+							<td><strong>LRN</strong></td>
+							<td><?php echo $row['LRN']; ?></td>
+						</tr>
+						<tr>
+							<td><strong>Classification</strong></td>
+							<td><?php echo $row['classification']; ?></td>
+							<td><strong>Religion</strong></td>
+							<td><?php echo $row['religion']; ?></td>
+						</tr>
+						<tr>
+							<td colspan=1><strong>Address</strong></td>
+							<td colspan=3><?php echo $row['address']; ?></td>
+						</tr>
+						<tr>
+							<td><strong>Contact No.</strong></td>
+							<td><?php echo $row['contactno']; ?></td>
+							<td><strong>Gender</strong></td>
+							<td><?php echo $row['gender']; ?></td>
+						</tr>
+						<tr>
+							<td><strong>Birthdate</strong></td>
+							<td><?php echo $row['birthdate']; ?></td>
+							<td><strong>Age</strong></td>
+							<td><?php echo $row['age']; ?></td>
+						</tr>
+						<tr>
+							<td colspan=1><strong>Name of Mother</strong></td>
+							<td colspan=3><?php echo $row['nameMother']; ?></td>
+						</tr>
+						<tr>
+							<td><strong>Ocuupation</strong></td>
+							<td><?php echo $row['occupationMother']; ?></td>
+							<td><strong>Contact No.</strong></td>
+							<td><?php echo $row['contactMother']; ?></td>
+						</tr>
+						<tr>
+							<td colspan=1><strong>Name of Father</strong></td>
+							<td colspan=3><?php echo $row['nameFather']; ?></td>
+						</tr>
+						<tr>
+							<td><strong>Occupation</strong></td>
+							<td><?php echo $row['occupationFather']; ?></td>
+							<td><strong>Contact No.</strong></td>
+							<td><?php echo $row['contactFather']; ?></td>
+						</tr>
+						<tr>
+							<td><strong>Name of Guardian</strong></td>
+							<td><?php echo $row['nameGuardian']; ?></td>
+							<td><strong>Contact No.</strong></td>
+							<td><?php echo $row['contactGuardian']; ?></td>
+						</tr>
+						<tr>
+							<td colspan=1><strong>Previous School Attended</strong></td>
+							<td colspan=3><?php echo $row['prevSchool']; ?></td>
+						</tr>
+						<tr>
+							<td><strong>Last School Year</strong></td>
+							<td><?php echo $row['prevSY']; ?></td>
+							<td><strong>Year Level Last Attended</strong></td>
+							<td><?php echo $row['prevLevel']; ?></td>
+						</tr>
+						<tr>
+							<td><strong>General Average</strong></td>
+							<td><?php echo $row['average']; ?></td>
+							<td><strong>Documents Submitted</strong></td>
+							<td><?php echo $row['docs']; ?></td>
+						</tr>
+						<tr>
+							<td colspan=1><strong>Remarks</strong></td>
+							<td colspan=3><?php echo $row['remarks']; ?></td>
+						</tr>
+						
+				   </table>
                 </div>
+				</div>
+				<div class="col-lg-1">
+				</div>
             </div>
+			
+			<div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" style="width:80%">
+                                    
+										<div id=requestform>
+										</div>
+
+                                  
+									
+                                </div>
+                            </div>
+										<div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="myModalLabel">Change Password</h4>
+                                        </div>
+										<div id="changePasswordForm">
+											
+										</div>
+                                    </div>
+                                </div>
+                            </div>
         </div>
         <!-- end page-wrapper -->
 
     </div>
-        <!-- end page-wrapper -->
+    <!-- end wrapper -->
 
-    </div>
+    <!-- Core Scripts - Include with every page -->
     <script src="../../assets/plugins/jquery-1.10.2.js"></script>
     <script src="../../assets/plugins/bootstrap/bootstrap.min.js"></script>
     <script src="../../assets/plugins/metisMenu/jquery.metisMenu.js"></script>
@@ -345,15 +426,17 @@ else
     <!-- Page-Level Plugin Scripts-->
     <script src="../../assets/plugins/dataTables/jquery.dataTables.js"></script>
     <script src="../../assets/plugins/dataTables/dataTables.bootstrap.js"></script>
-
-	    <script>
+    <script>
         $(document).ready(function () {
-            $('#dataTables-example').dataTable({
-        "order": [[ 0	, "desc" ]]
-    });
+            $('#dataTables-example').dataTable();
         });
     </script>
-	
+	<script type="text/javascript">
+    function reload(){
+    document.getElementById("myform").submit();
+    }
+	</script>
+
 </body>
 
 </html>

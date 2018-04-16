@@ -9,43 +9,34 @@ if($type=="delete"){
 }
 else if($type=="edit")
 {
-	$sql = "Select *from SY where ID=$id";
+	$sql = "Select LEFT(schoolYear,4) as syTo, RIGHT(schoolYear,4) as syFrom from SY where ID=$id";
 	$result = mysqli_query($con,$sql);
 	if(mysqli_num_rows($result)>0)
 	{
 		
 		while($row = mysqli_fetch_array($result))
 		{	
-			$syear = explode("-", $row['schoolYear']);
 			?>
 			<form role="form" action="editSY.php?id=<?php echo $id; ?>" method=post>
-            <div class="modal-body">
-			<label>From</label>
-			<select  class="form-control" name="from">
-			<?php
-			foreach(range(2000, (int)date("Y")+1) as $year) {
-				?><option value=<?php echo $year; ?> <?php if($syear[0]==$year){echo "selected";} ?>><?php echo $year; ?></option>
-				<?php
-			}
-
-			?>
-			</select>
-			<label>To</label>
-			<select  class="form-control" name="to">
-			<?php
-			foreach(range(2000, (int)date("Y")+1) as $year) {
-				?><option value=<?php echo $year; ?> <?php if($syear[1]==$year){echo "selected";} ?>><?php echo $year; ?></option>
-				<?php
-			}
-
-			?>
-			</select>
-			</div>
-			<div class="modal-footer">
-			<button type="submit" class="btn btn-primary">Save</button>
-			<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-														
-			</div>
+                <div class="modal-body">
+					<label>From</label>
+					<select  class="form-control" name="from" id="syFrom_edit" onchange="editSY_to()" required>
+						<option value="">Choose Year</option>
+						<?php
+						for($i=0; $i<5; $i++) {
+						?>
+							<option value="<?php echo date('Y') + $i; ?>" <?php if($row['syTo'] == date('Y')+$i) echo "selected"; ?>><?php echo date('Y') + $i; ?></option>
+						<?php
+						}
+						?>
+					</select>
+					<label>To</label>
+					<input type=text class="form-control" name="to" id="syTo_edit" value="<?php echo $row['syFrom']; ?>" readonly>
+                </div>
+                <div class="modal-footer">
+					<button type="submit" class="btn btn-primary">Save</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
 			</form>
 			<?php
 		}
@@ -116,11 +107,8 @@ else if($type=="edit")
                                 </table>
 								</div>
 								<br>
-								
-                            </div>
-                            
+                            </div> 
                         </div>
-							
                     </div>
 	
 	<?php
