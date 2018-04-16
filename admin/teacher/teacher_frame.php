@@ -213,6 +213,9 @@ if(mysqli_num_rows($result)>0)
 					<li>
                         <a href="../sy/sy_frame.php">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>School Years</a>
                     </li>
+                    <li>
+                        <a href="../year_level/year_level_frame.php">&nbsp;&nbsp;<i class="fa fa-industry fa-fw"></i>Year Level</a>
+                    </li>
                     <li >
                         <a href="../section/section_frame.php">&nbsp;&nbsp;<i class="fa fa-list-ul fa-fw"></i>Sections</a>
                     </li>
@@ -224,6 +227,9 @@ if(mysqli_num_rows($result)>0)
                     </li>
 					<li>
                         <a href="../student/student_frame.php">&nbsp;&nbsp;<i class="fa fa-users fa-fw"></i>Students</a>
+                    </li>
+                    <li>
+                        <a href="../encoder/encoder_frame.php">&nbsp;&nbsp;<i class="fa fa-keyboard-o fa-fw"></i>Encoder</a>
                     </li>
 					</ul>
 					</div>
