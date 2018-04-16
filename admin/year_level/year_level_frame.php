@@ -229,10 +229,10 @@ if(isset($_POST['selectSY']))
 					 <a href="#"><i class="fa fa-sitemap fa-fw"></i>Initials<span class="fa arrow"></span></a>
 					 <div class="nav-collapse">
                         <ul class="nav nav-second-level">
-					<li  class="selected">
+					<li>
                         <a href="../sy/sy_frame.php">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>School Years</a>
                     </li>
-					<li>
+					<li class="selected">
                         <a href="../year_level/year_level_frame.php">&nbsp;&nbsp;<i class="fa fa-industry fa-fw"></i>Year Level</a>
                     </li>
                     <li>
@@ -246,6 +246,9 @@ if(isset($_POST['selectSY']))
                     </li>
 					<li>
                         <a href="../student/student_frame.php">&nbsp;&nbsp;<i class="fa fa-users fa-fw"></i>Students</a>
+                    </li>
+                    <li>
+                        <a href="../encoder/encoder_frame.php">&nbsp;&nbsp;<i class="fa fa-keyboard-o fa-fw"></i>Encoder</a>
                     </li>
 					</ul>
 					</div>

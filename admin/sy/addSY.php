@@ -39,5 +39,5 @@ $result = mysqli_query($con,$sql);
 	$sql2 = "INSERT INTO log(user,userType,logType) VALUES('$username','Admin','Added New SchoolYear')";
 	$result2 = mysqli_query($con,$sql2);
 
-//header('Location:SY_frame.php');
+header('Location:../manage/managesy.php');
 ?>
