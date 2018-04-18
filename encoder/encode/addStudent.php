@@ -86,10 +86,13 @@ if($password == $password2){
 	
 	$sql2 = "INSERT INTO log(user,userType,logType) VALUES('$username','Encoder','Added new Student')";
 	$result2 = mysqli_query($con,$sql2);
-	
+	$sql = "SELECT MAX(id) as id from student";
+	$result = mysqli_query($con,$sql);
+	$row = mysqli_fetch_array($result);
+	$maxID = $row['id'];
 
 	echo "<script>alert('Added new Student');
-		window.location.href = 'encode_frame.php'; </script>";
+		window.location.href = 'encodeMore.php?id=$maxID'; </script>";
 	
 }
 else

@@ -1,13 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.1
--- http://www.phpmyadmin.net
+-- version 4.7.4
+-- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 14, 2018 at 01:08 PM
--- Server version: 10.1.13-MariaDB
--- PHP Version: 5.6.21
+-- Generation Time: Apr 17, 2018 at 07:06 PM
+-- Server version: 10.1.28-MariaDB
+-- PHP Version: 7.1.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -29,15 +31,19 @@ SET time_zone = "+00:00";
 CREATE TABLE `admin` (
   `ID` int(11) NOT NULL,
   `username` varchar(30) NOT NULL,
-  `password` varchar(100) NOT NULL
+  `password` varchar(100) NOT NULL,
+  `Lname` varchar(30) NOT NULL,
+  `Fname` varchar(30) NOT NULL,
+  `Mname` varchar(30) NOT NULL,
+  `status` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `admin`
 --
 
-INSERT INTO `admin` (`ID`, `username`, `password`) VALUES
-(1, 'admin', '21232f297a57a5a743894a0e4a801fc3');
+INSERT INTO `admin` (`ID`, `username`, `password`, `Lname`, `Fname`, `Mname`, `status`) VALUES
+(1, 'admin', '21232f297a57a5a743894a0e4a801fc3', '', '', '', 0);
 
 -- --------------------------------------------------------
 
@@ -56,6 +62,13 @@ CREATE TABLE `encoder` (
   `dateCreated` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `encoder`
+--
+
+INSERT INTO `encoder` (`ID`, `employeeNo`, `password`, `Lname`, `Fname`, `Mname`, `contactNo`, `dateCreated`) VALUES
+(1, 'encoder', '8ba9b5f003bc16d75a9ddbc558e5e7fa', 'Olaguir', 'Catherine Gay', 'Manguiat', '09358029816', '0000-00-00 00:00:00');
+
 -- --------------------------------------------------------
 
 --
@@ -68,6 +81,13 @@ CREATE TABLE `enrolled_student` (
   `sy_level_section_ID` int(11) NOT NULL,
   `status` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `enrolled_student`
+--
+
+INSERT INTO `enrolled_student` (`ID`, `student_ID`, `sy_level_section_ID`, `status`) VALUES
+(1, 1, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -114,8 +134,14 @@ CREATE TABLE `grade_actions` (
 CREATE TABLE `grade_sched` (
   `ID` int(11) NOT NULL,
   `sy_level_ID` int(11) NOT NULL,
-  `start` datetime NOT NULL,
-  `end` datetime NOT NULL
+  `q1Start` date NOT NULL,
+  `q1End` date NOT NULL,
+  `q2Start` date NOT NULL,
+  `q2End` date NOT NULL,
+  `q3Start` date NOT NULL,
+  `q3End` date NOT NULL,
+  `q4Start` date NOT NULL,
+  `q4End` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -218,7 +244,28 @@ INSERT INTO `log` (`ID`, `user`, `userType`, `logType`, `Date`) VALUES
 (58, 'admin', 'Admin', 'Logged out', '2018-04-14 09:19:26'),
 (59, 'ivan ivan', 'Student', 'Logged out', '2018-04-14 09:19:39'),
 (60, 'admin', 'Admin', 'Logged in', '2018-04-14 09:19:43'),
-(61, 'admin', 'Admin', 'Changed Password (St', '2018-04-14 09:20:03');
+(61, 'admin', 'Admin', 'Changed Password (St', '2018-04-14 09:20:03'),
+(62, 'admin', 'Admin', 'Logged in', '2018-04-14 22:13:58'),
+(63, 'admin', 'Admin', 'Added New Teacher', '2018-04-14 23:00:11'),
+(64, 'admin', 'Admin', 'Added New Encoder', '2018-04-14 23:04:02'),
+(65, 'admin', 'Admin', 'Edited Encoder', '2018-04-14 23:08:53'),
+(66, 'admin', 'Admin', 'Added New Encoder', '2018-04-14 23:13:06'),
+(67, 'admin', 'Admin', 'Added New Encoder', '2018-04-14 23:18:17'),
+(68, 'admin', 'Admin', 'Added New Encoder', '2018-04-14 23:19:46'),
+(69, 'admin', 'Admin', 'Deleted Encoder', '2018-04-14 23:19:54'),
+(70, 'admin', 'Admin', 'Logged in', '2018-04-15 11:47:23'),
+(71, 'admin', 'Admin', 'Added New SchoolYear', '2018-04-15 14:23:01'),
+(72, 'admin', 'Admin', 'Logged in', '2018-04-15 14:40:18'),
+(73, 'admin', 'Admin', 'Added New SchoolYear', '2018-04-15 14:50:56'),
+(74, 'admin', 'Admin', 'Deleted SchoolYear', '2018-04-15 14:58:18'),
+(75, 'admin', 'Admin', 'Added New Teacher', '2018-04-15 18:10:25'),
+(76, 'admin', 'Admin', 'Logged in', '2018-04-16 07:42:02'),
+(77, 'admin', 'Admin', 'Logged in', '2018-04-17 09:43:37'),
+(78, 'admin', 'Admin', 'Logged in', '2018-04-17 14:25:03'),
+(79, 'admin', 'Admin', 'Logged out', '2018-04-17 22:15:28'),
+(80, 'admin', 'Admin', 'Logged in', '2018-04-17 22:15:49'),
+(81, 'admin', 'Admin', 'Logged out', '2018-04-17 22:16:23'),
+(82, 'Cath Olaguir', 'Teacher', 'Logged in', '2018-04-17 22:16:26');
 
 -- --------------------------------------------------------
 
@@ -229,8 +276,25 @@ INSERT INTO `log` (`ID`, `user`, `userType`, `logType`, `Date`) VALUES
 CREATE TABLE `section` (
   `ID` int(11) NOT NULL,
   `year` varchar(20) NOT NULL,
-  `section` varchar(15) NOT NULL
+  `section` varchar(15) NOT NULL,
+  `level_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `section`
+--
+
+INSERT INTO `section` (`ID`, `year`, `section`, `level_id`) VALUES
+(1, '1', 'sampaguita', 1),
+(2, '1', 'roses', 1),
+(3, '2', 'narra', 2),
+(4, '2', 'bamboo', 2),
+(5, '3', 'francis', 3),
+(6, '3', 'pedro', 3),
+(7, '4', 'philippines', 4),
+(8, '4', 'canada', 4),
+(9, '1', 'orchids', 1),
+(10, '1', 'ilang ilang', 1);
 
 -- --------------------------------------------------------
 
@@ -293,6 +357,14 @@ CREATE TABLE `subject` (
   `subject` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `subject`
+--
+
+INSERT INTO `subject` (`ID`, `code`, `subject`) VALUES
+(1, 'eng07', 'filipino07'),
+(2, 'eng07', 'english07');
+
 -- --------------------------------------------------------
 
 --
@@ -313,8 +385,15 @@ CREATE TABLE `summer` (
 CREATE TABLE `summer_enrolled` (
   `ID` int(11) NOT NULL,
   `student_ID` int(11) NOT NULL,
-  `sy_level_ID` int(11) NOT NULL
+  `summer_subject_ID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `summer_enrolled`
+--
+
+INSERT INTO `summer_enrolled` (`ID`, `student_ID`, `summer_subject_ID`) VALUES
+(1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -325,6 +404,7 @@ CREATE TABLE `summer_enrolled` (
 CREATE TABLE `summer_grade` (
   `ID` int(11) NOT NULL,
   `summer_enrolled_ID` int(11) NOT NULL,
+  `summer_subject_ID` int(11) NOT NULL,
   `grade` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -350,8 +430,18 @@ CREATE TABLE `summer_grade_sched` (
 CREATE TABLE `summer_subject` (
   `ID` int(11) NOT NULL,
   `sy_level_ID` int(11) NOT NULL,
-  `teacher_ID` int(11) NOT NULL
+  `teacher_ID` int(11) NOT NULL,
+  `subject_ID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `summer_subject`
+--
+
+INSERT INTO `summer_subject` (`ID`, `sy_level_ID`, `teacher_ID`, `subject_ID`) VALUES
+(1, 1, 1, 1),
+(2, 1, 1, 2),
+(3, 5, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -412,6 +502,16 @@ CREATE TABLE `sy_level_section` (
   `capacity` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `sy_level_section`
+--
+
+INSERT INTO `sy_level_section` (`ID`, `sy_level_ID`, `section_ID`, `teacher_ID`, `capacity`) VALUES
+(1, 1, 1, 1, 55),
+(5, 1, 9, 4, 20),
+(6, 5, 3, 1, 10),
+(7, 2, 4, 4, 20);
+
 -- --------------------------------------------------------
 
 --
@@ -423,6 +523,16 @@ CREATE TABLE `sy_level_subject` (
   `sy_level_ID` int(11) NOT NULL,
   `subject_ID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `sy_level_subject`
+--
+
+INSERT INTO `sy_level_subject` (`ID`, `sy_level_ID`, `subject_ID`) VALUES
+(1, 1, 1),
+(2, 1, 2),
+(3, 5, 1),
+(4, 5, 2);
 
 -- --------------------------------------------------------
 
@@ -441,6 +551,14 @@ CREATE TABLE `teacher` (
   `dateCreated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `teacher`
+--
+
+INSERT INTO `teacher` (`ID`, `employeeNo`, `password`, `Lname`, `Fname`, `Mname`, `contactNo`, `dateCreated`) VALUES
+(1, '1', 'c4ca4238a0b923820dcc509a6f75849b', 'Olaguir', 'Cath', 'Manguiat', '09358029816', '2018-04-15 18:10:25'),
+(4, '2', 'c4ca4238a0b923820dcc509a6f75849b', 'Mugiwara', 'Luffy', 'Aa', '1', '2018-04-17 02:00:00');
+
 -- --------------------------------------------------------
 
 --
@@ -455,6 +573,14 @@ CREATE TABLE `teacher_section_subject` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
+-- Dumping data for table `teacher_section_subject`
+--
+
+INSERT INTO `teacher_section_subject` (`ID`, `teacher_ID`, `sy_level_subject_ID`, `sy_level_section_ID`) VALUES
+(1, 1, 1, 1),
+(2, 4, 2, 5);
+
+--
 -- Indexes for dumped tables
 --
 
@@ -462,6 +588,12 @@ CREATE TABLE `teacher_section_subject` (
 -- Indexes for table `admin`
 --
 ALTER TABLE `admin`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `encoder`
+--
+ALTER TABLE `encoder`
   ADD PRIMARY KEY (`ID`);
 
 --
@@ -600,106 +732,134 @@ ALTER TABLE `teacher_section_subject`
 --
 ALTER TABLE `admin`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `encoder`
+--
+ALTER TABLE `encoder`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
 --
 -- AUTO_INCREMENT for table `enrolled_student`
 --
 ALTER TABLE `enrolled_student`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
 --
 -- AUTO_INCREMENT for table `grade`
 --
 ALTER TABLE `grade`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT for table `grade_actions`
 --
 ALTER TABLE `grade_actions`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT for table `grade_sched`
 --
 ALTER TABLE `grade_sched`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT for table `level`
 --
 ALTER TABLE `level`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
 --
 -- AUTO_INCREMENT for table `log`
 --
 ALTER TABLE `log`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=83;
+
 --
 -- AUTO_INCREMENT for table `section`
 --
 ALTER TABLE `section`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
 --
 -- AUTO_INCREMENT for table `student`
 --
 ALTER TABLE `student`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
 --
 -- AUTO_INCREMENT for table `subject`
 --
 ALTER TABLE `subject`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
 --
 -- AUTO_INCREMENT for table `summer`
 --
 ALTER TABLE `summer`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT for table `summer_enrolled`
 --
 ALTER TABLE `summer_enrolled`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
 --
 -- AUTO_INCREMENT for table `summer_grade`
 --
 ALTER TABLE `summer_grade`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT for table `summer_grade_sched`
 --
 ALTER TABLE `summer_grade_sched`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT for table `summer_subject`
 --
 ALTER TABLE `summer_subject`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
 --
 -- AUTO_INCREMENT for table `sy`
 --
 ALTER TABLE `sy`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
 --
 -- AUTO_INCREMENT for table `sy_level`
 --
 ALTER TABLE `sy_level`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
 --
 -- AUTO_INCREMENT for table `sy_level_section`
 --
 ALTER TABLE `sy_level_section`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
 --
 -- AUTO_INCREMENT for table `sy_level_subject`
 --
 ALTER TABLE `sy_level_subject`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
 --
 -- AUTO_INCREMENT for table `teacher`
 --
 ALTER TABLE `teacher`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
 --
 -- AUTO_INCREMENT for table `teacher_section_subject`
 --
 ALTER TABLE `teacher_section_subject`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+COMMIT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

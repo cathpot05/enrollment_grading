@@ -2,6 +2,7 @@
 
 include "../../dbcon.php";
 include "../sessionTeacher.php";
+$id = $_GET['id'];
 $username='';
 $sql = "Select *from teacher where ID=$teacherID";
 $result = mysqli_query($con,$sql);
@@ -25,6 +26,7 @@ else
 		$sySel = $row['ID'];
 	
 }
+$now = date('Y-m-d');
 
 ?>
 <!DOCTYPE html>
@@ -110,7 +112,7 @@ else
 						
                         <!--end user image section-->
                     </li>
-					 <li>
+					<li>
                         <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
                     </li>
 					<li>
@@ -133,82 +135,152 @@ else
         <div id="page-wrapper">
             <div class="row">
                 <!-- Page Header -->
-                <div class="col-lg-10">
-                    <h1 class="page-header">Subjects</h1>
+                <div class="col-lg-12">
+                    <h1 class="page-header"> Student Grades</h1>
                 </div>
-				<div class="col-lg-2">
-					<div style="float:right; margin-top:40px" >
-                       <form action='subject_frame.php' method ="get" id="sySelForm"> 
-							<label> SY: <label> 
-							<select name="sySel" class="form-control" onchange="reload();">
-							<?php
-							$sql = "Select *from sy ORDER BY RIGHT(schoolYear,4) DESC";
-							$result = mysqli_query($con,$sql);
-							if(mysqli_num_rows($result)>0)
-							{
-								while($row = mysqli_fetch_array($result))
-								{
-									?>
-									<option value="<?php echo $row['ID']?>" <?php if($row['ID'] == $sySel) echo "selected"; ?>><?php echo $row['schoolYear']; ?></option>
-									<?php
-								}
-							}
-							?>
-							</select>
-						</form> 
-					</div>
-				</div>
+				
                 <!--End Page Header -->
             </div>
 			
 				<div class="row">
                 <div class="col-lg-12">
                     <!-- Advanced Tables -->
-					<?php
-					$sql = "Select B.level,A.ID from sy_level A 
-							INNER JOIN level B ON A.level_ID = B.ID
-							where A.sy_ID = $sySel";
-					$result = mysqli_query($con,$sql);
-					if(mysqli_num_rows($result)>0)
-					{
-						while($row = mysqli_fetch_array($result))
-						{
-							$sy_level_ID = $row['ID']; 
-							?>
-							
 							    <div class="panel panel-default">
 								<div class="panel-heading">
-									<?php echo $row['level']; ?>
+								List of Students
 								</div>
 								<div class="panel-body">
 									<div class="table-responsive">
+									<form action="saveGrades.php?id=<?php echo $id; ?>" method=post >
 										<table class="table table-hovered">
 											<thead>
 												<tr>
-													<th>Subject</th>
-													<th>Section</th>
-													<th width=5%>Grades</th>
+													<th>Name</th>
+													<th width=5%>1st Quarter</th>
+													<th width=5%>2nd Quarter</th>
+													<th width=5%>3rd Quarter</th>
+													<th width=5%>4th Quarter</th>
+													<th width=5%>Finals</th>
 												</tr>
 											</thead>
 											<tbody>
 											<?php
-											$sql2 = "Select A.ID,E.subject,F.section from teacher_section_subject A
-											INNER JOIN teacher  B ON A.teacher_ID = B.ID
-											INNER JOIN sy_level_subject C ON A.sy_level_subject_ID = C.ID
-											INNER JOIN sy_level_section D ON A.sy_level_section_ID = D.ID
-											INNER JOIN subject E ON C.subject_ID = E.ID
-											INNER JOIN section F ON D.section_ID = F.ID
-											where B.ID = $teacherID AND C.sy_level_ID = $sy_level_ID AND D.sy_level_ID = $sy_level_ID";
-											$result2 = mysqli_query($con,$sql2);
-											if(mysqli_num_rows($result2)>0)
+											$sql = "Select D.*,E.q1,E.q2,E.q3,E.q4,(E.q1+E.q2+E.q3+E.q4)/4 as final,C.ID as esID, A.ID as tssID,
+											G.q1Start,G.q1End,G.q2Start,G.q2End,G.q3Start,G.q3End,G.q4Start,G.q4End
+											from teacher_section_subject A 
+											INNER JOIN sy_level_section B ON A.sy_level_section_ID = B.ID
+											INNER JOIN enrolled_student C ON C.sy_level_section_ID = B.ID
+											INNER JOIN student D ON C.student_ID = D.ID
+											LEFT JOIN grade E ON E.enrolled_student_ID = C.ID and E.teacher_section_subject_ID = A.ID 
+											INNER JOIN sy_level_subject F ON A.sy_level_subject_ID = F.ID
+											LEFT JOIN grade_sched G ON B.sy_level_ID = G.sy_level_ID AND F.sy_level_ID = G.sy_level_ID
+											where A.ID = $id";
+											$result = mysqli_query($con,$sql);
+											if(mysqli_num_rows($result)>0)
 											{
-												while($row2 = mysqli_fetch_array($result2))
+												while($row = mysqli_fetch_array($result))
 												{
 													?>
 													<tr>
-														<td><?php echo $row2['subject']; ?></td>
-														<td><?php echo $row2['section']; ?></td>
-														<td><span  id="icon" class="fa fa-list fa-fw" onclick="window.location.href='viewGrades.php?id=<?php echo $row['ID']; ?>'" ></span></td>
+														<td><?php echo $row['Fname']." ".$row['Mname']." ".$row['Lname']; ?></td>
+														<td style="text-align:center" >
+															<?php
+															if(strtotime($now) >= strtotime($row['q1Start']) && strtotime($now) <= strtotime($row['q1End']))
+															{
+																?>
+																<input max="100" name="q1_<?php echo $row['esID']; ?>_<?php echo $row['tssID']; ?>" type=number value="<?php if($row['q1'] != null && $row['q1'] >0){ echo $row['q1']; }else { echo "0"; }?>" style="width:100%">
+																<?php
+															}
+															else if(strtotime($now) > strtotime($row['q1End']) && $row['q1End'] != null)
+															{
+																if($row['q1'] != null && $row['q1'] >0){ echo $row['q1']; }else { echo "NG"; }
+															}
+															else
+															{
+																if($row['q1'] != null && $row['q1'] >0){ echo $row['q1']; }else { echo "-"; }
+															}
+																
+																?>
+														</td>
+														<td style="text-align:center">
+														<?php
+															if(strtotime($now) >= strtotime($row['q2Start']) && strtotime($now) <= strtotime($row['q2End']))
+															{
+																?>
+															<input max="100" name="q2_<?php echo $row['esID']; ?>_<?php echo $row['tssID']; ?>" type=number value="<?php if($row['q2'] != null && $row['q2'] >0){ echo $row['q2']; }else { echo "0"; } ?>" style="width:100%" >
+															<?php
+															}
+															else if(strtotime($now) > strtotime($row['q2End']) && $row['q2End'] != null)
+															{
+																if($row['q2'] != null && $row['q2'] >0){ echo $row['q2']; }else { echo "NG"; }
+															}
+															else
+															{
+																if($row['q2'] != null && $row['q2'] >0){ echo $row['q2']; }else { echo "-"; }
+															}
+																
+																?>
+														</td>
+														<td style="text-align:center">
+														<?php
+															if(strtotime($now) >= strtotime($row['q3Start']) && strtotime($now) <= strtotime($row['q3End']))
+															{
+																?>
+															<input max="100" name="q3_<?php echo $row['esID']; ?>_<?php echo $row['tssID']; ?>" type=number value="<?php if($row['q3'] != null && $row['q3'] >0){ echo $row['q3']; }else { echo "0"; } ?>" style="width:100%" >
+															<?php
+															}
+															else if(strtotime($now) > strtotime($row['q3End'])  && $row['q3End'] != null)
+															{
+																if($row['q3'] != null && $row['q3'] >0){ echo $row['q3']; }else { echo "NG"; }
+															}
+															else
+															{
+																if($row['q3'] != null && $row['q3'] >0){ echo $row['q3']; }else { echo "-"; }
+															}
+																
+																?>
+														</td>
+														<td style="text-align:center">
+														<?php
+															if(strtotime($now) >= strtotime($row['q4Start']) && strtotime($now) <= strtotime($row['q4End']))
+															{
+																?>
+															<input max="100" name="q4_<?php echo $row['esID']; ?>_<?php echo $row['tssID']; ?>" type=number value="<?php if($row['q4'] != null && $row['q4'] >0){ echo $row['q4']; }else { echo "0"; } ?>" style="width:100%" >
+															<?php
+															}
+															else if(strtotime($now) > strtotime($row['q4End']) && $row['q4End'] != null)
+															{
+																if($row['q4'] != null && $row['q4'] >0){ echo $row['q4']; }else { echo "NG"; }
+															}
+															else
+															{
+																if($row['q4'] != null && $row['q4'] >0){ echo $row['q4']; }else { echo "-"; }
+															}
+																
+																?>
+														</td>
+														<td style="text-align:center">
+														<?php 
+															if(($row['q1'] != null  && $row['q1'] >0) && ($row['q2'] != null  && $row['q2'] >0) && ($row['q3'] != null  && $row['q3'] >0) && ($row['q4'] != null  && $row['q4'] >0))
+															{
+																$finals=($row['q1']+$row['q2']+$row['q3']+$row['q4'])/4;
+																
+																if($finals<70)
+																{
+																	echo "<strong style='color:red'>".$finals."</strong>";
+																}
+																else
+																{
+																	echo "<strong>".$finals."</strong>";
+																}
+																
+															}
+															else 
+															{
+																echo "-";  
+															}
+															?>
+														</td>
 													</tr>
 													<?php
 												}
@@ -217,16 +289,12 @@ else
 												
 											</tbody>
 										</table>
+											<button style="float:right" type="submit" class="btn btn-primary">Save Changes</button>
+										</form>
 									</div>
 								</div>
 							</div>
-							<?php
-						}
-					}
-					?>
-					
-					
-					
+
 
                     <!--End Advanced Tables -->
                 </div>
@@ -254,6 +322,20 @@ else
         $(document).ready(function () {
             $('#dataTables-example').dataTable();
         });
+		function editCell(inputId) {
+			
+			console.log(inputId);
+			var inputIdWithHash = "#" + inputId;
+			var elementValue = $(inputIdWithHash).text();
+			$(inputIdWithHash).replaceWith('<input name="'+inputId+'" id="' + inputId + '" type="number" value="' + elementValue + '" style="width:100%" autofocus>');
+			
+			$(document).click(function (event) {
+				
+				if (!$(event.target).closest(inputIdWithHash).length) {
+					$(inputIdWithHash).replaceWith('<p id="' + inputId + '" onclick="editCell(\'' + inputId + '\')">' + elementValue + '</p>');
+				}
+			});
+		}
     </script>
 	<script type="text/javascript">
     function reload(){

@@ -77,7 +77,7 @@ else
 		}
 	}
 	
-	$sql2 = "INSERT INTO log(user,userType,logType) VALUES('$username','Encoder','Edited new Student')";
+	$sql2 = "INSERT INTO log(user,userType,logType) VALUES('$username','Encoder','Edited a Student')";
 	$result2 = mysqli_query($con,$sql2);
 	
 	echo "<script>alert('Updated Student Information');

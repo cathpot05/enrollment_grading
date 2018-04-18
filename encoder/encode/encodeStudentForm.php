@@ -120,7 +120,8 @@ if(mysqli_num_rows($result)>0)
                 <!--End Page Header -->
             </div>
 			<div class="row">
-                <div class="col-lg-12">
+			<div class="col-lg-1"></div>
+                <div class="col-lg-10">
 				
                     <!-- Advanced Tables -->
                     <div class="panel panel-default">
@@ -128,8 +129,8 @@ if(mysqli_num_rows($result)>0)
 						<br>
 							<h3><strong>PRUDECIA D. FULE MEMORIAL NATIONAL HIGH SCHOOL</strong></h3>
 								<i>Brgy. San Nicolas, San Pablo City</i>
-								<br>
-								<br>
+
+								<hr>
 								
 								<form action="addStudent.php" method="post">
                             <table width=96% id="studentForm">
@@ -358,7 +359,7 @@ if(mysqli_num_rows($result)>0)
 							</table>
 							</center>
 							<br>
-							<span style=" margin: 15px; float:right; " data-toggle="modal" data-target="#accountModal" class="btn btn-primary">Next</span>
+							<span style="width:100%; float:center padding-top:10px; padding-bottom:10px" data-toggle="modal" data-target="#accountModal" class="btn btn-primary">Next</span>
 							 <div class="modal fade" id="accountModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -381,10 +382,6 @@ if(mysqli_num_rows($result)>0)
                                 </div>
                             </div>
 							</form>
-							
-							<br>
-							<br>
-							<br>
 							<br>
                         </div>
                     </div>

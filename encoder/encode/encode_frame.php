@@ -163,6 +163,7 @@ if(mysqli_num_rows($result)>0)
 											<td><?php echo $row['gender']; ?></td>
 											<td>
 											<center>
+											
 											<span id="icon" class="fa fa-edit fa-fw" onclick="window.location.href='editStudentForm.php?id=<?php echo $row['ID']; ?>';" ></span></center></td>
 											<td><center><span id="icon" class="fa fa-times fa-fw" data-toggle="modal" data-target="#deleteModal" onclick="changeID(<?php echo $row['ID']; ?>,'delete');"></span></center></td>
 														
@@ -209,7 +210,18 @@ if(mysqli_num_rows($result)>0)
 									
 									
 								</div>
-								
+							
+							<div class="modal fade" id="docsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="myModalLabel">Submit Documents</h4>
+                                        </div>
+										<div id="docsform">
+										</div>
+                                    </div>
+                                </div>
+                            </div>
                             </div>
                             
                         </div>
@@ -262,6 +274,11 @@ if(mysqli_num_rows($result)>0)
                       {
                          document.getElementById("changePasswordForm").innerHTML = xhr.responseText;
                      }
+					 else if(type==='docs')
+					 {
+						 document.getElementById("docsform").innerHTML = xhr.responseText;
+						 
+					 }
 					  else if(type==='all')
                       {
                           document.getElementById("requestform").innerHTML = xhr.responseText;

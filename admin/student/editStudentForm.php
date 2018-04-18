@@ -536,13 +536,9 @@ th, td {
 							</table>
 							</center>
 							<br>
-							<button type="submit" style=" margin: 15px; float:right; " class="btn btn-primary">Save</button>
+							<button type="submit" style="width:100%" class="btn btn-primary">Save</button>
 							</form>
-							
-							<br>
-							<br>
-							<br>
-							<br>
+						
                         </div>
                     </div>
                     <!--End Advanced Tables -->

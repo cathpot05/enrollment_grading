@@ -119,7 +119,7 @@ if(mysqli_num_rows($result)>0)
                 </div>
 				<div class="col-lg-2">
 							<div style="float:right; margin-top:40px" >
-                            <button class="btn btn-primary btn-md" onclick="window.location.href='encode_frame.php'" >
+                            <button class="btn btn-primary btn-md" onclick="window.location.href='encodeStudentForm.php'" >
                                 Encode More
                             </button>
 							</div>
@@ -127,7 +127,9 @@ if(mysqli_num_rows($result)>0)
                 <!--End Page Header -->
             </div>
 			<div class="row">
-				<div class="col-lg-12">
+			<div class="col-lg-1">
+			</div>
+				<div class="col-lg-10">
 				<div class="well">
 				<?php
 					$sql = "Select *from student where ID=$id";

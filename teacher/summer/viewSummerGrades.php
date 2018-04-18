@@ -2,7 +2,7 @@
 
 include "../../dbcon.php";
 include "../sessionTeacher.php";
-
+$id = $_GET['id'];
 $username='';
 $sql = "Select *from teacher where ID=$teacherID";
 $result = mysqli_query($con,$sql);
@@ -13,54 +13,20 @@ if(mysqli_num_rows($result)>0)
 		$username=$row['Fname']." ".$row['Lname'];
 	}
 }
+$sySel = "";
+if(isset($_GET['sySel']))
+{
+	$sySel = $_GET['sySel'];
+}
 else
 {
-
+		$sql = "Select *from sy ORDER BY RIGHT(schoolYear,4) DESC LIMIT 1";
+		$result = mysqli_query($con,$sql);
+		$row = mysqli_fetch_array($result);
+		$sySel = $row['ID'];
+	
 }
-
-$totalSubjects=0;
-$sql2 = "SELECT COUNT(ID) as total from teacher_section_subject where teacher_ID = $teacherID GROUP BY teacher_ID";
-	$result2 = mysqli_query($con,$sql2);
-	if(mysqli_num_rows($result2)>0)
-	{
-		while($row2 = mysqli_fetch_array($result2))
-		{
-			$totalSubjects=$row2['total']; 									
-		}
-	}
-	
-$totalSummerSubjects=0;
-$sql2 = "SELECT COUNT(ID) as total from summer_subject where teacher_ID = $teacherID GROUP BY teacher_ID";
-	$result2 = mysqli_query($con,$sql2);
-	if(mysqli_num_rows($result2)>0)
-	{
-		while($row2 = mysqli_fetch_array($result2))
-		{
-			$totalSummerSubjects=$row2['total']; 									
-		}
-	}
-	
-$totalSection=0;
-$sql2 = "SELECT COUNT(ID) as total from sy_level_section where teacher_ID = $teacherID GROUP BY teacher_ID";
-	$result2 = mysqli_query($con,$sql2);
-	if(mysqli_num_rows($result2)>0)
-	{
-		while($row2 = mysqli_fetch_array($result2))
-		{
-			$totalSection=$row2['total']; 									
-		}
-		
-	}	
-$since=0;
-$sql2 = "Select *from teacher where ID=$teacherID";
-	$result2 = mysqli_query($con,$sql2);
-	if(mysqli_num_rows($result2)>0)
-	{
-		while($row2 = mysqli_fetch_array($result2))
-		{
-			$since=date($row2['dateCreated']); 									
-		}
-	}
+$now = date('Y-m-d');
 ?>
 <!DOCTYPE html>
 <html>
@@ -77,7 +43,17 @@ $sql2 = "Select *from teacher where ID=$teacherID";
     <link href="../../assets/css/main-style.css" rel="stylesheet" />
     <!-- Page-Level CSS -->
     <link href="../../assets/plugins/morris/morris-0.4.3.min.css" rel="stylesheet" />
+	<link href="../../assets/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet" />
 </head>
+<style>
+#icon{
+    font-size:1.1em;
+}
+#icon:hover{
+    font-size:1.3em;
+     
+}
+</style>
 <body>
     <!--  wrapper -->
     <div id="wrapper">
@@ -135,14 +111,14 @@ $sql2 = "Select *from teacher where ID=$teacherID";
 						
                         <!--end user image section-->
                     </li>
-					<li class="selected">
+					 <li>
                         <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
                     </li>
 					<li>
 						<a href="#"><i class="fa fa-sitemap fa-fw"></i>Manage<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
+                        <ul class="nav nav-second-level in">
 						<li><a href="../subject/subject_frame.php">&nbsp;&nbsp;&nbsp;&nbsp; My Subjects</a></li>
-						<li><a href="../summer/summer_frame.php">&nbsp;&nbsp;&nbsp;&nbsp; Summer Subjects</a></li>
+						<li class="selected"><a href="../summer/summer_frame.php">&nbsp;&nbsp;&nbsp;&nbsp; Summer Subjects</a></li>
 						</ul>
 					</li>
 					<li>
@@ -159,52 +135,92 @@ $sql2 = "Select *from teacher where ID=$teacherID";
             <div class="row">
                 <!-- Page Header -->
                 <div class="col-lg-12">
-                    <h1 class="page-header">Dashboard</h1>
+                    <h1 class="page-header"> Student Grades</h1>
                 </div>
+				
                 <!--End Page Header -->
             </div>
-			<div class="row">
-                <!-- Welcome -->
+			
+				<div class="row">
                 <div class="col-lg-12">
-                    <div class="alert alert-info">
-                        <i class="fa fa-folder-open"></i><b>&nbsp;Hello ! </b>Welcome Back <b><?php echo $username; ?></b>
-						
-                    </div>
+                    <!-- Advanced Tables -->
+							    <div class="panel panel-default">
+								<div class="panel-heading">
+								List of Students
+								</div>
+								<div class="panel-body">
+									<div class="table-responsive">
+									<form action="saveSummerGrades.php?id=<?php echo $id; ?>" method=post >
+										<table class="table table-hovered" >
+											<thead>
+												<tr>
+													<th>Name</th>
+													<th width=10%>Finals</th>
+													
+												</tr>
+											</thead>
+											<tbody>
+											<?php
+											$sql = "SELECT C.*,D.grade, E.start, E.end, B.ID as seID, A.ID as ssID from summer_subject A
+													INNER JOIN summer_enrolled B ON B.summer_subject_ID = A.ID
+													INNER JOIN student C ON B.student_ID = C.ID
+													LEFT JOIN summer_grade D ON D.summer_subject_ID = A.ID AND D.summer_enrolled_ID = B.ID
+													LEFT JOIN summer_grade_sched E ON E.sy_level_ID = A.sy_level_ID
+													where A.ID = $id";
+											$result = mysqli_query($con,$sql);
+											if(mysqli_num_rows($result)>0)
+											{
+												while($row = mysqli_fetch_array($result))
+												{
+													?>
+													<tr>
+														<td><?php echo $row['Fname']." ".$row['Mname']." ".$row['Lname']; ?></td>
+														<td style="text-align:center">
+														<?php
+															if(strtotime($now) >= strtotime($row['start']) && strtotime($now) <= strtotime($row['end']))
+															{
+																?>
+															<input max="100" name="grade_<?php echo $row['seID']; ?>_<?php echo $row['ssID']; ?>" type=number value="<?php if($row['grade'] != null && $row['grade'] >0){ echo $row['grade']; }else { echo "0"; } ?>" style="width:100%" >
+															<?php
+															}
+															else if(strtotime($now) > strtotime($row['end'])  && $row['end'] != null)
+															{
+																if($row['grade'] != null && $row['grade'] >0){ echo $row['grade']; }else { echo "NG"; }
+															}
+															else
+															{
+																if($row['grade'] != null && $row['grade'] >0){ echo $row['grade']; }else { echo "-"; }
+															}	
+														?>
+														</td>
+													</tr>
+													<?php
+												}
+											}
+											?>
+												
+											</tbody>
+										</table>
+										<button style="float:right" type="submit" class="btn btn-primary">Save Changes</button>
+										</form>
+									</div>
+								</div>
+							</div>
+
+
+                    <!--End Advanced Tables -->
                 </div>
-                <!--end  Welcome -->
+            
+				
+                 
+                
             </div>
-			<div class="row">
-				<div class="col-md-12">
-					<div class="row">
-					<div class="col-md-3">
-                    <div class="alert alert-danger text-center">
-                        <i class="fa fa-book fa-3x"></i>&nbsp;<b> <?php echo $totalSubjects;  ?></b> Total Subjects Handled since <?php echo date("Y",strtotime($since))?>
-                    </div>
-					</div>
-					<div class="col-md-3">
-                    <div class="alert alert-warning text-center">
-                        <i class="fa fa-book fa-3x"></i>&nbsp;<b> <?php echo $totalSummerSubjects;  ?></b> Total Summer Subjects Handled since <?php echo date("Y",strtotime($since))?>
-                    </div>
-					</div>
-					<div class="col-md-3">
-                    <div class="alert alert-info text-center">
-                        <i class="fa fa-users fa-3x"></i>&nbsp;<b> <?php echo $totalSection;  ?></b> Sections Handled since <?php echo date("Y",strtotime($since))?>
-                    </div>
-					</div>
-					<div class="col-md-3">
-						<div class="alert alert-success text-center">
-							<i class="fa fa-calendar fa-3x"></i>&nbsp;<b> <?php if(date("Y")-date("Y",strtotime($since)) >0 ) echo date("Y")-date("Y",strtotime($since)); else echo "Less than 1 ";  ?></b> year/s of teaching students passionately.
-						</div>
-					</div>
-					</div>
-					
-				</div>
-			</div>
         </div>
         <!-- end page-wrapper -->
 
     </div>
     <!-- end wrapper -->
+
     <!-- Core Scripts - Include with every page -->
     <script src="../../assets/plugins/jquery-1.10.2.js"></script>
     <script src="../../assets/plugins/bootstrap/bootstrap.min.js"></script>
@@ -212,18 +228,35 @@ $sql2 = "Select *from teacher where ID=$teacherID";
     <script src="../../assets/plugins/pace/pace.js"></script>
     <script src="../../assets/scripts/siminta.js"></script>
     <!-- Page-Level Plugin Scripts-->
-    <script src="../../assets/plugins/morris/raphael-2.1.0.min.js"></script>
-    <script src="../../assets/plugins/morris/morris.js"></script>
-    <script src="../../assets/scripts/morris-demo.js"></script>
-	<script src="../../assets/scripts/dashboard-demo.js"></script>
+    <script src="../../assets/plugins/dataTables/jquery.dataTables.js"></script>
+    <script src="../../assets/plugins/dataTables/dataTables.bootstrap.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#dataTables-example').dataTable();
+        });
+		function editCell(inputId) {
+			
+			console.log(inputId);
+			var inputIdWithHash = "#" + inputId;
+			var elementValue = $(inputIdWithHash).text();
+			$(inputIdWithHash).replaceWith('<input name="'+inputId+'" id="' + inputId + '" type="number" value="' + elementValue + '" style="width:100%" autofocus>');
+			
+			$(document).click(function (event) {
+				
+				if (!$(event.target).closest(inputIdWithHash).length) {
+					$(inputIdWithHash).replaceWith('<p id="' + inputId + '" onclick="editCell(\'' + inputId + '\')">' + elementValue + '</p>');
+				}
+			});
+		}
+    </script>
 	<script type="text/javascript">
-    function reload()
-	{
-    document.getElementById("myform").submit();
+    function reload(){
+    document.getElementById("sySelForm").submit();
     }
+	
+
 	</script>
-	
-	
+
 </body>
 
 </html>

@@ -2,7 +2,6 @@
 
 include "../../dbcon.php";
 include "../sessionTeacher.php";
-
 $username='';
 $sql = "Select *from teacher where ID=$teacherID";
 $result = mysqli_query($con,$sql);
@@ -13,54 +12,20 @@ if(mysqli_num_rows($result)>0)
 		$username=$row['Fname']." ".$row['Lname'];
 	}
 }
+$sySel = "";
+if(isset($_GET['sySel']))
+{
+	$sySel = $_GET['sySel'];
+}
 else
 {
-
+		$sql = "Select *from sy ORDER BY RIGHT(schoolYear,4) DESC LIMIT 1";
+		$result = mysqli_query($con,$sql);
+		$row = mysqli_fetch_array($result);
+		$sySel = $row['ID'];
+	
 }
 
-$totalSubjects=0;
-$sql2 = "SELECT COUNT(ID) as total from teacher_section_subject where teacher_ID = $teacherID GROUP BY teacher_ID";
-	$result2 = mysqli_query($con,$sql2);
-	if(mysqli_num_rows($result2)>0)
-	{
-		while($row2 = mysqli_fetch_array($result2))
-		{
-			$totalSubjects=$row2['total']; 									
-		}
-	}
-	
-$totalSummerSubjects=0;
-$sql2 = "SELECT COUNT(ID) as total from summer_subject where teacher_ID = $teacherID GROUP BY teacher_ID";
-	$result2 = mysqli_query($con,$sql2);
-	if(mysqli_num_rows($result2)>0)
-	{
-		while($row2 = mysqli_fetch_array($result2))
-		{
-			$totalSummerSubjects=$row2['total']; 									
-		}
-	}
-	
-$totalSection=0;
-$sql2 = "SELECT COUNT(ID) as total from sy_level_section where teacher_ID = $teacherID GROUP BY teacher_ID";
-	$result2 = mysqli_query($con,$sql2);
-	if(mysqli_num_rows($result2)>0)
-	{
-		while($row2 = mysqli_fetch_array($result2))
-		{
-			$totalSection=$row2['total']; 									
-		}
-		
-	}	
-$since=0;
-$sql2 = "Select *from teacher where ID=$teacherID";
-	$result2 = mysqli_query($con,$sql2);
-	if(mysqli_num_rows($result2)>0)
-	{
-		while($row2 = mysqli_fetch_array($result2))
-		{
-			$since=date($row2['dateCreated']); 									
-		}
-	}
 ?>
 <!DOCTYPE html>
 <html>
@@ -77,7 +42,17 @@ $sql2 = "Select *from teacher where ID=$teacherID";
     <link href="../../assets/css/main-style.css" rel="stylesheet" />
     <!-- Page-Level CSS -->
     <link href="../../assets/plugins/morris/morris-0.4.3.min.css" rel="stylesheet" />
+	<link href="../../assets/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet" />
 </head>
+<style>
+#icon{
+    font-size:1.1em;
+}
+#icon:hover{
+    font-size:1.3em;
+     
+}
+</style>
 <body>
     <!--  wrapper -->
     <div id="wrapper">
@@ -135,7 +110,7 @@ $sql2 = "Select *from teacher where ID=$teacherID";
 						
                         <!--end user image section-->
                     </li>
-					<li class="selected">
+					 <li>
                         <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
                     </li>
 					<li>
@@ -145,7 +120,7 @@ $sql2 = "Select *from teacher where ID=$teacherID";
 						<li><a href="../summer/summer_frame.php">&nbsp;&nbsp;&nbsp;&nbsp; Summer Subjects</a></li>
 						</ul>
 					</li>
-					<li>
+					<li  class="selected">
 						<a href="../advisory/advisory_frame.php"><i class="fa fa-users fa-fw"></i>My Sections</a>
 					</li>
                 </ul>
@@ -158,53 +133,100 @@ $sql2 = "Select *from teacher where ID=$teacherID";
         <div id="page-wrapper">
             <div class="row">
                 <!-- Page Header -->
-                <div class="col-lg-12">
-                    <h1 class="page-header">Dashboard</h1>
+                <div class="col-lg-10">
+                    <h1 class="page-header">Student List</h1>
                 </div>
+				<div class="col-lg-2">
+					<div style="float:right; margin-top:40px" >
+                       <form action='' method ="get" id="sySelForm"> 
+							<label> SY: <label> 
+							<select name="sySel" class="form-control" onchange="reload();">
+							<?php
+							$sql = "Select *from sy ORDER BY RIGHT(schoolYear,4) DESC";
+							$result = mysqli_query($con,$sql);
+							if(mysqli_num_rows($result)>0)
+							{
+								while($row = mysqli_fetch_array($result))
+								{
+									?>
+									<option value="<?php echo $row['ID']?>" <?php if($row['ID'] == $sySel) echo "selected"; ?>><?php echo $row['schoolYear']; ?></option>
+									<?php
+								}
+							}
+							?>
+							</select>
+						</form> 
+					</div>
+				</div>
                 <!--End Page Header -->
             </div>
-			<div class="row">
-                <!-- Welcome -->
+			
+				<div class="row">
                 <div class="col-lg-12">
-                    <div class="alert alert-info">
-                        <i class="fa fa-folder-open"></i><b>&nbsp;Hello ! </b>Welcome Back <b><?php echo $username; ?></b>
+                    <!-- Advanced Tables -->
+				    <div class="panel panel-default">
+						<div class="panel-heading">
+						<table width=100%>
+							<tr>
+								<td><?php
+											$sql = "SELECT C.* from sy_level_section A
+											INNER JOIN sy_level B ON A.sy_level_ID = B.ID
+											INNER JOIN section C ON A.section_ID = C.ID
+											where A.teacher_ID = $teacherID and B.sy_ID = $sySel";
+											$result = mysqli_query($con,$sql);
+											$row = mysqli_fetch_array($result);
+											echo "List of Students from <strong>".$row['section']."</strong>";
+													?>
+													
+													</td>
+								<td style="text-align:right">
+								<strong>Subjects : </strong>
+								</td>
+								<td width=20%>
+								 <select id="subjSel" name="subjSel" class="form-control" style="width:90%; float:right" onchange="subjectList();">
+								 <option value=0>Choose Subject</option>
+								<?php
+											echo $sql = "SELECT D.subject,C.ID from sy_level A 
+											INNER JOIN sy_level_section B ON B.sy_level_ID = A.ID
+											INNER JOIN sy_level_subject C ON C.sy_level_ID = A.ID
+											INNER JOIN subject D ON c.subject_ID = D.ID
+											where B.teacher_ID = $teacherID and A.sy_ID = $sySel";
+											$result = mysqli_query($con,$sql);
+											if(mysqli_num_rows($result)>0)
+											{
+												while($row = mysqli_fetch_array($result))
+												{
+													?>
+													<option value="<?php echo $row['ID']; ?>"><?php echo $row['subject']; ?></option>
+													<?php
+													
+												}
+											}
+								?>
+								</select>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="panel-body">
+					<div class="table-responsive" id="subjectList">
 						
-                    </div>
-                </div>
-                <!--end  Welcome -->
-            </div>
-			<div class="row">
-				<div class="col-md-12">
-					<div class="row">
-					<div class="col-md-3">
-                    <div class="alert alert-danger text-center">
-                        <i class="fa fa-book fa-3x"></i>&nbsp;<b> <?php echo $totalSubjects;  ?></b> Total Subjects Handled since <?php echo date("Y",strtotime($since))?>
-                    </div>
 					</div>
-					<div class="col-md-3">
-                    <div class="alert alert-warning text-center">
-                        <i class="fa fa-book fa-3x"></i>&nbsp;<b> <?php echo $totalSummerSubjects;  ?></b> Total Summer Subjects Handled since <?php echo date("Y",strtotime($since))?>
-                    </div>
-					</div>
-					<div class="col-md-3">
-                    <div class="alert alert-info text-center">
-                        <i class="fa fa-users fa-3x"></i>&nbsp;<b> <?php echo $totalSection;  ?></b> Sections Handled since <?php echo date("Y",strtotime($since))?>
-                    </div>
-					</div>
-					<div class="col-md-3">
-						<div class="alert alert-success text-center">
-							<i class="fa fa-calendar fa-3x"></i>&nbsp;<b> <?php if(date("Y")-date("Y",strtotime($since)) >0 ) echo date("Y")-date("Y",strtotime($since)); else echo "Less than 1 ";  ?></b> year/s of teaching students passionately.
-						</div>
-					</div>
-					</div>
-					
 				</div>
 			</div>
+                    <!--End Advanced Tables -->
+                </div>
+            
+				
+                 
+                
+            </div>
         </div>
         <!-- end page-wrapper -->
 
     </div>
     <!-- end wrapper -->
+
     <!-- Core Scripts - Include with every page -->
     <script src="../../assets/plugins/jquery-1.10.2.js"></script>
     <script src="../../assets/plugins/bootstrap/bootstrap.min.js"></script>
@@ -212,18 +234,37 @@ $sql2 = "Select *from teacher where ID=$teacherID";
     <script src="../../assets/plugins/pace/pace.js"></script>
     <script src="../../assets/scripts/siminta.js"></script>
     <!-- Page-Level Plugin Scripts-->
-    <script src="../../assets/plugins/morris/raphael-2.1.0.min.js"></script>
-    <script src="../../assets/plugins/morris/morris.js"></script>
-    <script src="../../assets/scripts/morris-demo.js"></script>
-	<script src="../../assets/scripts/dashboard-demo.js"></script>
+    <script src="../../assets/plugins/dataTables/jquery.dataTables.js"></script>
+    <script src="../../assets/plugins/dataTables/dataTables.bootstrap.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#dataTables-example').dataTable();
+        });
+    </script>
 	<script type="text/javascript">
-    function reload()
-	{
-    document.getElementById("myform").submit();
+    function reload(){
+    document.getElementById("sySelForm").submit();
     }
+	
+	function subjectList()
+	{
+		var subjectID = document.getElementById('subjSel').value;
+		var xhr;
+		if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers 
+		else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
+		var url = 'subjectList.php?subjectID='+subjectID;
+		xhr.open('GET', url, false);
+		xhr.onreadystatechange = function () {
+				document.getElementById("subjectList").innerHTML = xhr.responseText;
+			}
+			xhr.send();
+			// ajax stop
+			return false;
+		
+	}
+
 	</script>
-	
-	
+
 </body>
 
 </html>

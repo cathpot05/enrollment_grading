@@ -2,7 +2,7 @@
 
 include "../../dbcon.php";
 include "../sessionStudent.php";
-
+$level_ID = $_GET['level_ID'];
 $username='';
 $sql = "Select *from student where ID=$studentID";
 $result = mysqli_query($con,$sql);
@@ -17,62 +17,20 @@ else
 {
 
 }
-$totalSubjects=0;
-$sql2 = "Select COUNT(A.ID) as total from sy_level_subject A
-INNER JOIN sy_level_section B ON A.sy_level_ID = B.sy_level_ID
-INNER JOIN enrolled_student C ON C.sy_level_section_ID = B.ID
-where C.student_ID = $studentID";
-$result2 = mysqli_query($con,$sql2);
-if(mysqli_num_rows($result2)>0)
-{
-while($row2 = mysqli_fetch_array($result2))
-{	
 
-$totalSubjects = $row2['total'];													
-												
-}
-}
-$highestGrade=0;
-$sql2 = "Select MAX((A.q1+A.q2+A.q3+A.q4)/4) as final from grade A
-INNER JOIN enrolled_student B ON A.enrolled_student_ID = B.ID
-where B.student_ID = $studentID";
-$result2 = mysqli_query($con,$sql2);
-if(mysqli_num_rows($result2)>0)
+$sySel = "";
+if(isset($_GET['sySel']))
 {
-while($row2 = mysqli_fetch_array($result2))
-{	
-
-$highestGrade = $row2['final'];													
-												
+	$sySel = $_GET['sySel'];
 }
-}
-
-$passedSubject=0;
-$sql2 = "Select (A.q1+A.q2+A.q3+A.q4)/4 as final from grade A
-INNER JOIN enrolled_student B ON A.enrolled_student_ID = B.ID
-where B.student_ID = $studentID";
-$result2 = mysqli_query($con,$sql2);
-if(mysqli_num_rows($result2)>0)
+else
 {
-while($row2 = mysqli_fetch_array($result2))
-{	
-if($row2['final']>75)
-{
-$passedSubject++;		
-}													
-												
+		$sql = "Select *from sy ORDER BY RIGHT(schoolYear,4) DESC LIMIT 1";
+		$result = mysqli_query($con,$sql);
+		$row = mysqli_fetch_array($result);
+		$sySel = $row['ID'];
+	
 }
-}
-$since=0;
-$sql2 = "Select *from student where ID=$studentID";
-	$result2 = mysqli_query($con,$sql2);
-	if(mysqli_num_rows($result2)>0)
-	{
-		while($row2 = mysqli_fetch_array($result2))
-		{
-			$since=date($row2['dateCreated']); 									
-		}
-	}
 
 
 ?>
@@ -158,12 +116,12 @@ $sql2 = "Select *from student where ID=$studentID";
 						
                         <!--end user image section-->
                     </li>
-					 <li class="selected">
-                        <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
+					 <li>
+                        <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                     </li>
 					<li>
                         <a href="#"><i class="fa fa-sitemap fa-fw"></i> My Grades<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
+                        <ul class="nav nav-second-level in">
 						<?php
 						
 						$sql2 = "Select *from level ORDER BY RIGHT(level,2) ASC";
@@ -174,7 +132,7 @@ $sql2 = "Select *from student where ID=$studentID";
 							{
 								?>
 								
-								<li><a href="../grade/grade_frame.php?level_ID=<?php echo $row2['ID']; ?>" >&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $row2['level']; ?></a></li>
+								<li><a href="../grade/grade_frame.php?level_ID=<?php echo $row2['ID']; ?>" <?php if($level_ID == $row2['ID']) echo 'class="selected"'; ?> >&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $row2['level']; ?></a></li>
 														
 								<?php				
 							}
@@ -192,46 +150,68 @@ $sql2 = "Select *from student where ID=$studentID";
         <div id="page-wrapper">
             <div class="row">
                 <!-- Page Header -->
-                <div class="col-lg-12">
-                    <h1 class="page-header">Dashboard</h1>
+                <div class="col-lg-10">
+                    <h1 class="page-header">Grades</h1>
                 </div>
-                <!--End Page Header -->
-            </div>
-			<div class="row">
-			
-                <!-- Welcome -->
-                <div class="col-md-12">
-                    <div class="alert alert-info">
-                        <i class="fa fa-folder-open"></i><b>&nbsp;Hello ! </b>Welcome Back <b><?php echo $username; ?></b>
-						
-                    </div>
-                </div>
-                <!--end  Welcome -->
-            </div>
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="row">
-					<div class="col-lg-3">
-                    <div class="alert alert-danger text-center">
-                        <i class="fa fa-book fa-3x"></i>&nbsp;<b><?php echo $totalSubjects; ?> </b> Total subject taken since <?php echo date("Y",strtotime($since))?>.
-
-                    </div>
-                </div>
-				                <div class="col-lg-3">
-                    <div class="alert alert-success text-center">
-                        <i class="fa  fa-certificate fa-3x"></i>&nbsp;<b><?php echo $highestGrade; ?></b> Highest grade recieved since <?php echo date("Y",strtotime($since))?>.
-                    </div>
-                </div>
-				<div class="col-lg-3">
-                    <div class="alert alert-info text-center">
-                        <i class="fa fa-thumbs-up fa-3x"></i>&nbsp;<b><?php echo $passedSubject; ?></b> Total Subjects Passed since <?php echo date("Y",strtotime($since))?>.
-
-                    </div>
-                </div>
-						
+				<div class="col-lg-2">
+					<div style="float:right; margin-top:40px" >
+                       <form action='subject_frame.php' method ="get" id="sySelForm"> 
+							<label> SY: <label> 
+							<select name="sySel" class="form-control" onchange="reload();">
+							<?php
+							$sql = "Select B.* from sy_level A
+							INNER JOIN sy B ON A.sy_ID = B.ID
+							INNER JOIN sy_level_section C ON C.sy_level_ID = A.ID
+							INNER JOIN enrolled_student D ON D.sy_level_section_ID = C.ID
+							where A.level_ID = $level_ID AND D.student_ID=$studentID
+							ORDER BY RIGHT(schoolYear,4) DESC";
+							$result = mysqli_query($con,$sql);
+							if(mysqli_num_rows($result)>0)
+							{
+								while($row = mysqli_fetch_array($result))
+								{
+									?>
+									<option value="<?php echo $row['ID']?>" <?php if($row['ID'] == $sySel) echo "selected"; ?>><?php echo $row['schoolYear']; ?></option>
+									<?php
+								}
+							}
+							?>
+							</select>
+						</form> 
 					</div>
 				</div>
-			</div>
+                <!--End Page Header -->
+            </div>
+							<div class="row">
+                <div class="col-lg-12">
+                    <!-- Advanced Tables -->
+							    <div class="panel panel-default">
+								<div class="panel-heading">
+									Grades
+								</div>
+								<div class="panel-body">
+									<div class="table-responsive">
+										<table class="table table-hovered">
+											<thead>
+												<tr>
+													<th>Name</th>
+													<th>1st Quarter</th>
+													<th>2nd Quarter</th>
+													<th>3rd Quarter</th>
+													<th>4th Quarter</th>
+													<th>Final</th>
+												</tr>
+											</thead>
+											<tbody>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+                    <!--End Advanced Tables -->
+                </div>
+            </div>
+
         </div>
         <!-- end page-wrapper -->
 
