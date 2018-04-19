@@ -36,14 +36,14 @@ $status=$_GET['Status'];
 
                 if($status == 'current_sec'){
                    $sql_section = "SELECT A.*
-                            FROM section A
-                            WHERE A.ID NOT IN (
-                                SELECT X.section_ID
-                                FROM sy_level_section X
-                                INNER JOIN sy_level Z ON X.sy_level_ID =  Z.ID
-                                WHERE X.sy_level_ID = $levelId AND Z.ID = $schoolYearID
-                            )AND
-                            A.level_id = $levelId";
+                FROM section A
+                WHERE A.ID NOT IN (
+                    SELECT X.section_ID
+                    FROM sy_level_section X
+                    INNER JOIN sy_level Z ON X.sy_level_ID =  Z.ID
+                    WHERE  Z.sy_ID = $schoolYearID
+                )AND
+                A.level_id = $levelId";
 
 
 
@@ -116,6 +116,8 @@ $status=$_GET['Status'];
     $("#checkall").click(function(){
         $('input:checkbox').not(this).prop('checked', this.checked);
     });
+
+
 
 </script>
 

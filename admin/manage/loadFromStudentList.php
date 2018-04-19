@@ -1,9 +1,9 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Ms. Cath
- * Date: 4/18/18
- * Time: 11:49 PM
+ * User: PB7N0062
+ * Date: 4/19/18
+ * Time: 2:17 PM
  */
 
 
@@ -73,7 +73,7 @@ WHERE A.ID = $IdSY";
     }
 
 
-     $sqlsy1 = "SELECT A.ID
+    $sqlsy1 = "SELECT A.ID
                 FROM sy A
                 WHERE A.schoolYear = '$prevSydesc'";
     $result_sy1 = mysqli_query($con,$sqlsy1);
@@ -100,7 +100,7 @@ WHERE A.ID = $IdSY";
 
     <div class="panel panel-default">
         <div class="panel-heading">
-            List of Students From Prev School Year : <?php echo $prevSydesc; ?>
+            List of Students From Master List : <?php echo $prevSydesc; ?>
         </div>
         <div class="panel-body div_enrolledStudent">
             <div class="table-responsive">
@@ -109,40 +109,26 @@ WHERE A.ID = $IdSY";
                     <tr>
                         <th></th>
                         <th>Student Name</th>
-                        <th>Average</th>
                     </tr>
                     </thead>
                     <tbody>
                     <?php
                     if($prevSydesc == ""){
                         echo '
-                        <tr class="text-danger"><td>NO PREVIOUS SCHOOL YEAR. NO STUDENTS TO LOAD.</td></tr>
+                        <tr class="text-danger"><td>NO STUDENTS TO LOAD.</td></tr>
 
                         ';
                     }else{
                         $x = 0;
-                        $sql = "SELECT A.ID as enrolledId, CONCAT(C.Lname, ', ', C.Fname, ' ', C.Mname) as student, A.student_ID,
-                                    (
-                                    SELECT AVG(((X.q1 + X.q2 + X.q3 + X.q4)/4))
-                                    FROM grade X
-                                    WHERE X.enrolled_student_ID = B.enrolled_student_ID
-                                    ) AS Grade_Average
-                            FROM enrolled_student A
-                            INNER JOIN grade B ON A.ID = B.enrolled_student_ID
-                            INNER JOIN student C ON A.student_ID = C.ID
-                            INNER JOIN sy_level_section D ON A.sy_level_section_ID = D.ID
-                            INNER JOIN sy_level E ON D.sy_level_ID =  E.ID
-                            INNER JOIN sy F ON E.sy_ID = F.ID
-                            WHERE F.ID = $prevSyID
-                             AND A.student_ID NOT IN (
-                                         SELECT XX.student_ID FROM enrolled_student XX
-                                         INNER JOIN sy_level_section ZZ ON XX.sy_level_section_ID = ZZ.ID
-                                         INNER JOIN sy_level YY ON ZZ.sy_level_ID = YY.ID
-                                        WHERE  YY.sy_ID = $IdSY
-                                     ) AND A.status = 0
-                                     AND (B.q1+B.q2+B.q3+B.q4)/4 >=75
-                            GROUP BY A.ID
-                            ORDER BY Grade_Average DESC";
+                        $sql = "SELECT A.ID as student_ID, CONCAT(A.Lname, ' ,' , A.Fname, ' ', A.Mname)as student
+                                FROM student A
+                                WHERE A.ID NOT IN (
+                                   SELECT Z.student_ID
+                                    FROM enrolled_student Z
+                                    INNER JOIN sy_level_section Y ON Z.sy_level_section_ID = Y.ID
+                                    INNER JOIN sy_level X ON Y.sy_level_ID =  X.ID
+                                    WHERE Z.status = 0 AND X.sy_ID = $IdSY
+                        )";
                         $result = mysqli_query($con,$sql);
                         if(mysqli_num_rows($result)>0)
                         {
@@ -152,11 +138,10 @@ WHERE A.ID = $IdSY";
 
                                 ?>
                                 <tr>
-                                    <td><input type="checkbox" class="chk_studID_<?php echo $x;?>"  name="checklist_section[]" value="<?php echo $row['student_ID'];?>"/></td>
+                                    <td><input type="checkbox" class="chk_studID_<?php echo $x;?>"  name="checklist_section[]" value="<?php echo $row['enrolledId'];?>"/></td>
                                     <td><?php echo strtoupper($row['student']); ?></td>
-                                    <td><?php echo $row['Grade_Average']?></td>
                                 </tr>
-                            <?php
+                                <?php
                                 $x++;
                             }
                         }
@@ -181,9 +166,15 @@ WHERE A.ID = $IdSY";
 </script>
 <script type="text/javascript">
 
-    /*$("#checkall").click(function(){
-        $('input:checkbox').not(this).prop('checked', this.checked);
-    });*/
+   /* $("#checkall").click(function(){
+     //$('input:checkbox').not(this).prop('checked', this.checked);
+        var total=$('input[name="checklist_section[]"]').length;
+        if(total <= $("#avail_count").val()){
+            $('input:checkbox').not(this).prop('checked', this.checked);
+        }else{
+            check();
+        }
+     });*/
 
 
     check();
@@ -223,6 +214,7 @@ WHERE A.ID = $IdSY";
     $("#btnAllStud").on('click', function() {
         document.getElementById("choice").value = "allStud";
         event.preventDefault();
+
         $.ajax({
             type: "GET",
             url: "loadFromStudentList.php?sectionId="+<?php echo $section;?>,
@@ -233,17 +225,6 @@ WHERE A.ID = $IdSY";
             }
         });
     });
-   /* $("#btnEnroll").on('click', function() {
-        $.ajax({
-            type: "GET",
-            url: "loadToEnrollStudents.php?sectionId="+<?php echo $section;?>,
-            cache: false,
-            success: function(html){
-                $("#loadEnrolledStudents").empty(html);
-                $("#loadEnrolledStudents").append(html);
-            }
-        });
-    });*/
 
 </script>
 

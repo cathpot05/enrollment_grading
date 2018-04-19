@@ -22,7 +22,7 @@ if(mysqli_num_rows($result)>0)
     }
 }
 
-$sql_ = "SELECT A.ID, A.sy_level_ID, A.section_ID, A.teacher_ID, A.capacity, CONCAT(C.Fname, ' ', C.Lname) as teacher, B.section, F.level, E.schoolYear, D.ID as syID_
+echo $sql_ = "SELECT A.ID, A.sy_level_ID, A.section_ID, A.teacher_ID, A.capacity, CONCAT(C.Fname, ' ', C.Lname) as teacher, B.section, F.level, E.schoolYear, D.ID as syID_
 FROM sy_level_section A
 INNER JOIN section B ON A.section_ID = B.ID
 INNER JOIN teacher C ON A.teacher_ID = C.ID
@@ -341,6 +341,7 @@ else{
                                 {?>
                                     <label>Section Capacity:<b> <?php echo $capacity;?></b></label>
                                     <label>,Current Student Count:<b> <?php echo $curCount;?></b></label>
+                                    <input type="hidden" name="avail_count" id="avail_count" value="<?php echo ($capacity - $curCount);?>"/>
                                     <label>,Slot Available: <b><?php echo ($capacity - $curCount);?></b></label>
                                  <?php }else{?>
                                     <label class="text-danger"><b>Please set up capacity for this section</b></label>
@@ -353,7 +354,7 @@ else{
                                <div id="loadEnrolledStudents"></div>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">Add Students</button>
+                                <button type="submit" class="btn btn-primary" id="saveEnrollStudent">Add Students</button>
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                             </div>
                         </form>
@@ -381,17 +382,17 @@ else{
                             </thead>
                             <tbody>
                             <?php
-                            $sql = "SELECT A.ID as enrolleId, A.student_ID, CONCAT(B.Lname, ',', B.Fname, ' ', B.Mname) as student, A.status
+                            $sql_stu = "SELECT A.ID as enrolleId, A.student_ID, CONCAT(B.Lname, ',', B.Fname, ' ', B.Mname) as student, A.status
                             FROM enrolled_student A
                             INNER JOIN student B ON A.student_ID = B.ID
                             WHERE A.sy_level_section_ID = $section
                             ORDER BY B.Lname ASC";
-                            $result = mysqli_query($con,$sql);
-                            if(mysqli_num_rows($result)>0)
+                            $result_stu = mysqli_query($con,$sql_stu);
+                            if(mysqli_num_rows($result_stu)>0)
                             {
-                                while($row = mysqli_fetch_array($result))
+                                while($row_stu = mysqli_fetch_array($result_stu))
                                 {
-                                    if($row['status']){
+                                    if($row_stu['status']){
                                         echo '<tr class="bg-danger text-danger">';
                                         $active = "DROP";
                                     }
@@ -400,8 +401,8 @@ else{
                                         $active = "";
                                     }
                                     ?>
-                                        <td><?php echo strtoupper($row['student']); ?></td>
-                                        <td><span id="icon" class="fa fa-arrow-right fa-fw" data-toggle="modal" data-target="#transferStudent" onClick="transferData('.$row1["ID"].' )"> </span> <?php echo $active;?></td>
+                                        <td><?php echo strtoupper($row_stu['student']); ?></td>
+                                        <td><span id="icon" class="fa fa-arrow-right fa-fw" data-toggle="modal" data-target="#transferStudent" onClick="transferData(<?php echo $row_stu["enrolleId"];?>, <?php echo '$row_stu["student"]';?> )"> </span> <?php echo $active;?></td>
                                     </tr>
                                 <?php
                                 }
@@ -415,8 +416,33 @@ else{
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h4 class="modal-title" id="myModalLabel">Transfer Section</h4>
+                                         <label>Student Name:</label>
+                                         <input type="text" name="stud_name" id="stud_name" class="form-control" disabled/>
+                                         <input type="hidden" name="stud_enrollID" id="stud_enrollID" class="form-control"/>
+                                         <label>Section:</label>
+                                        <select class="form-control" name="cboSection">
+                                        <?php
+                                        $sql_sec2 = "
+                                        SELECT A.*, B.*
+                                        FROM sy_level_section A
+                                        INNER JOIN sy_level B ON A.sy_level_ID = B.ID
+                                        WHERE A.ID <> $section AND B.level_ID = $sydID
+
+                                        ";
+                                        $result_sec2 = mysqli_query($con,$sql_sec2);
+                                        if(mysqli_num_rows($result_sec2)> 0)
+                                        {
+                                            while($row_sec = mysqli_fetch_array($result_sec2))
+                                            {
+                                                echo '
+                                            <option value=0>wala pang data</option>
+                                            ';
+                                            }
+                                        }
+                                        ?>
+                                        </select>
                                     </div>
-                                    <div id=transferForm></div>
+
                                 </div>
                             </div>
                         </div>
@@ -461,6 +487,12 @@ else{
             }
         });
     });
+
+
+    function transferData(enrollId, name){
+        document.getElementById("stud_enrollID").value = enrollId;
+        document.getElementById("stud_name").value = name;
+    }
 
 </script>
 

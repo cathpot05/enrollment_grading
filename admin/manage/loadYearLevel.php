@@ -132,7 +132,7 @@ if(mysqli_num_rows($result)>0)
                 <div id="loadSections"></div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="submit" class="btn btn-primary" id="addSection">Save</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </form>
@@ -333,6 +333,16 @@ if(mysqli_num_rows($result)>0)
             });
         }
     }
+
+    $('#addSection').on('click', function(){
+        var total=$('input[name="checklist_section[]"]:checked').length;
+        if(total <= 0){
+            alert("Please check at least 1 section before saving");
+            event.preventDefault();
+        }else{
+
+        }
+    });
 
 </script>
 

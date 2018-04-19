@@ -68,7 +68,7 @@ $schoolYearID=$_GET['SY'];
                     SELECT X.section_ID
                     FROM sy_level_section X
                     INNER JOIN sy_level Z ON X.sy_level_ID =  Z.ID
-                    WHERE X.sy_level_ID = $levelId AND Z.ID = $schoolYearID
+                    WHERE  Z.sy_ID = $schoolYearID
                 )AND
                 A.level_id = $levelId";
                 $result_section = mysqli_query($con,$sql_section);
@@ -118,6 +118,8 @@ $schoolYearID=$_GET['SY'];
     $("#checkall").click(function(){
         $('input:checkbox').not(this).prop('checked', this.checked);
     });
+
+
 
 
     $(".radio_").on('click', function() {
