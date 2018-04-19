@@ -16,18 +16,25 @@ else
 {
 
 }
+
+$sySel = "";
+if(isset($_GET['sySel']))
+{
+	$sySel = $_GET['sySel'];
+}
+else
+{
+		$sql = "Select *from sy ORDER BY RIGHT(schoolYear,4) DESC LIMIT 1";
+		$result = mysqli_query($con,$sql);
+		$row = mysqli_fetch_array($result);
+		$sySel = $row['ID'];
+	
+}
+
+
 ?>
 <!DOCTYPE html>
 <html>
-<style>
-#icon{
-    font-size:1.1em;
-}
-#icon:hover{
-    font-size:1.3em;
-     
-}
-</style>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -41,8 +48,16 @@ else
     <link href="../../assets/css/main-style.css" rel="stylesheet" />
     <!-- Page-Level CSS -->
     <link href="../../assets/plugins/morris/morris-0.4.3.min.css" rel="stylesheet" />
-	<link href="../../assets/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet" />
 </head>
+<style>
+#icon{
+    font-size:1.1em;
+}
+#icon:hover{
+    font-size:1.3em;
+     
+}
+</style>
 <body>
     <!--  wrapper -->
     <div id="wrapper">
@@ -57,7 +72,7 @@ else
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand"  href="#">
-                    <img style="height:60px; width:60px; " src="../../pdfmnhs.png" alt="" /><strong style="color:white; font-size:1.2em">&nbsp;&nbsp;PRUDENCIA D. FULE MEMORIAL NATIONAL HIGH SCHOOL</strong>
+                   <div class="hidden-sm"> <img style="height:60px; width:60px; " src="../../pdfmnhs.png" alt="" /><strong style="color:white; font-size:1.2em">&nbsp;&nbsp;PRUDENCIA D. FULE MEMORIAL NATIONAL HIGH SCHOOL</strong></div>
                 </a>
             </div>
             <!-- end navbar-header -->
@@ -130,7 +145,7 @@ else
 						</ul>
                   
                     </li>
-					 <li>
+					 <li class="selected">
                         <a href="../summer/summer_frame.php"><i class="fa fa-dashboard fa-fw"></i> Summers</a>
                     </li>
                 </ul>
@@ -144,99 +159,72 @@ else
             <div class="row">
                 <!-- Page Header -->
                 <div class="col-lg-10">
-                    <h1 class="page-header">Account Information</h1>
+                    <h1 class="page-header">Grades</h1>
                 </div>
 				<div class="col-lg-2">
-							<div style="float:right; margin-top:40px" >
-                            <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#changePasswordModal" >
-                                Change Password
-                            </button>
-							</div>
-							
-                </div>
-				<div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h4 class="modal-title" id="myModalLabel">Change Password</h4>
-                                        </div>
-										<form role="form" action="changePassword.php?id=<?php echo $studentID; ?>" method=post required>
-                                        <div class="modal-body">
-										<label>Old Password</label>	
-										<input type=password class="form-control" name="oldPassword" required> 
-										<label>New Password</label>	
-										<input type=password class="form-control"  name="newPassword" required>
-										<label>Confirm New Password</label>	
-										<input type=password class="form-control"  name="newPassword2" required>
-                                        </div>
-                                        <div class="modal-footer">
-											<button type="submit" class="btn btn-primary">Save</button>
-                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                        </div>
-										</form>
-                                    </div>
-                                </div>
-                            </div>
+					<div style="float:right; margin-top:40px" >
+                       <form action='subject_frame.php' method ="get" id="sySelForm"> 
+							<label> SY: <label> 
+							<select name="sySel" class="form-control" onchange="reload();">
+							<?php
+							$sql = "Select B.* from sy_level A
+							INNER JOIN sy B ON A.sy_ID = B.ID
+							INNER JOIN sy_level_section C ON C.sy_level_ID = A.ID
+							INNER JOIN enrolled_student D ON D.sy_level_section_ID = C.ID
+							where A.level_ID = $level_ID AND D.student_ID=$studentID
+							ORDER BY RIGHT(schoolYear,4) DESC";
+							$result = mysqli_query($con,$sql);
+							if(mysqli_num_rows($result)>0)
+							{
+								while($row = mysqli_fetch_array($result))
+								{
+									?>
+									<option value="<?php echo $row['ID']?>" <?php if($row['ID'] == $sySel) echo "selected"; ?>><?php echo $row['schoolYear']; ?></option>
+									<?php
+								}
+							}
+							?>
+							</select>
+						</form> 
+					</div>
+				</div>
                 <!--End Page Header -->
             </div>
-			<div class="row">
-			<div class="col-lg-2">
-			</div>
-                <div class="col-lg-8">
-					<div class="well well-lg">
-						<h4>Edit Account Info</h4>
-					<form role="form" action="editStudent.php?id=<?php echo $studentID; ?>" method=post>
-					<div class="modal-body">
-			
-			<?php
-			
-			$sql = "Select *from student where ID=$studentID";
-			$result = mysqli_query($con,$sql);
-			while($row = mysqli_fetch_array($result))
-			{
-				$bday = date($row['birthdate']);   
-				?>
-				
-                                        <div class="modal-body">
-										<label>Username</label>	
-										<input type=text class="form-control" name="username" value="<?php echo $row['username']; ?>" required>
-										<label>Last Name</label>	
-										<input type=text class="form-control" name="Lname" value="<?php echo $row['Lname']; ?>" readonly required>
-										<label>First Name</label>	
-										<input type=text class="form-control" name="Fname" value="<?php echo $row['Fname']; ?>" readonly required>
-										<label>Middle Name</label>	
-										<input type=text class="form-control" name="Mname" value="<?php echo $row['Mname']; ?>" readonly required>
-										<label>Address</label>	
-										<input type=text class="form-control" name="address" value="<?php echo $row['address']; ?>" required>
-										<label>Religion</label>	
-										<input type=text class="form-control" name="religion" value="<?php echo $row['religion']; ?>" required>
-										<label>Contact No.</label>	
-										<input type=text class="form-control" name="phoneNo" value="<?php echo $row['contactno']; ?>" required>
-										</div>
-										<div class="modal-footer">
-											<button type="submit" class="btn btn-primary">Save</button>
-											<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>										
-										</div>
-                                    </div>
-										</form>
-			<?php
-			}
-			?>
-			</div>
-		
-			
-			</div>
+							<div class="row">
+                <div class="col-lg-12">
+                    <!-- Advanced Tables -->
+							    <div class="panel panel-default">
+								<div class="panel-heading">
+									Grades
+								</div>
+								<div class="panel-body">
+									<div class="table-responsive">
+										<table class="table table-hovered">
+											<thead>
+												<tr>
+													<th>Name</th>
+													<th width=5%>1st Quarter</th>
+													<th width=5%>2nd Quarter</th>
+													<th width=5%>3rd Quarter</th>
+													<th width=5%>4th Quarter</th>
+													<th width=5%>Final</th>
+												</tr>
+											</thead>
+											<tbody>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
                     <!--End Advanced Tables -->
                 </div>
-				<div class="col-lg-2">
-			</div>
             </div>
+
         </div>
         <!-- end page-wrapper -->
 
     </div>
     <!-- end wrapper -->
-
     <!-- Core Scripts - Include with every page -->
     <script src="../../assets/plugins/jquery-1.10.2.js"></script>
     <script src="../../assets/plugins/bootstrap/bootstrap.min.js"></script>
@@ -244,42 +232,17 @@ else
     <script src="../../assets/plugins/pace/pace.js"></script>
     <script src="../../assets/scripts/siminta.js"></script>
     <!-- Page-Level Plugin Scripts-->
-    <script src="../../assets/plugins/dataTables/jquery.dataTables.js"></script>
-    <script src="../../assets/plugins/dataTables/dataTables.bootstrap.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#dataTables-example').dataTable();
-        });
-    </script>
+    <script src="../../assets/plugins/morris/raphael-2.1.0.min.js"></script>
+    <script src="../../assets/plugins/morris/morris.js"></script>
+    <script src="../../assets/scripts/morris-demo.js"></script>
+	<script src="../../assets/scripts/dashboard-demo.js"></script>
 	<script type="text/javascript">
     function reload(){
     document.getElementById("myform").submit();
     }
-	
-	function changeID(newID,type){
-        var xhr;
-			if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers 
-			else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
-			var url = 'changeID.php?postID='+newID+'&actiontype='+type;
-			xhr.open('GET', url, false);
-			xhr.onreadystatechange = function () {
-                            if(type==='edit')
-                            {
-                         document.getElementById("editform").innerHTML = xhr.responseText;
-                     }
-                    else if(type==='delete')
-                      {
-                         document.getElementById("delForm").action = "deleteStudent.php?delID="+xhr.responseText+"";
-                     }
-			}
-			xhr.send();
-			// ajax stop
-			return false;
-  
-    }
-
 	</script>
-
+	
+	
 </body>
 
 </html>

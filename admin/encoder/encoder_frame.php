@@ -417,8 +417,6 @@ if(mysqli_num_rows($result)>0)
                 </div>
                 <form role="form" action="" method=post id="changePasswordForm">
                     <div class="modal-body">
-                        <label>Old Password</label>
-                        <input type=text class="form-control" name="oldPassword" required>
                         <label>New Password</label>
                         <input type=password class="form-control"  name="newPassword" required>
                         <label>Confirm New Password</label>

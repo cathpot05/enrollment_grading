@@ -18,7 +18,7 @@ $subjectID = $_GET['subjectID'];
     </thead>
 	<tbody>
 	<?php
-	$sql = "Select D.*,E.q1,E.q2,E.q3,E.q4,E.final,C.ID as esID, A.ID as tssID 
+	$sql = "Select D.*,E.q1,E.q2,E.q3,E.q4,(E.q1+E.q2+E.q3+E.q4)/4 as final,C.ID as esID, A.ID as tssID 
 			from teacher_section_subject A 
 			INNER JOIN sy_level_section B ON A.sy_level_section_ID = B.ID
 			INNER JOIN enrolled_student C ON C.sy_level_section_ID = B.ID
@@ -38,7 +38,21 @@ $subjectID = $_GET['subjectID'];
 						<td  style="text-align:center"><?php if($row['q2'] != null){ echo $row['q2']; }else { echo "-"; } ?></td>
 						<td style="text-align:center"><?php if($row['q3'] != null){ echo $row['q3']; }else { echo "-"; } ?></td>
 						<td  style="text-align:center"><?php if($row['q4'] != null){ echo $row['q4']; }else { echo "-"; } ?></td>
-						<td  style="text-align:center"><?php if($row['final'] != null){ echo $row['final']; }else { echo "-"; } ?></td>
+						<td  style="text-align:center">
+						<?php 
+						if($row['final'] != null)
+						{ 
+							if($row['final']<70)
+							{
+								echo "<strong style='color:red'>".$row['final']."</strong>";
+							}
+							else
+							{
+								echo "<strong>".$row['final']."</strong>";
+							}
+						}
+						else { echo "-"; } 
+						?></td>
 					</tr>
 				<?php			
 				}

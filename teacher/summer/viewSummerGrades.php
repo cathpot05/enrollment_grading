@@ -155,13 +155,14 @@ $now = date('Y-m-d');
 											<thead>
 												<tr>
 													<th>Name</th>
-													<th width=10%>Finals</th>
+													<th width=5%>Finals</th>
+													<th width=5%>Drop</th>
 													
 												</tr>
 											</thead>
 											<tbody>
 											<?php
-											$sql = "SELECT C.*,D.grade, E.start, E.end, B.ID as seID, A.ID as ssID from summer_subject A
+											$sql = "SELECT C.*,D.grade,B.status, E.start, E.end, B.ID as seID, A.ID as ssID from summer_subject A
 													INNER JOIN summer_enrolled B ON B.summer_subject_ID = A.ID
 													INNER JOIN student C ON B.student_ID = C.ID
 													LEFT JOIN summer_grade D ON D.summer_subject_ID = A.ID AND D.summer_enrolled_ID = B.ID
@@ -173,11 +174,11 @@ $now = date('Y-m-d');
 												while($row = mysqli_fetch_array($result))
 												{
 													?>
-													<tr>
+													<tr <?php if($row['status']==1) echo "class='bg-danger'"; ?>>
 														<td><?php echo $row['Fname']." ".$row['Mname']." ".$row['Lname']; ?></td>
 														<td style="text-align:center">
 														<?php
-															if(strtotime($now) >= strtotime($row['start']) && strtotime($now) <= strtotime($row['end']))
+															if(strtotime($now) >= strtotime($row['start']) && strtotime($now) <= strtotime($row['end']) && $row['status'] == 0)
 															{
 																?>
 															<input max="100" name="grade_<?php echo $row['seID']; ?>_<?php echo $row['ssID']; ?>" type=number value="<?php if($row['grade'] != null && $row['grade'] >0){ echo $row['grade']; }else { echo "0"; } ?>" style="width:100%" >
@@ -193,6 +194,17 @@ $now = date('Y-m-d');
 															}	
 														?>
 														</td>
+														<td>
+														<?php
+														if($row['status'] == 0)
+														{
+														
+														?>
+															<span  id="icon" class="fa fa-ban fa-fw" data-toggle="modal" data-target="#dropStudentModal"  onclick="changeDropID(<?php echo $row['seID']; ?>)" ></span>
+															<?php 
+														}
+														?>
+														</td >
 													</tr>
 													<?php
 												}
@@ -210,7 +222,25 @@ $now = date('Y-m-d');
 
                     <!--End Advanced Tables -->
                 </div>
-            
+            <div class="modal fade" id="dropStudentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+										<form action='dropStudent.php' method=post >
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="myModalLabel">Drop Student</h4>
+                                        </div>
+										<div class="modal-body">
+										<input type=hidden name="dropStudentID" id="dropStudentID">
+										<p>Are you sure to drop this student? </p>
+                                        </div>
+                                        <div class="modal-footer">
+											<button type="submit" class="btn btn-primary">Yes</button>
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                                        </div>
+										</form>
+                                    </div>
+                                </div>
+                            </div>
 				
                  
                 
@@ -234,19 +264,10 @@ $now = date('Y-m-d');
         $(document).ready(function () {
             $('#dataTables-example').dataTable();
         });
-		function editCell(inputId) {
+		function changeDropID(id)
+		{
+			document.getElementById("dropStudentID").value = id;
 			
-			console.log(inputId);
-			var inputIdWithHash = "#" + inputId;
-			var elementValue = $(inputIdWithHash).text();
-			$(inputIdWithHash).replaceWith('<input name="'+inputId+'" id="' + inputId + '" type="number" value="' + elementValue + '" style="width:100%" autofocus>');
-			
-			$(document).click(function (event) {
-				
-				if (!$(event.target).closest(inputIdWithHash).length) {
-					$(inputIdWithHash).replaceWith('<p id="' + inputId + '" onclick="editCell(\'' + inputId + '\')">' + elementValue + '</p>');
-				}
-			});
 		}
     </script>
 	<script type="text/javascript">

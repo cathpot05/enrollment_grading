@@ -2,14 +2,8 @@
 include "../../dbcon.php";
 include "../sessionAdmin.php";
 $id = $_GET['id'];
-$oldPassword= md5($_POST['oldPassword']);
 $newPassword= md5($_POST['newPassword']);
 $newPassword2= md5($_POST['newPassword2']);
-
- $sql = "Select *from encoder where ID=$id AND password = '$oldPassword'";
-	$result = mysqli_query($con,$sql);
-	if(mysqli_num_rows($result)>0)
-	{
 
 			if($newPassword == $newPassword2)
 			{
@@ -36,12 +30,6 @@ $newPassword2= md5($_POST['newPassword2']);
 					echo "<script>alert('New Password not matched');
 					window.location.href = 'encoder_frame.php'; </script>";
 			}
-	}
-	else
-	{
-			echo "<script>alert('Incorrect Old Password');
-			window.location.href = 'encoder_frame.php'; </script>";
-		
-	}
+
 
 ?>

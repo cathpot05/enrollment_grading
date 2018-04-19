@@ -25,7 +25,12 @@ if(isset($_GET['sySel']))
 }
 else
 {
-		$sql = "Select *from sy ORDER BY RIGHT(schoolYear,4) DESC LIMIT 1";
+		$sql = "Select B.* from sy_level A
+							INNER JOIN sy B ON A.sy_ID = B.ID
+							INNER JOIN sy_level_section C ON C.sy_level_ID = A.ID
+							INNER JOIN enrolled_student D ON D.sy_level_section_ID = C.ID
+							where A.level_ID = $level_ID AND D.student_ID=$studentID
+							ORDER BY RIGHT(schoolYear,4) DESC";
 		$result = mysqli_query($con,$sql);
 		$row = mysqli_fetch_array($result);
 		$sySel = $row['ID'];
@@ -119,26 +124,35 @@ else
 					 <li>
                         <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                     </li>
+					
 					<li>
-                        <a href="#"><i class="fa fa-sitemap fa-fw"></i> My Grades<span class="fa arrow"></span></a>
+					  <a href="#"><i class="fa fa-bar-chart fa-fw"></i> My Grades<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level in">
 						<?php
 						
-						$sql2 = "Select *from level ORDER BY RIGHT(level,2) ASC";
+						$sql2 = "Select A.level, A.ID from level A
+								INNER JOIN sy_level B ON B.level_ID = A.ID
+								INNER JOIN sy_level_section C ON C.sy_level_ID = B.ID
+								INNER JOIN enrolled_student D ON D.sy_level_section_ID = B.ID
+								where D.student_ID = $studentID GROUP BY A.ID
+								ORDER BY RIGHT(A.level,2) ASC";
 						$result2 = mysqli_query($con,$sql2);
 						if(mysqli_num_rows($result2)>0)
 						{
 							while($row2 = mysqli_fetch_array($result2))
 							{
 								?>
-								
-								<li><a href="../grade/grade_frame.php?level_ID=<?php echo $row2['ID']; ?>" <?php if($level_ID == $row2['ID']) echo 'class="selected"'; ?> >&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $row2['level']; ?></a></li>
+								<li <?php if($level_ID == $row2['ID']){ echo 'class="selected"'; } ?> ><a href="../grade/grade_frame.php?level_ID=<?php echo $row2['ID']; ?>"  >&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $row2['level']; ?></a></li>
 														
 								<?php				
 							}
 						}
 						?>
 						</ul>
+					
+                    </li>
+					<li>
+                        <a href="../summer/summer_frame.php"><i class="fa fa-dashboard fa-fw"></i> Summers</a>
                     </li>
                 </ul>
                 <!-- end side-menu -->
@@ -182,7 +196,7 @@ else
 				</div>
                 <!--End Page Header -->
             </div>
-							<div class="row">
+			<div class="row">
                 <div class="col-lg-12">
                     <!-- Advanced Tables -->
 							    <div class="panel panel-default">
@@ -194,15 +208,60 @@ else
 										<table class="table table-hovered">
 											<thead>
 												<tr>
-													<th>Name</th>
-													<th>1st Quarter</th>
-													<th>2nd Quarter</th>
-													<th>3rd Quarter</th>
-													<th>4th Quarter</th>
-													<th>Final</th>
+													<th>Subjects</th>
+													<th width=5%>1st Quarter</th>
+													<th width=5%>2nd Quarter</th>
+													<th width=5%>3rd Quarter</th>
+													<th width=5%>4th Quarter</th>
+													<th width=5%>Final</th>
 												</tr>
 											</thead>
 											<tbody>
+												<?php
+												$sql = "SELECT G.subject,F.q1,F.q2,F.q3,F.q4, (F.q1+F.q2+F.q3+F.q4)/4 as finals from sy_level_subject A
+														INNER JOIN sy_level B ON A.sy_level_ID = B.ID
+														INNER JOIN sy_level_section C ON C.sy_level_ID = B.ID
+														INNER JOIN enrolled_student D ON D.sy_level_section_ID = C.ID
+														INNER JOIN teacher_section_subject E ON E.sy_level_subject_ID = A.ID
+														LEFT JOIN grade F ON F.enrolled_student_ID = D.ID AND F.teacher_section_subject_ID = E.ID
+														INNER JOIN subject G ON A.subject_ID = G.ID
+														WHERE B.sy_ID = $sySel AND B.level_ID =$level_ID AND D.student_ID = $studentID";
+														$result = mysqli_query($con,$sql);
+														if(mysqli_num_rows($result)>0)
+														{
+															while($row = mysqli_fetch_array($result))
+															{
+																?>
+																<tr>
+																	<td><?php echo $row['subject']; ?></td>
+																	<td><?php if($row['q1'] != null && $row['q1'] >0){ echo $row['q1']; }else { echo "-"; } ?></td>
+																	<td><?php if($row['q2'] != null && $row['q2'] >0){ echo $row['q2']; }else { echo "-"; } ?></td>
+																	<td><?php if($row['q3'] != null && $row['q3'] >0){ echo $row['q3']; }else { echo "-"; } ?></td>
+																	<td><?php if($row['q4'] != null && $row['q4'] >0){ echo $row['q4']; }else { echo "-"; }; ?></td>
+																	<td>
+																	<?php 
+																	if($row['finals'] != null && $row['finals'] >0)
+																	{
+																		if($row['finals']<70)
+																		{
+																			echo "<strong style='color:red'>".$row['finals']."</strong>";
+																		}
+																		else
+																		{
+																			echo "<strong>".$row['finals']."</strong>";
+																		}
+																	}
+																	else
+																	{
+																		echo "-";																		
+																	}
+																	?>
+																	</td>
+																</tr>
+																<?php
+															}
+														}
+														?>
 											</tbody>
 										</table>
 									</div>

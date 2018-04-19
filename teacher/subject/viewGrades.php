@@ -161,11 +161,12 @@ $now = date('Y-m-d');
 													<th width=5%>3rd Quarter</th>
 													<th width=5%>4th Quarter</th>
 													<th width=5%>Finals</th>
+													<th width=5%>Drop</th>
 												</tr>
 											</thead>
 											<tbody>
 											<?php
-											$sql = "Select D.*,E.q1,E.q2,E.q3,E.q4,(E.q1+E.q2+E.q3+E.q4)/4 as final,C.ID as esID, A.ID as tssID,
+											$sql = "Select D.*,C.status,E.q1,E.q2,E.q3,E.q4,(E.q1+E.q2+E.q3+E.q4)/4 as final,C.ID as esID, A.ID as tssID,
 											G.q1Start,G.q1End,G.q2Start,G.q2End,G.q3Start,G.q3End,G.q4Start,G.q4End
 											from teacher_section_subject A 
 											INNER JOIN sy_level_section B ON A.sy_level_section_ID = B.ID
@@ -181,11 +182,11 @@ $now = date('Y-m-d');
 												while($row = mysqli_fetch_array($result))
 												{
 													?>
-													<tr>
+													<tr <?php if($row['status']==1) echo "class='bg-danger'"; ?>>
 														<td><?php echo $row['Fname']." ".$row['Mname']." ".$row['Lname']; ?></td>
 														<td style="text-align:center" >
 															<?php
-															if(strtotime($now) >= strtotime($row['q1Start']) && strtotime($now) <= strtotime($row['q1End']))
+															if(strtotime($now) >= strtotime($row['q1Start']) && strtotime($now) <= strtotime($row['q1End']) && $row['status'] == 0)
 															{
 																?>
 																<input max="100" name="q1_<?php echo $row['esID']; ?>_<?php echo $row['tssID']; ?>" type=number value="<?php if($row['q1'] != null && $row['q1'] >0){ echo $row['q1']; }else { echo "0"; }?>" style="width:100%">
@@ -281,6 +282,17 @@ $now = date('Y-m-d');
 															}
 															?>
 														</td>
+														<td>
+														<?php
+														if($row['status'] == 0)
+														{
+														
+														?>
+															<span  id="icon" class="fa fa-ban fa-fw" data-toggle="modal" data-target="#dropStudentModal"  onclick="changeDropID(<?php echo $row['esID']; ?>)" ></span>
+															<?php 
+														}
+															?>
+														</td>
 													</tr>
 													<?php
 												}
@@ -295,10 +307,28 @@ $now = date('Y-m-d');
 								</div>
 							</div>
 
-
+						
                     <!--End Advanced Tables -->
                 </div>
-            
+            				<div class="modal fade" id="dropStudentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+										<form action='dropStudent.php' method=post >
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="myModalLabel">Drop Student</h4>
+                                        </div>
+										<div class="modal-body">
+										<input type=hidden name="dropStudentID" id="dropStudentID">
+										<p>Are you sure to drop this student? </p>
+                                        </div>
+                                        <div class="modal-footer">
+											<button type="submit" class="btn btn-primary">Yes</button>
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                                        </div>
+										</form>
+                                    </div>
+                                </div>
+                            </div>
 				
                  
                 
@@ -322,19 +352,10 @@ $now = date('Y-m-d');
         $(document).ready(function () {
             $('#dataTables-example').dataTable();
         });
-		function editCell(inputId) {
+		function changeDropID(id)
+		{
+			document.getElementById("dropStudentID").value = id;
 			
-			console.log(inputId);
-			var inputIdWithHash = "#" + inputId;
-			var elementValue = $(inputIdWithHash).text();
-			$(inputIdWithHash).replaceWith('<input name="'+inputId+'" id="' + inputId + '" type="number" value="' + elementValue + '" style="width:100%" autofocus>');
-			
-			$(document).click(function (event) {
-				
-				if (!$(event.target).closest(inputIdWithHash).length) {
-					$(inputIdWithHash).replaceWith('<p id="' + inputId + '" onclick="editCell(\'' + inputId + '\')">' + elementValue + '</p>');
-				}
-			});
 		}
     </script>
 	<script type="text/javascript">

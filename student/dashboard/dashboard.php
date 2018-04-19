@@ -149,7 +149,7 @@ $sql2 = "Select *from student where ID=$studentID";
                             <div class="user-info">
                                 <div><a href="../account/account_info.php"><strong><?php echo $username; ?></strong></a></div>
                                 <div class="user-text-online" align="left">
-                                    <span></span>&nbsp;Student
+                                    <span></span>&nbsp; Student
                                 </div>
 								
                             </div>
@@ -159,14 +159,19 @@ $sql2 = "Select *from student where ID=$studentID";
                         <!--end user image section-->
                     </li>
 					 <li class="selected">
-                        <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
+                        <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                     </li>
 					<li>
-                        <a href="#"><i class="fa fa-sitemap fa-fw"></i> My Grades<span class="fa arrow"></span></a>
+                        <a href="#"><i class="fa fa-bar-chart fa-fw"></i> My Grades<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
 						<?php
 						
-						$sql2 = "Select *from level ORDER BY RIGHT(level,2) ASC";
+						$sql2 = "Select A.level, A.ID from level A
+								INNER JOIN sy_level B ON B.level_ID = A.ID
+								INNER JOIN sy_level_section C ON C.sy_level_ID = B.ID
+								INNER JOIN enrolled_student D ON D.sy_level_section_ID = B.ID
+								where D.student_ID = $studentID GROUP BY A.ID
+								ORDER BY RIGHT(A.level,2) ASC";
 						$result2 = mysqli_query($con,$sql2);
 						if(mysqli_num_rows($result2)>0)
 						{
@@ -181,6 +186,9 @@ $sql2 = "Select *from student where ID=$studentID";
 						}
 						?>
 						</ul>
+                    </li>
+					<li>
+                        <a href="../summer/summer_frame.php"><i class="fa fa-dashboard fa-fw"></i> Summers</a>
                     </li>
                 </ul>
                 <!-- end side-menu -->

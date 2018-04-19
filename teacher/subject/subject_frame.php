@@ -208,13 +208,14 @@ else
 													<tr>
 														<td><?php echo $row2['subject']; ?></td>
 														<td><?php echo $row2['section']; ?></td>
-														<td><span  id="icon" class="fa fa-list fa-fw" onclick="window.location.href='viewGrades.php?id=<?php echo $row['ID']; ?>'" ></span></td>
-													</tr>
+														<td>
+															<span id="icon" class="fa fa-list fa-fw" onclick="window.location.href='viewGrades.php?id=<?php echo $row2['ID']; ?>'" ></span>
+														</td>
+													</tr> 
 													<?php
 												}
 											}
 											?>
-												
 											</tbody>
 										</table>
 									</div>
