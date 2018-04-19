@@ -162,8 +162,8 @@ else
                 </div>
 				<div class="col-lg-1">
 					<div style="float:right; margin-top:40px" >
-                        <button class="btn btn-primary btn-md" onclick="window.location.href='summerGrade.php?level_ID=<?php echo $level_ID; ?>'">
-                        Summer
+                        <button class="btn btn-primary btn-md" onclick="window.history.back();">
+                        Back
                         </button>
 					</div>
 				</div>
@@ -209,23 +209,20 @@ else
 											<thead>
 												<tr>
 													<th>Subjects</th>
-													<th width=5%>1st Quarter</th>
-													<th width=5%>2nd Quarter</th>
-													<th width=5%>3rd Quarter</th>
-													<th width=5%>4th Quarter</th>
+													<th>Teacher</th>
 													<th width=5%>Final</th>
 												</tr>
 											</thead>
 											<tbody>
 												<?php
-												$sql = "SELECT G.subject,F.q1,F.q2,F.q3,F.q4, (F.q1+F.q2+F.q3+F.q4)/4 as finals from sy_level_subject A
-														INNER JOIN sy_level B ON A.sy_level_ID = B.ID
-														INNER JOIN sy_level_section C ON C.sy_level_ID = B.ID
-														INNER JOIN enrolled_student D ON D.sy_level_section_ID = C.ID
-														INNER JOIN teacher_section_subject E ON E.sy_level_subject_ID = A.ID
-														LEFT JOIN grade F ON F.enrolled_student_ID = D.ID AND F.teacher_section_subject_ID = E.ID
-														INNER JOIN subject G ON A.subject_ID = G.ID
-														WHERE B.sy_ID = $sySel AND B.level_ID =$level_ID AND D.student_ID = $studentID";
+												$sql = "Select F.grade, C.Lname, C.Fname, C.Mname,G.subject from summer_subject A
+												INNER JOIN summer_enrolled B ON B.summer_subject_ID = A.ID
+												INNER JOIN teacher C ON A.teacher_ID = C.ID
+												INNER JOIN sy_level D ON A.sy_level_ID = D.ID
+												INNER JOIN student E ON B.student_ID = E.ID
+												LEFT JOIN summer_grade F ON F.summer_enrolled_ID = B.ID 
+												INNER JOIN subject G ON A.subject_ID = G.ID
+												where B.student_ID = $studentID AND D.sy_ID = $sySel AND D.level_ID = $level_ID";
 														$result = mysqli_query($con,$sql);
 														if(mysqli_num_rows($result)>0)
 														{
@@ -234,29 +231,8 @@ else
 																?>
 																<tr>
 																	<td><?php echo $row['subject']; ?></td>
-																	<td><?php if($row['q1'] != null && $row['q1'] >0){ echo $row['q1']; }else { echo "-"; } ?></td>
-																	<td><?php if($row['q2'] != null && $row['q2'] >0){ echo $row['q2']; }else { echo "-"; } ?></td>
-																	<td><?php if($row['q3'] != null && $row['q3'] >0){ echo $row['q3']; }else { echo "-"; } ?></td>
-																	<td><?php if($row['q4'] != null && $row['q4'] >0){ echo $row['q4']; }else { echo "-"; }; ?></td>
-																	<td>
-																	<?php 
-																	if($row['finals'] != null && $row['finals'] >0)
-																	{
-																		if($row['finals']<70)
-																		{
-																			echo "<strong style='color:red'>".$row['finals']."</strong>";
-																		}
-																		else
-																		{
-																			echo "<strong>".$row['finals']."</strong>";
-																		}
-																	}
-																	else
-																	{
-																		echo "-";																		
-																	}
-																	?>
-																	</td>
+																	<td><?php echo $row['Fname']." ".$row['Mname']." ".$row['Lname']; ?></td>
+																	<td><?php if($row['grade'] != null && $row['grade'] >0){ echo $row['grade']; }else { echo "-"; } ?></td>
 																</tr>
 																<?php
 															}
@@ -297,3 +273,4 @@ else
 </body>
 
 </html>
+

@@ -329,9 +329,6 @@ $now = date('Y-m-d');
                                     </div>
                                 </div>
                             </div>
-				
-                 
-                
             </div>
         </div>
         <!-- end page-wrapper -->
