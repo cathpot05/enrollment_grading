@@ -64,7 +64,13 @@ $schoolYearID=$_GET['SY'];
                 <?php
                 $sql_section = "SELECT A.*
                 FROM section A
-                WHERE A.level_id = $levelId";
+                WHERE A.ID NOT IN (
+                    SELECT X.section_ID
+                    FROM sy_level_section X
+                    INNER JOIN sy_level Z ON X.sy_level_ID =  Z.ID
+                    WHERE X.sy_level_ID = $levelId AND Z.ID = $schoolYearID
+                )AND
+                A.level_id = $levelId";
                 $result_section = mysqli_query($con,$sql_section);
 
                 if(mysqli_num_rows($result_section)>0)
@@ -76,8 +82,8 @@ $schoolYearID=$_GET['SY'];
          <tr>
             <td width="20%" ><input type="checkbox"  name="checklist_section[]" value="'.$row_section["ID"].'"/> </td>
             <td> '.$row_section["section"].'</td>
-            <td> <input type=text class="form-control name=capacity[]"/> </td>
-            <td>  <select class="form-control" name="cboAdviser[]">
+            <td> <input type=number class="form-control" name=capacity_'.$row_section["ID"].'  value="0"/> </td>
+            <td>  <select class="form-control" name="cboAdviser_'.$row_section["ID"].'">
             ';
         $sql_teacher = "SELECT ID, Concat(FName, ' ', LName) AS teacher_name FROM teacher";
         $result_teacher = mysqli_query($con,$sql_teacher);
@@ -115,11 +121,12 @@ $schoolYearID=$_GET['SY'];
 
 
     $(".radio_").on('click', function() {
+        //var schoolyear1 = $('#cboSY').val();
         var value = $('input[name=radio_section]:checked').val();
         if(value == 'current_sec'){
             var level_id = <?php echo $levelId; ?>;
             var level_desc = <?php echo "'.$leveldesc.'"; ?>;
-            var schoolyear = $('#cboSY_').val();
+            var schoolyear = $('#cboSY').val();
             $('#sYcboHolder').hide();
            $.ajax({
                 type: "GET",
@@ -138,6 +145,7 @@ $schoolYearID=$_GET['SY'];
 
             $("#cboSY_").on('click', function() {
                 var schoolyear = $('#cboSY_').val();
+
                 $.ajax({
                     type: "GET",
                     url: "loadSectionFromSelectedRadio.php?Status="+value+"&LevelId="+level_id+"&LevelDesc="+level_desc+"&SY="+schoolyear,

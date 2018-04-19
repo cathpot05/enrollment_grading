@@ -7,7 +7,7 @@ $type =$_GET['actiontype'];
 	$schoolYearID = $_GET['schoolYearID'];
 if($type=="delete"){
 ?>
-										<form role="form" action="deleteSectionFromSY.php?sy_section=<?php echo $id; ?>&schoolYearID=<?php echo $schoolYearID; ?>" method=post id=delForm>
+										<form role="form" action="deleteSectionFromSYLevel.php?sy_section=<?php echo $id; ?>&schoolYearID=<?php echo $schoolYearID; ?>" method=post id=delForm>
                                         <div class="modal-body">
 										Are you sure you want to delete?
                                         </div>

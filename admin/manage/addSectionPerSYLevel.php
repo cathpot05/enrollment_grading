@@ -8,16 +8,34 @@
 
 include "../../dbcon.php";
 $status = $_POST['radio_section'];
-if($status = 'prev_year'){
+$syLevelId = $_POST['sylevelId'];
+$sy_Id = $_POST['sy_Id'];
+
+if($status == 'prev_year'){
+
+    if(!empty($_POST['checklist_section'])) {
+        foreach($_POST['checklist_section'] as $check) {
+            $capacity = $_POST['capacity_'.$check];
+            $adviser =  $_POST['cboAdviser_'.$check];
+            $sql = "INSERT INTO sy_level_section (capacity, section_ID, sy_level_ID, teacher_ID)
+        VALUES('".$capacity."', '".$check."', '".$syLevelId."', '".$adviser."')";
+            $result = mysqli_query($con,$sql);
+            header("Location:managesy.php?schoolYearID=".$sy_Id."");
+            //echo $conn->error();
+        }
+    }
+
 
 }else{
     //checklist_section
     if(!empty($_POST['checklist_section'])) {
     foreach($_POST['checklist_section'] as $check) {
-        echo $check;
-        /*$sql = "INSERT INTO tbl_sy_course (syId, courseId)
-        VALUES('".$_POST["sy_id"]."','".$check."')";
-        $result = $conn->query($sql);*/
+        $capacity = $_POST['capacity_'.$check];
+        $adviser =  $_POST['cboAdviser_'.$check];
+        $sql = "INSERT INTO sy_level_section (capacity, section_ID, sy_level_ID, teacher_ID)
+        VALUES('".$capacity."', '".$check."', '".$syLevelId."', '".$adviser."')";
+        $result = mysqli_query($con,$sql);
+        header("Location:managesy.php?schoolYearID=".$sy_Id."");
         //echo $conn->error();
     }
 }

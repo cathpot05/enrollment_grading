@@ -1,15 +1,15 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Ms. Cath
- * Date: 4/15/18
- * Time: 2:48 PM
+ * User: PB7N0062
+ * Date: 4/18/18
+ * Time: 1:29 PM
  */
 
 
 include "../../dbcon.php";
 include "../sessionAdmin.php";
-$schoolYearID=$_GET['schoolYearID'];
+$section=$_GET['sectionId'];
 $sql = "Select *from admin where ID=$adminID";
 $result = mysqli_query($con,$sql);
 if(mysqli_num_rows($result)>0)
@@ -17,15 +17,6 @@ if(mysqli_num_rows($result)>0)
     while($row = mysqli_fetch_array($result))
     {
         $username=$row['username'];
-    }
-}
-$sql = "Select *from sy where ID=$schoolYearID";
-$result = mysqli_query($con,$sql);
-if(mysqli_num_rows($result)>0)
-{
-    while($row = mysqli_fetch_array($result))
-    {
-        $SYname=$row['schoolYear'];
     }
 }
 
@@ -268,56 +259,44 @@ if(mysqli_num_rows($result)>0)
 <!-- end navbar side -->
 <!--  page-wrapper -->
 <div id="page-wrapper">
-<div class="row">
-    <!-- Page Header -->
-    <div class="col-lg-6">
-        <h1 class="page-header">School Year Management</h1>
-    </div>
-    <div class="col-lg-6">
-        <div class="form-inline" style="float:right; margin-top:40px" >
-
-
-
-            <!--<button class="btn btn-primary"><span class="fa fa-wrench fa-fw"></span></span>Summer Setup</button>-->
-            <!--<button class="btn btn-primary"><span class="fa fa-calendar-o fa-fw"></span></span>Add Schedule</button>-->
-            <label>SY:</label>
-            <select class="form-control chosen" name="cboSY" id="cboSY">
-                <?php
-                $sql = "SELECT * FROM sy ORDER BY LEFT(schoolYear,4) DESC";
-                $result = mysqli_query($con,$sql);
-                if(mysqli_num_rows($result)> 0)
-                {
-                    while($row = mysqli_fetch_array($result))
+    <div class="row">
+        <!-- Page Header -->
+        <div class="col-lg-6">
+            <h1 class="page-header">Student Grade Information</h1>
+        </div>
+        <div class="col-lg-6">
+            <div class="form-inline" style="float:right; margin-top:40px" >
+                <label>Subjects:</label>
+                <select class="form-control" name="cbosyLevlSubj" id="cbosyLevlSubj">
+                    <?php
+                    $sql = "SELECT C.ID, C.code, C.subject
+                            FROM sy_level_section A
+                            INNER JOIN sy_level_subject B ON A.sy_level_ID = B.sy_level_ID
+                            INNER JOIN subject C ON B.subject_ID = C.ID
+                            WHERE A.ID = $section";
+                    $result = mysqli_query($con,$sql);
+                    if(mysqli_num_rows($result)> 0)
                     {
-                        echo '
-                       <option value='.$row["ID"].'>'.$row["schoolYear"].'</option>
+                        while($row = mysqli_fetch_array($result))
+                        {
+                            echo '
+                       <option value='.$row["ID"].'>'.$row["subject"].'</option>
                        ';
+                        }
                     }
-                }
-                ?>
-            </select>
+                    ?>
+                </select>
+            </div>
         </div>
+        <!--End Page Header -->
     </div>
-
-    <!--End Page Header -->
-</div>
-<div class="row">
-    <div class="col-lg-12">
-        <!-- Advanced Tables -->
-        <div id="loadLevelData"></div>
-    </div>
-    <!--End Advanced Tables -->
-</div>
-<div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog" style="width:80%">
-
-        <div id=requestform>
+    <div class="row">
+        <div class="col-lg-12">
+            <!-- Advanced Tables -->
+            <div id="loadStudentGradeContainer"></div>
         </div>
-
-
-
+        <!--End Advanced Tables -->
     </div>
-</div>
 </div>
 </div>
 <!-- end page-wrapper -->
@@ -330,43 +309,36 @@ if(mysqli_num_rows($result)>0)
 <script src="../../assets/plugins/metisMenu/jquery.metisMenu.js"></script>
 <script src="../../assets/plugins/pace/pace.js"></script>
 <script src="../../assets/scripts/siminta.js"></script>
-<!-- Page-Level Plugin Scripts-->
 <script src="../../assets/plugins/dataTables/jquery.dataTables.js"></script>
 <script src="../../assets/plugins/dataTables/dataTables.bootstrap.js"></script>
 <link rel="stylesheet" href="../../assets/plugins/jquery-ui-1.12.1/jquery-ui.css">
 <script src="../../assets/plugins/jquery-ui-1.12.1/jquery-ui.js"></script>
-<script src="../../assets/plugins/chosen.jquery.js"></script>
-<link rel="stylesheet" href="../../assets/plugins/chosen.css">
 <script type="text/javascript">
 
-    ( function ( $ ) {
-        $("#cboSY").on('click', function() {
-            //alert( this.value );
-            var x = this.value;
-            $.ajax({
-                type: "GET",
-                url: "loadYearLevel.php?SYid="+x,
-                cache: false,
-                success: function(html){
-                    $("#loadLevelData").empty(html);
-                    $("#loadLevelData").append(html);
-                }
-            });
-        });
-    } )( jQuery );
-    $('#cboSY option[value="<?php echo $schoolYearID; ?>"]').attr('selected', 'selected');
-    //$("#cboSY").chosen();
+    //$("#cbosyLevlSubj").val($("#cbosyLevlSubj option:first").val());
+    var y =$("#cbosyLevlSubj").val();
     $.ajax({
         type: "GET",
-        url: "loadYearLevel.php?SYid="+<?php echo $schoolYearID; ?>,
+        url: "loadStudentGradePerSYLevelSec.php?subjectId="+y+"&syLevelSec="+<?php echo $section;?>,
         cache: false,
         success: function(html){
-            $("#loadLevelData").empty(html);
-            $("#loadLevelData").append(html);
+            $("#loadStudentGradeContainer").empty(html);
+            $("#loadStudentGradeContainer").append(html);
         }
     });
+
+    $("#cbosyLevlSubj").on('click', function() {
+        var x = this.value;
+        $.ajax({
+            type: "GET",
+            url: "loadStudentGradePerSYLevelSec.php?subjectId="+x+"&syLevelSec="+<?php echo $section;?>,
+            cache: false,
+            success: function(html){
+                $("#loadStudentGradeContainer").empty(html);
+                $("#loadStudentGradeContainer").append(html);
+            }
+        });
+    })
 </script>
-
 </body>
-
 </html>

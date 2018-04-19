@@ -2,14 +2,16 @@
 /**
  * Created by PhpStorm.
  * User: Ms. Cath
- * Date: 4/15/18
- * Time: 2:48 PM
+ * Date: 4/18/18
+ * Time: 9:42 PM
  */
 
 
 include "../../dbcon.php";
 include "../sessionAdmin.php";
-$schoolYearID=$_GET['schoolYearID'];
+$chosenSY = '';
+$username='';
+$section=$_GET['sectionId'];
 $sql = "Select *from admin where ID=$adminID";
 $result = mysqli_query($con,$sql);
 if(mysqli_num_rows($result)>0)
@@ -19,17 +21,46 @@ if(mysqli_num_rows($result)>0)
         $username=$row['username'];
     }
 }
-$sql = "Select *from sy where ID=$schoolYearID";
-$result = mysqli_query($con,$sql);
-if(mysqli_num_rows($result)>0)
+
+$sql_ = "SELECT A.ID, A.sy_level_ID, A.section_ID, A.teacher_ID, A.capacity, CONCAT(C.Fname, ' ', C.Lname) as teacher, B.section, F.level, E.schoolYear, D.ID as syID_
+FROM sy_level_section A
+INNER JOIN section B ON A.section_ID = B.ID
+INNER JOIN teacher C ON A.teacher_ID = C.ID
+INNER JOIN sy_level D ON A.sy_level_ID = D.ID
+INNER JOIN sy E ON D.sy_ID = E.ID
+INNER JOIN level F ON D.level_ID = F.ID
+WHERE A.ID = $section";
+$result_ = mysqli_query($con,$sql_);
+if(mysqli_num_rows($result_)>0)
 {
-    while($row = mysqli_fetch_array($result))
+    while($row_ = mysqli_fetch_array($result_))
     {
-        $SYname=$row['schoolYear'];
+        $sectionname=$row_['section'];
+        $teachername=$row_['teacher'];
+        $capacity=$row_['capacity'];
+        $leveldesc =  $row_['level'];
+        $sydesc =  $row_['schoolYear'];
+        $sydID =  $row_['syID_'];
+
     }
 }
 
+$sql_capacityInfo = "SELECT COUNT(A.ID) AS curCount
+                            FROM enrolled_student A
+                            INNER JOIN student B ON A.student_ID = B.ID
+                            WHERE A.sy_level_section_ID = $section";
+$result_cap = mysqli_query($con,$sql_capacityInfo);
+if(mysqli_num_rows($result_cap)>0)
+{
+    while($row_cap = mysqli_fetch_array($result_cap))
+    {
+        $curCount=$row_cap['curCount'];
 
+    }
+}
+else{
+    $curCount = -1;
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -57,7 +88,6 @@ if(mysqli_num_rows($result)>0)
         font-size:1.3em;
 
     }
-
 </style>
 <body>
 <!--  wrapper -->
@@ -72,7 +102,7 @@ if(mysqli_num_rows($result)>0)
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand"  href="#" >
             <img style="height:60px; width:60px; " src="../../pdfmnhs.png" alt="" /><strong style="color:white; font-size:1.2em">&nbsp;&nbsp;PRUDENCIA D. FULE MEMORIAL NATIONAL HIGH SCHOOL</strong>
         </a>
     </div>
@@ -213,7 +243,7 @@ if(mysqli_num_rows($result)>0)
                 <!-- user image section-->
                 <div class="user-section">
                     <div class="user-info">
-                        <div><a href="../account/account_info.php"><strong><?php echo $username; ?></strong></a></div>
+                        <div><strong><a href="../account/account_info.php"><?php echo $username; ?></strong></a></div>
                         <div class="user-text-online" align="left">
                             <span></span>&nbsp;Admin
                         </div>
@@ -226,32 +256,51 @@ if(mysqli_num_rows($result)>0)
             </li>
             <li>
                 <a href="#"><i class="fa fa-sitemap fa-fw"></i>Initials<span class="fa arrow"></span></a>
-                <ul class="nav nav-second-level">
-                    <li>
-                        <a href="../sy/sy_frame.php">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>School Years</a>
-                    </li>
-                    <li>
-                        <a href="../year_level/year_level_frame.php">&nbsp;&nbsp;<i class="fa fa-industry fa-fw"></i>Year Level</a>
-                    </li>
-                    <li>
-                        <a href="../section/section_frame.php">&nbsp;&nbsp;<i class="fa fa-list-ul fa-fw"></i>Sections</a>
-                    </li>
-                    <li>
-                        <a href="../subject/subject_frame.php">&nbsp;&nbsp;<i class="fa fa-book fa-fw"></i>Subjects</a>
-                    </li>
-                    <li  >
-                        <a href="../teacher/teacher_frame.php">&nbsp;&nbsp;<i class="fa fa-users fa-fw"></i>Teachers</a>
-                    </li>
-                    <li>
-                        <a href="../student/student_frame.php">&nbsp;&nbsp;<i class="fa fa-users fa-fw"></i>Students</a>
-                    </li>
-                    <li>
-                        <a href="../encoder/encoder_frame.php">&nbsp;&nbsp;<i class="fa fa-keyboard-o fa-fw"></i>Encoder</a>
-                    </li>
-                </ul>
+                <div class="nav-collapse">
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="../sy/sy_frame.php">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>School Years</a>
+                        </li>
+                        <li>
+                            <a href="../year_level/year_level_frame.php">&nbsp;&nbsp;<i class="fa fa-industry fa-fw"></i>Year Level</a>
+                        </li>
+                        <li >
+                            <a href="../section/section_frame.php">&nbsp;&nbsp;<i class="fa fa-list-ul fa-fw"></i>Sections</a>
+                        </li>
+                        <li>
+                            <a href="../subject/subject_frame.php">&nbsp;&nbsp;<i class="fa fa-book fa-fw"></i>Subjects</a>
+                        </li>
+                        <li>
+                            <a href="../teacher/teacher_frame.php">&nbsp;&nbsp;<i class="fa fa-users fa-fw"></i>Teachers</a>
+                        </li>
+                        <li>
+                            <a href="../student/student_frame.php">&nbsp;&nbsp;<i class="fa fa-users fa-fw"></i>Students</a>
+                        </li>
+                        <li class="selected">
+                            <a href="../encoder/encoder_frame.php">&nbsp;&nbsp;<i class="fa fa-keyboard-o fa-fw"></i>Encoder</a>
+                        </li>
+                    </ul>
+                </div>
             </li>
+
             <li>
-                <a href="#"><i class="fa fa-sitemap fa-fw"></i>School Year</a>
+                <a href="#"><i class="fa fa-sitemap fa-fw"></i>School Year<span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <?php
+                    $sql = "Select *from SY ORDER BY schoolYear DESC";
+                    $result = mysqli_query($con,$sql);
+                    if(mysqli_num_rows($result)>0)
+                    {
+
+                        while($row = mysqli_fetch_array($result))
+                        {
+                            ?>
+                            <li><a href="../manage/manage.php?schoolYearID=<?php echo $row['ID']?>">&nbsp;&nbsp;<?php echo $row['schoolYear']; ?></a></li>
+                        <?php
+                        }
+                    }
+                    ?>
+                </ul>
                 <!-- second-level-items -->
             </li>
             <li>
@@ -268,63 +317,120 @@ if(mysqli_num_rows($result)>0)
 <!-- end navbar side -->
 <!--  page-wrapper -->
 <div id="page-wrapper">
-<div class="row">
-    <!-- Page Header -->
-    <div class="col-lg-6">
-        <h1 class="page-header">School Year Management</h1>
+    <div class="row">
+        <!-- Page Header -->
+        <div class="col-lg-10">
+            <h3 class="page-header"><?php echo strtoupper($leveldesc). "-". strtoupper($sectionname)."(" .$sydesc.")"; ?> : </h3>
+        </div>
+        <div class="col-lg-2">
+            <div style="float:right; margin-top:40px" >
+                <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#addModal" id="btnEnroll">
+                    Enroll Student
+                </button>
+            </div>
+            <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myModalLabel">Enroll Students</h4>
+                        </div>
+                        <form role="form" action="enrollStudents.php" method=post>
+                            <div class="modal-body">
+                                <?php
+                                if($curCount > -1)
+                                {?>
+                                    <label>Section Capacity:<b> <?php echo $capacity;?></b></label>
+                                    <label>,Current Student Count:<b> <?php echo $curCount;?></b></label>
+                                    <label>,Slot Available: <b><?php echo ($capacity - $curCount);?></b></label>
+                                 <?php }else{?>
+                                    <label class="text-danger"><b>Please set up capacity for this section</b></label>
+                                <?php
+                                }
+                                ?>
+                                <input type="hidden" name="choice" id="choice" class="form-control input-sm">
+                                <input type="hidden" name="sec_capacity" class="form-control input-sm" disabled value="<?php echo $capacity;?>">
+                                <input type="hidden" name="sylevelsectionId" value="<?php echo $section;?>">
+                               <div id="loadEnrolledStudents"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Add Students</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--End Page Header -->
     </div>
-    <div class="col-lg-6">
-        <div class="form-inline" style="float:right; margin-top:40px" >
+    <div class="row">
+        <div class="col-lg-12">
+            <!-- Advanced Tables -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    List of Students
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="dataTables-example">
+                            <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Transfer Section</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php
+                            $sql = "SELECT A.ID as enrolleId, A.student_ID, CONCAT(B.Lname, ',', B.Fname, ' ', B.Mname) as student, A.status
+                            FROM enrolled_student A
+                            INNER JOIN student B ON A.student_ID = B.ID
+                            WHERE A.sy_level_section_ID = $section
+                            ORDER BY B.Lname ASC";
+                            $result = mysqli_query($con,$sql);
+                            if(mysqli_num_rows($result)>0)
+                            {
+                                while($row = mysqli_fetch_array($result))
+                                {
+                                    if($row['status']){
+                                        echo '<tr class="bg-danger text-danger">';
+                                        $active = "DROP";
+                                    }
+                                    else{
+                                        echo '<tr>';
+                                        $active = "";
+                                    }
+                                    ?>
+                                        <td><?php echo strtoupper($row['student']); ?></td>
+                                        <td><span id="icon" class="fa fa-arrow-right fa-fw" data-toggle="modal" data-target="#transferStudent" onClick="transferData('.$row1["ID"].' )"> </span> <?php echo $active;?></td>
+                                    </tr>
+                                <?php
+                                }
+                            }
+                            ?>
+                            </tbody>
+                        </table>
 
-
-
-            <!--<button class="btn btn-primary"><span class="fa fa-wrench fa-fw"></span></span>Summer Setup</button>-->
-            <!--<button class="btn btn-primary"><span class="fa fa-calendar-o fa-fw"></span></span>Add Schedule</button>-->
-            <label>SY:</label>
-            <select class="form-control chosen" name="cboSY" id="cboSY">
-                <?php
-                $sql = "SELECT * FROM sy ORDER BY LEFT(schoolYear,4) DESC";
-                $result = mysqli_query($con,$sql);
-                if(mysqli_num_rows($result)> 0)
-                {
-                    while($row = mysqli_fetch_array($result))
-                    {
-                        echo '
-                       <option value='.$row["ID"].'>'.$row["schoolYear"].'</option>
-                       ';
-                    }
-                }
-                ?>
-            </select>
+                        <div class="modal fade" id="transferStudent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title" id="myModalLabel">Transfer Section</h4>
+                                    </div>
+                                    <div id=transferForm></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--End Advanced Tables -->
+            </div>
         </div>
     </div>
-
-    <!--End Page Header -->
-</div>
-<div class="row">
-    <div class="col-lg-12">
-        <!-- Advanced Tables -->
-        <div id="loadLevelData"></div>
-    </div>
-    <!--End Advanced Tables -->
-</div>
-<div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog" style="width:80%">
-
-        <div id=requestform>
-        </div>
-
-
-
-    </div>
-</div>
-</div>
-</div>
-<!-- end page-wrapper -->
-
+    <!-- end page-wrapper -->
 </div>
 <!-- end wrapper -->
 
+<!-- Core Scripts - Include with every page -->
 <script src="../../assets/plugins/jquery-1.10.2.js"></script>
 <script src="../../assets/plugins/bootstrap/bootstrap.min.js"></script>
 <script src="../../assets/plugins/metisMenu/jquery.metisMenu.js"></script>
@@ -333,38 +439,29 @@ if(mysqli_num_rows($result)>0)
 <!-- Page-Level Plugin Scripts-->
 <script src="../../assets/plugins/dataTables/jquery.dataTables.js"></script>
 <script src="../../assets/plugins/dataTables/dataTables.bootstrap.js"></script>
+
 <link rel="stylesheet" href="../../assets/plugins/jquery-ui-1.12.1/jquery-ui.css">
 <script src="../../assets/plugins/jquery-ui-1.12.1/jquery-ui.js"></script>
 <script src="../../assets/plugins/chosen.jquery.js"></script>
 <link rel="stylesheet" href="../../assets/plugins/chosen.css">
-<script type="text/javascript">
-
-    ( function ( $ ) {
-        $("#cboSY").on('click', function() {
-            //alert( this.value );
-            var x = this.value;
-            $.ajax({
-                type: "GET",
-                url: "loadYearLevel.php?SYid="+x,
-                cache: false,
-                success: function(html){
-                    $("#loadLevelData").empty(html);
-                    $("#loadLevelData").append(html);
-                }
-            });
-        });
-    } )( jQuery );
-    $('#cboSY option[value="<?php echo $schoolYearID; ?>"]').attr('selected', 'selected');
-    //$("#cboSY").chosen();
-    $.ajax({
-        type: "GET",
-        url: "loadYearLevel.php?SYid="+<?php echo $schoolYearID; ?>,
-        cache: false,
-        success: function(html){
-            $("#loadLevelData").empty(html);
-            $("#loadLevelData").append(html);
-        }
+<script>
+    $(document).ready(function () {
+        $('#dataTables-example').dataTable();
     });
+</script>
+<script type="text/javascript">
+    $("#btnEnroll").on('click', function() {
+        $.ajax({
+            type: "GET",
+            url: "loadToEnrollStudents.php?sectionId="+<?php echo $section;?>,
+            cache: false,
+            success: function(html){
+                $("#loadEnrolledStudents").empty(html);
+                $("#loadEnrolledStudents").append(html);
+            }
+        });
+    });
+
 </script>
 
 </body>

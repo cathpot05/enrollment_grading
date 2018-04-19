@@ -35,9 +35,15 @@ $status=$_GET['Status'];
                 <?php
 
                 if($status == 'current_sec'){
-                    $sql_section = "SELECT A.*
-                    FROM section A
-                    WHERE A.level_id = $levelId";
+                   $sql_section = "SELECT A.*
+                            FROM section A
+                            WHERE A.ID NOT IN (
+                                SELECT X.section_ID
+                                FROM sy_level_section X
+                                INNER JOIN sy_level Z ON X.sy_level_ID =  Z.ID
+                                WHERE X.sy_level_ID = $levelId AND Z.ID = $schoolYearID
+                            )AND
+                            A.level_id = $levelId";
 
 
 
@@ -52,8 +58,8 @@ $status=$_GET['Status'];
          <tr>
             <td width="20%" ><input type="checkbox"  name="checklist_section[]" value="'.$row_section["ID"].'"/> </td>
             <td> '.$row_section["section"].'</td>
-            <td> <input type=text class="form-control name=capacity[] "/> </td>
-            <td>  <select class="form-control" name="cboAdviser[]">
+            <td> <input type=number class="form-control" name=capacity_'.$row_section["ID"].'  value="0"/> </td>
+            <td>  <select class="form-control" name="cboAdviser_'.$row_section["ID"].'">
             ';
                             $sql_teacher = "SELECT ID, Concat(FName, ' ', LName) AS teacher_name FROM teacher";
                             $result_teacher = mysqli_query($con,$sql_teacher);
@@ -90,10 +96,10 @@ $status=$_GET['Status'];
                     $section = $row_section["section"];
                     echo '
                      <tr>
-                        <td width="20%" ><input type="checkbox"  name="checklist_section[]" value="'.$row_section["ID"].'"/> </td>
+                        <td width="20%" ><input type="checkbox"  name="checklist_section[]" value="'.$row_section["section_ID"].'"/> </td>
                         <td> '.$row_section["section"].'</td>
-                        <td> '.$row_section["capacity"].'</td>
-                        <td> '.$row_section["teacher"].'</td>
+                        <td> '.$row_section["capacity"].' <input type=hidden class="form-control" name=capacity_'.$row_section["ID"].' value="'.$row_section["capacity"].'"/></td>
+                        <td> '.$row_section["teacher"].'  <input type=hidden class="form-control" name=cboAdviser_'.$row_section["ID"].' value="'.$row_section["teacher_ID"].'"</td>
                      </tr>
                     ';
                 }
@@ -107,6 +113,10 @@ $status=$_GET['Status'];
     </div>
 
 <script type="text/javascript">
+    $("#checkall").click(function(){
+        $('input:checkbox').not(this).prop('checked', this.checked);
+    });
+
 </script>
 
 
