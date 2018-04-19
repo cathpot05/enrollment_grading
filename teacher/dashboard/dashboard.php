@@ -17,16 +17,40 @@ else
 {
 
 }
+
 $totalSubjects=0;
-$sql2 = "Select COUNT(subject_ID) as total from sy_section_subject where teacher_ID = $teacherID";
+$sql2 = "SELECT COUNT(ID) as total from teacher_section_subject where teacher_ID = $teacherID GROUP BY teacher_ID";
 	$result2 = mysqli_query($con,$sql2);
 	if(mysqli_num_rows($result2)>0)
 	{
 		while($row2 = mysqli_fetch_array($result2))
 		{
-			$totalSubjects =$row2['total'];											
+			$totalSubjects=$row2['total']; 									
 		}
 	}
+	
+$totalSummerSubjects=0;
+$sql2 = "SELECT COUNT(ID) as total from summer_subject where teacher_ID = $teacherID GROUP BY teacher_ID";
+	$result2 = mysqli_query($con,$sql2);
+	if(mysqli_num_rows($result2)>0)
+	{
+		while($row2 = mysqli_fetch_array($result2))
+		{
+			$totalSummerSubjects=$row2['total']; 									
+		}
+	}
+	
+$totalSection=0;
+$sql2 = "SELECT COUNT(ID) as total from sy_level_section where teacher_ID = $teacherID GROUP BY teacher_ID";
+	$result2 = mysqli_query($con,$sql2);
+	if(mysqli_num_rows($result2)>0)
+	{
+		while($row2 = mysqli_fetch_array($result2))
+		{
+			$totalSection=$row2['total']; 									
+		}
+		
+	}	
 $since=0;
 $sql2 = "Select *from teacher where ID=$teacherID";
 	$result2 = mysqli_query($con,$sql2);
@@ -111,56 +135,19 @@ $sql2 = "Select *from teacher where ID=$teacherID";
 						
                         <!--end user image section-->
                     </li>
-					 <li class="selected">
-                        <a href="dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
+					<li class="selected">
+                        <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
                     </li>
-					 <li>
-                        <a href="#"><i class="fa fa-sitemap fa-fw"></i>School Year<span class="fa arrow"></span></a>
+					<li>
+						<a href="#"><i class="fa fa-sitemap fa-fw"></i>Manage<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-						<?php
-										$sql = "Select sy.schoolYear, sy.ID from sy_section_subject 
-												JOIN sy_section ON sy_section_subject.sy_section_ID = sy_section.ID
-												JOIN sy ON sy_section.sy_ID = sy.ID
-												where sy_section_subject.teacher_ID = $teacherID GROUP BY sy_section.sy_ID";
-										$result = mysqli_query($con,$sql);
-										if(mysqli_num_rows($result)>0)
-										{
-											
-											while($row = mysqli_fetch_array($result))
-											{
-												$sy_sectionID=$row['ID'];
-												?>
-												<li>
-												<a href="#">&nbsp;&nbsp;<?php echo $row['schoolYear']; ?> <span class="fa arrow"></span></a>
-												 <ul class="nav nav-third-level">
-												 <?php
-												$sql2 = "Select subject.subject,section.year,section.section,sy_section_subject.ID from sy_section_subject 
-												JOIN subject ON sy_section_subject.subject_ID = subject.ID
-												JOIN sy_section ON sy_section_subject.sy_section_ID = sy_section.ID
-												JOIN section ON sy_section.section_ID = section.ID
-												JOIN sy ON sy_section.sy_ID = sy.ID
-												where sy_section_subject.teacher_ID = $teacherID AND sy.ID = $sy_sectionID ";
-												$result2 = mysqli_query($con,$sql2);
-												if(mysqli_num_rows($result2)>0)
-												{
-													
-													while($row2 = mysqli_fetch_array($result2))
-													{
-														?>
-														<li><a href="../grades/grade_frame.php?id=<?php echo $row2['ID'];?>">&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $row2['subject']."  (".$row2['year']."-".$row2['section'].")" ;?></a></li>
-														<?php
-													}
-												}
-												?>
-												 </ul>
-												</li>
-												<?php
-											}
-										}
-									?>
-                        </ul>
-                        <!-- second-level-items -->
-                    </li>
+						<li><a href="../subject/subject_frame.php">&nbsp;&nbsp;&nbsp;&nbsp; My Subjects</a></li>
+						<li><a href="../summer/summer_frame.php">&nbsp;&nbsp;&nbsp;&nbsp; Summer Subjects</a></li>
+						</ul>
+					</li>
+					<li>
+						<a href="../advisory/advisory_frame.php"><i class="fa fa-users fa-fw"></i>My Sections</a>
+					</li>
                 </ul>
                 <!-- end side-menu -->
             </div>
@@ -195,11 +182,21 @@ $sql2 = "Select *from teacher where ID=$teacherID";
                     </div>
 					</div>
 					<div class="col-md-3">
+                    <div class="alert alert-warning text-center">
+                        <i class="fa fa-book fa-3x"></i>&nbsp;<b> <?php echo $totalSummerSubjects;  ?></b> Total Summer Subjects Handled since <?php echo date("Y",strtotime($since))?>
+                    </div>
+					</div>
+					<div class="col-md-3">
+                    <div class="alert alert-info text-center">
+                        <i class="fa fa-users fa-3x"></i>&nbsp;<b> <?php echo $totalSection;  ?></b> Sections Handled since <?php echo date("Y",strtotime($since))?>
+                    </div>
+					</div>
+					<div class="col-md-3">
 						<div class="alert alert-success text-center">
-							<i class="fa fa-calendar fa-3x"></i>&nbsp;<b> <?php echo date("Y")-date("Y",strtotime($since));  ?></b> year/s of teaching students passionately.
+							<i class="fa fa-calendar fa-3x"></i>&nbsp;<b> <?php if(date("Y")-date("Y",strtotime($since)) >0 ) echo date("Y")-date("Y",strtotime($since)); else echo "Less than 1 ";  ?></b> year/s of teaching students passionately.
 						</div>
 					</div>
-						</div>
+					</div>
 					
 				</div>
 			</div>
@@ -220,7 +217,8 @@ $sql2 = "Select *from teacher where ID=$teacherID";
     <script src="../../assets/scripts/morris-demo.js"></script>
 	<script src="../../assets/scripts/dashboard-demo.js"></script>
 	<script type="text/javascript">
-    function reload(){
+    function reload()
+	{
     document.getElementById("myform").submit();
     }
 	</script>

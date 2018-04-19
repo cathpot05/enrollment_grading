@@ -13,6 +13,7 @@ if(mysqli_num_rows($result)>0)
 		$username=$row['username'];
 	}
 }
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -85,6 +86,7 @@ if(mysqli_num_rows($result)>0)
 					INNER JOIN student ON enrolled_student.student_ID = student.ID
 					ORDER BY DATE DESC LIMIT 6";
 					$resultnotif = mysqli_query($con,$sqlnotif);
+					
 					if(mysqli_num_rows($resultnotif)>0)
 					{
 						while($rownotif = mysqli_fetch_array($resultnotif))
@@ -417,8 +419,6 @@ if(mysqli_num_rows($result)>0)
                                         </div>
 										<form role="form" action="" method=post id="changePasswordForm">
                                         <div class="modal-body">
-										<label>Old Password</label>	
-										<input type=text class="form-control" name="oldPassword" required> 
 										<label>New Password</label>	
 										<input type=password class="form-control"  name="newPassword" required>
 										<label>Confirm New Password</label>	

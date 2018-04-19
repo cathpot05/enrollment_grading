@@ -101,55 +101,37 @@ else
                         <!--end user image section-->
                     </li>
 					 <li>
-                        <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
+                        <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                     </li>
-					 <li>
-                        <a href="#"><i class="fa fa-sitemap fa-fw"></i>School Year<span class="fa arrow"></span></a>
+					
+					<li>
+					  <a href="#"><i class="fa fa-bar-chart fa-fw"></i> My Grades<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
 						<?php
-										$sql = "Select sy.schoolYear, sy.ID from enrolled_student 
-												JOIN sy_section ON enrolled_student.sy_section_ID = sy_section.ID
-												JOIN sy ON sy_section.sy_ID = sy.ID
-												JOIN student ON enrolled_student.student_ID = student.ID
-												where student.ID = $studentID GROUP BY sy_section.sy_ID";
-										$result = mysqli_query($con,$sql);
-										if(mysqli_num_rows($result)>0)
-										{
-											
-											while($row = mysqli_fetch_array($result))
-											{
-												$sy_sectionID=$row['ID'];
-												?>
-												<li>
-												<a href="#">&nbsp;&nbsp;<?php echo $row['schoolYear']; ?> <span class="fa arrow"></span></a>
-												 <ul class="nav nav-third-level">
-												 <?php
-												$sql2 = "Select section.year, section.section,enrolled_student.ID from enrolled_student
-												JOIN student ON enrolled_student.student_ID = student.ID
-												JOIN sy_section ON enrolled_student.sy_section_ID = sy_section.ID
-												JOIN section ON sy_section.section_ID = section.ID
-												JOIN sy ON sy_section.sy_ID = sy.ID
-												where enrolled_student.student_ID = $studentID AND sy.ID = $sy_sectionID ";
-												$result2 = mysqli_query($con,$sql2);
-												if(mysqli_num_rows($result2)>0)
-												{
-													
-													while($row2 = mysqli_fetch_array($result2))
-													{
-														?>
-														<li><a href="../grades/grade_frame.php?id=<?php echo $row2['ID'];?>">&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $row2['year']."-".$row2['section'] ;?></a></li>
-														<?php
-													}
-												}
-												?>
-												 </ul>
-												</li>
-												<?php
-											}
-										}
-									?>
-                        </ul>
-                        <!-- second-level-items -->
+						
+						$sql2 = "Select A.level, A.ID from level A
+								INNER JOIN sy_level B ON B.level_ID = A.ID
+								INNER JOIN sy_level_section C ON C.sy_level_ID = B.ID
+								INNER JOIN enrolled_student D ON D.sy_level_section_ID = B.ID
+								where D.student_ID = $studentID GROUP BY A.ID
+								ORDER BY RIGHT(A.level,2) ASC";
+						$result2 = mysqli_query($con,$sql2);
+						if(mysqli_num_rows($result2)>0)
+						{
+							while($row2 = mysqli_fetch_array($result2))
+							{
+								?>
+								<li><a href="../grade/grade_frame.php?level_ID=<?php echo $row2['ID']; ?>"  >&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $row2['level']; ?></a></li>
+														
+								<?php				
+							}
+						}
+						?>
+						</ul>
+                  
+                    </li>
+					 <li>
+                        <a href="../summer/summer_frame.php"><i class="fa fa-dashboard fa-fw"></i> Summers</a>
                     </li>
                 </ul>
                 <!-- end side-menu -->
@@ -161,19 +143,50 @@ else
         <div id="page-wrapper">
             <div class="row">
                 <!-- Page Header -->
-                <div class="col-lg-12">
+                <div class="col-lg-10">
                     <h1 class="page-header">Account Information</h1>
                 </div>
+				<div class="col-lg-2">
+							<div style="float:right; margin-top:40px" >
+                            <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#changePasswordModal" >
+                                Change Password
+                            </button>
+							</div>
+							
+                </div>
+				<div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="myModalLabel">Change Password</h4>
+                                        </div>
+										<form role="form" action="changePassword.php?id=<?php echo $studentID; ?>" method=post required>
+                                        <div class="modal-body">
+										<label>Old Password</label>	
+										<input type=password class="form-control" name="oldPassword" required> 
+										<label>New Password</label>	
+										<input type=password class="form-control"  name="newPassword" required>
+										<label>Confirm New Password</label>	
+										<input type=password class="form-control"  name="newPassword2" required>
+                                        </div>
+                                        <div class="modal-footer">
+											<button type="submit" class="btn btn-primary">Save</button>
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        </div>
+										</form>
+                                    </div>
+                                </div>
+                            </div>
                 <!--End Page Header -->
             </div>
 			<div class="row">
 			<div class="col-lg-2">
 			</div>
                 <div class="col-lg-8">
-											<div class="well well-lg">
-											<h4>Edit Account Info</h4>
-										<form role="form" action="editStudent.php?id=<?php echo $studentID; ?>" method=post>
-            <div class="modal-body">
+					<div class="well well-lg">
+						<h4>Edit Account Info</h4>
+					<form role="form" action="editStudent.php?id=<?php echo $studentID; ?>" method=post>
+					<div class="modal-body">
 			
 			<?php
 			
@@ -181,16 +194,12 @@ else
 			$result = mysqli_query($con,$sql);
 			while($row = mysqli_fetch_array($result))
 			{
-				$bday = date($row['bday']);   
+				$bday = date($row['birthdate']);   
 				?>
 				
                                         <div class="modal-body">
 										<label>Username</label>	
 										<input type=text class="form-control" name="username" value="<?php echo $row['username']; ?>" required>
-										<label>Password</label>	
-										<input type=password class="form-control" name="password"  >
-										<label>Confirm Password</label>	
-										<input type=password class="form-control" name="password2" >
 										<label>Last Name</label>	
 										<input type=text class="form-control" name="Lname" value="<?php echo $row['Lname']; ?>" readonly required>
 										<label>First Name</label>	
@@ -201,39 +210,21 @@ else
 										<input type=text class="form-control" name="address" value="<?php echo $row['address']; ?>" required>
 										<label>Religion</label>	
 										<input type=text class="form-control" name="religion" value="<?php echo $row['religion']; ?>" required>
-										<label>Phone No.</label>	
-										<input type=text class="form-control" name="phoneNo" value="<?php echo $row['phoneNo']; ?>" required>
-										<label>Birthday</label>	
-										<input type=date class="form-control" name="bday" value="<?php echo $bday; ?>" required>
-										<label>Age</label>	
-										<input type=number class="form-control" name="age" value="<?php echo $row['age']; ?>" required>
-										<div class="form-group">
-										<label>Gender</label>
-                                        <div class="radio">
-                                                <label>
-                                                    <input type="radio" name="gender" id="optionsRadios1" value="Male" <?php if($row['gender']=="Male")echo "checked";?> >Male
-                                                </label>
-                                            </div>	
-                                            <div class="radio">
-                                                <label>
-                                                    <input type="radio" name="gender" id="optionsRadios2" value="Female" <?php if($row['gender']=="Female")echo "checked";?>>Female
-                                                </label>
-                                            </div>
+										<label>Contact No.</label>	
+										<input type=text class="form-control" name="phoneNo" value="<?php echo $row['contactno']; ?>" required>
 										</div>
-										<label>General Avg.</label>	
-										<input type=number step="0.01" class="form-control" name="genAvg" value="<?php echo $row['genAvg']; ?>" required>
-                                        </div>
-										
+										<div class="modal-footer">
+											<button type="submit" class="btn btn-primary">Save</button>
+											<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>										
+										</div>
+                                    </div>
+										</form>
 			<?php
 			}
 			?>
 			</div>
-			<div class="modal-footer">
-			<button type="submit" class="btn btn-primary">Save</button>
-			<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-														
-			</div>
-			</form>
+		
+			
 			</div>
                     <!--End Advanced Tables -->
                 </div>

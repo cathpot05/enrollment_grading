@@ -292,7 +292,8 @@ else
 											<th class="hidden">ID</th>
                                             <th>User</th>
 											<th width=20%>Type</th>
-											<th width=30%>Log Time</th>
+											<th width=40%>Action</th>
+											<th width=20%>Log Time</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -309,10 +310,9 @@ else
 											<td class="hidden"><?php echo $row['ID']; ?></td>
                                             <td><?php echo $row['user']; ?></td>
 											<td><?php echo $row['userType']; ?></td>
+											<td><?php echo "<strong>".$row['logType']." </strong>";  ?></td>
 											<td><i><?php 
-											echo "<strong>".$row['logType']." </strong>"; 
 											echo date("M d, Y - h:i",strtotime($row['Date']));
-											
 											?></i></td>
 											</tr>
 										<?php

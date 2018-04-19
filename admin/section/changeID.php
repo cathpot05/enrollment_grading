@@ -8,39 +8,35 @@ if($type=="delete"){
 }
 else if($type=="edit")
 {
-			
+	$sql = "Select *from section where ID=$id";
+	$result = mysqli_query($con,$sql);
+	$row = mysqli_fetch_array($result);	
 			
 			?>
 			<form role="form" action="editSection.php?id=<?php echo $id; ?>" method=post>
             <div class="modal-body">
-			<label>Year</label>
-			<select  class="form-control" name="year">
-			<?php
-			$sql = "Select *from section where ID=$id";
-			$result = mysqli_query($con,$sql);
-			while($row = mysqli_fetch_array($result))
-			{
-
-				?>
-				<option value="Grade 11" <?php if($row['year']=='Grade 11'){ echo "selected"; }?>>Grade 11</option>
-				<option value="Grade 12" <?php if($row['year']=='Grade 12'){ echo "selected"; }?>>Grade 12</option>
-				<option value="1"<?php if($row['year']==1){ echo "selected"; }?>>1st</option>
-				<option value="2"<?php if($row['year']==2){ echo "selected"; }?>>2nd</option>
-				<option value="3"<?php if($row['year']==3){ echo "selected"; }?>>3rd</option>
-				<option value="4"<?php if($row['year']==4){ echo "selected"; }?>>4th</option>
-				
-			
-			</select>
-			<label>Section</label>
-			<input type=text class="form-control" name=section value=<?php echo $row['section']; ?>>
+				<label>Year</label>
+				<select class="form-control" name="year">
 				<?php
-			}
-			?>
+					$sql2 = "Select *from level ORDER BY RIGHT(level,2) ASC";
+					$result2 = mysqli_query($con,$sql2);
+					if(mysqli_num_rows($result2)>0)
+					{
+						while($row2 = mysqli_fetch_array($result2))
+						{
+						?>
+							<option value="<?php echo $row2['ID']; ?>" <?php if($row['level_id'] == $row2['ID']) echo "Selected";  ?>><?php echo $row2['level']; ?></option>
+						<?php
+						}
+					}
+						?>	
+				</select>
+				<label>Section</label>
+				<input type=text class="form-control" name="section" value="<?php echo $row['section']; ?>">
 			</div>
 			<div class="modal-footer">
 			<button type="submit" class="btn btn-primary">Save</button>
-			<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-														
+			<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>										
 			</div>
 			</form>
 			<?php

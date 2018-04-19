@@ -1,4 +1,4 @@
-<?php
+1<?php
 
 include "../../dbcon.php";
 include "../sessionAdmin.php";
@@ -419,8 +419,8 @@ th, td {
 											<input type="number" id="age" class="form-control" name="age" style="width:90%" required readonly>
 										</td>
 										<td colspan =3 >
-											<input type=radio name="gender" required> Male
-											<input type=radio name="gender" required> Female
+											<input type=radio name="gender"  value ="Male" required> Male
+											<input type=radio name="gender" value="Female" required> Female
 										</td>
 									</tr>
 									<tr><td colspan=12><hr></td></tr>
@@ -603,7 +603,6 @@ th, td {
 				}
 				
 				document.getElementById("age").value = age;
-
 			}
 		}
     </script>

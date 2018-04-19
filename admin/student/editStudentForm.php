@@ -290,7 +290,7 @@ th, td {
             <div class="row">
                 <!-- Page Header -->
                 <div class="col-lg-12">
-                    <h1 class="page-header">Add Student Form</h1>
+                    <h1 class="page-header">Edit Student Form</h1>
                 </div>
                 <!--End Page Header -->
             </div>
@@ -536,13 +536,9 @@ th, td {
 							</table>
 							</center>
 							<br>
-							<button type="submit" class="btn btn-primary">Save</button>
+							<button type="submit" style="width:100%" class="btn btn-primary">Save</button>
 							</form>
-							
-							<br>
-							<br>
-							<br>
-							<br>
+						
                         </div>
                     </div>
                     <!--End Advanced Tables -->

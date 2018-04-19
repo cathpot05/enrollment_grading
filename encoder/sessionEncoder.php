@@ -1,0 +1,11 @@
+<?php
+session_start();
+if(empty($_SESSION['encoderID']))
+{
+	header('Location:../../login.php');
+}
+else
+{
+	$encoderID=$_SESSION['encoderID'];
+}
+?>

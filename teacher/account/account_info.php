@@ -55,8 +55,6 @@ else
             <!-- navbar-top-links -->
             <ul class="nav navbar-top-links navbar-right">
                 <!-- main dropdown -->
-
-
                 <li class="dropdown">
                     <a href="../logoutSessionTeacher.php">
                         <i class="fa fa-sign-out fa-3x"></i>
@@ -91,58 +89,19 @@ else
 						
                         <!--end user image section-->
                     </li>
-				<li>
+					<li>
                         <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
                     </li>
-					 <li>
-                        <a href="#"><i class="fa fa-sitemap fa-fw"></i>School Year<span class="fa arrow"></span></a>
-						
+					<li>
+						<a href="#"><i class="fa fa-sitemap fa-fw"></i>Manage<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-						<?php
-										$sql = "Select sy.schoolYear, sy.ID from sy_section_subject 
-												JOIN sy_section ON sy_section_subject.sy_section_ID = sy_section.ID
-												JOIN sy ON sy_section.sy_ID = sy.ID
-												where sy_section_subject.teacher_ID = $teacherID GROUP BY sy_section.sy_ID";
-										$result = mysqli_query($con,$sql);
-										if(mysqli_num_rows($result)>0)
-										{
-											
-											while($row = mysqli_fetch_array($result))
-											{
-												$sy_sectionID=$row['ID'];
-												?>
-												<li>
-												<a href="#">&nbsp;&nbsp;<?php echo $row['schoolYear']; ?> <span class="fa arrow"></span></a>
-												
-												 <ul class="nav nav-third-level">
-												 <?php
-												$sql2 = "Select subject.subject,section.year,section.section,sy_section_subject.ID from sy_section_subject 
-												JOIN subject ON sy_section_subject.subject_ID = subject.ID
-												JOIN sy_section ON sy_section_subject.sy_section_ID = sy_section.ID
-												JOIN section ON sy_section.section_ID = section.ID
-												JOIN sy ON sy_section.sy_ID = sy.ID
-												where sy_section_subject.teacher_ID = $teacherID AND sy.ID = $sy_sectionID ";
-												$result2 = mysqli_query($con,$sql2);
-												if(mysqli_num_rows($result2)>0)
-												{
-													while($row2 = mysqli_fetch_array($result2))
-													{
-														?>
-														<li><a href="../grades/grade_frame.php?id=<?php echo $row2['ID'];?>">&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $row2['subject']."  (".$row2['year']."-".$row2['section'].")" ;?></a></li>
-														<?php
-													}
-												}
-												?>
-												 </ul>
-												
-												</li>
-												<?php
-											}
-										}
-									?>
-                        </ul>
-                        <!-- second-level-items -->
-                    </li>
+						<li><a href="../subject/subject_frame.php">&nbsp;&nbsp;&nbsp;&nbsp; My Subjects</a></li>
+						<li><a href="../summer/summer_frame.php">&nbsp;&nbsp;&nbsp;&nbsp; Summer Subjects</a></li>
+						</ul>
+					</li>
+					<li>
+						<a href="../advisory/advisory_frame.php"><i class="fa fa-users fa-fw"></i>My Sections</a>
+					</li>
                 </ul>
                 <!-- end side-menu -->
             </div>
@@ -153,9 +112,40 @@ else
         <div id="page-wrapper">
             <div class="row">
                 <!-- Page Header -->
-                <div class="col-lg-12">
+                <div class="col-lg-10">
                     <h1 class="page-header">Account Information</h1>
                 </div>
+								<div class="col-lg-2">
+							<div style="float:right; margin-top:40px" >
+                            <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#changePasswordModal" >
+                                Change Password
+                            </button>
+							</div>
+							
+                </div>
+				<div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="myModalLabel">Change Password</h4>
+                                        </div>
+										<form role="form" action="changePassword.php?id=<?php echo $teacherID; ?>" method=post required>
+                                        <div class="modal-body">
+										<label>Old Password</label>	
+										<input type=password class="form-control" name="oldPassword" required> 
+										<label>New Password</label>	
+										<input type=password class="form-control"  name="newPassword" required>
+										<label>Confirm New Password</label>	
+										<input type=password class="form-control"  name="newPassword2" required>
+                                        </div>
+                                        <div class="modal-footer">
+											<button type="submit" class="btn btn-primary">Save</button>
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        </div>
+										</form>
+                                    </div>
+                                </div>
+                            </div>
                 <!--End Page Header -->
             </div>
 			<div class="row">
@@ -179,10 +169,6 @@ else
 											<form role="form" action="editTeacher.php?id=<?php echo $teacherID; ?>" method=post>
 											<label>Employee No.</label>	
 											<input type=text class="form-control" value="<?php echo $row['employeeNo']; ?>" name="employeeNo" required>
-											<label>Password</label>	
-											<input type=password class="form-control"  name="password">
-											<label>Confirm Password</label>	
-											<input type=password class="form-control"  name="password2">
 											<label>Last Name</label>	
 											<input type=text class="form-control" value="<?php echo $row['Lname']; ?>" name="Lname" readonly required>
 											<label>First Name</label>	

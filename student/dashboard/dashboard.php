@@ -17,9 +17,25 @@ else
 {
 
 }
+$totalSubjects=0;
+$sql2 = "Select COUNT(A.ID) as total from sy_level_subject A
+INNER JOIN sy_level_section B ON A.sy_level_ID = B.sy_level_ID
+INNER JOIN enrolled_student C ON C.sy_level_section_ID = B.ID
+where C.student_ID = $studentID";
+$result2 = mysqli_query($con,$sql2);
+if(mysqli_num_rows($result2)>0)
+{
+while($row2 = mysqli_fetch_array($result2))
+{	
+
+$totalSubjects = $row2['total'];													
+												
+}
+}
 $highestGrade=0;
-$sql2 = "SELECT MAX(grade.final) AS final from grade JOIN enrolled_student ON grade.enrolled_student_ID = enrolled_student.ID 
-										JOIN student ON enrolled_student.student_ID = student.ID where student.ID = $studentID";
+$sql2 = "Select MAX((A.q1+A.q2+A.q3+A.q4)/4) as final from grade A
+INNER JOIN enrolled_student B ON A.enrolled_student_ID = B.ID
+where B.student_ID = $studentID";
 $result2 = mysqli_query($con,$sql2);
 if(mysqli_num_rows($result2)>0)
 {
@@ -32,31 +48,18 @@ $highestGrade = $row2['final'];
 }
 
 $passedSubject=0;
-$sql2 = "SELECT COUNT(grade.final) AS final from grade JOIN enrolled_student ON grade.enrolled_student_ID = enrolled_student.ID 
-										JOIN student ON enrolled_student.student_ID = student.ID 
-										where student.ID = $studentID AND grade.final>=75";
+$sql2 = "Select (A.q1+A.q2+A.q3+A.q4)/4 as final from grade A
+INNER JOIN enrolled_student B ON A.enrolled_student_ID = B.ID
+where B.student_ID = $studentID";
 $result2 = mysqli_query($con,$sql2);
 if(mysqli_num_rows($result2)>0)
 {
 while($row2 = mysqli_fetch_array($result2))
 {	
-
-$passedSubject = $row2['final'];													
-												
-}
-}
-$totalSubjects = 0;
-$sql2 = "SELECT COUNT(sy_section_subject.subject_ID) AS total from grade JOIN enrolled_student ON grade.enrolled_student_ID = enrolled_student.ID 
-										JOIN student ON enrolled_student.student_ID = student.ID 
-										JOIN sy_section_subject ON grade.sy_section_subject_ID = sy_section_subject.ID 
-										where student.ID = $studentID";
-$result2 = mysqli_query($con,$sql2);
-if(mysqli_num_rows($result2)>0)
+if($row2['final']>75)
 {
-while($row2 = mysqli_fetch_array($result2))
-{	
-
-$totalSubjects = $row2['total'];													
+$passedSubject++;		
+}													
 												
 }
 }
@@ -146,7 +149,7 @@ $sql2 = "Select *from student where ID=$studentID";
                             <div class="user-info">
                                 <div><a href="../account/account_info.php"><strong><?php echo $username; ?></strong></a></div>
                                 <div class="user-text-online" align="left">
-                                    <span></span>&nbsp;Student
+                                    <span></span>&nbsp; Student
                                 </div>
 								
                             </div>
@@ -156,55 +159,36 @@ $sql2 = "Select *from student where ID=$studentID";
                         <!--end user image section-->
                     </li>
 					 <li class="selected">
-                        <a href="dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
+                        <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                     </li>
-					 <li>
-                        <a href="#"><i class="fa fa-sitemap fa-fw"></i>School Year<span class="fa arrow"></span></a>
+					<li>
+                        <a href="#"><i class="fa fa-bar-chart fa-fw"></i> My Grades<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
 						<?php
-										$sql = "Select sy.schoolYear, sy.ID from enrolled_student 
-												JOIN sy_section ON enrolled_student.sy_section_ID = sy_section.ID
-												JOIN sy ON sy_section.sy_ID = sy.ID
-												JOIN student ON enrolled_student.student_ID = student.ID
-												where student.ID = $studentID GROUP BY sy_section.sy_ID";
-										$result = mysqli_query($con,$sql);
-										if(mysqli_num_rows($result)>0)
-										{
-											
-											while($row = mysqli_fetch_array($result))
-											{
-												$syID=$row['ID'];
-												?>
-												<li>
-												<a href="#">&nbsp;&nbsp;<?php echo $row['schoolYear']; ?> <span class="fa arrow"></span></a>
-												 <ul class="nav nav-third-level">
-												 <?php
-												$sql2 = "Select section.year, section.section,enrolled_student.ID from enrolled_student
-												JOIN student ON enrolled_student.student_ID = student.ID
-												JOIN sy_section ON enrolled_student.sy_section_ID = sy_section.ID
-												JOIN section ON sy_section.section_ID = section.ID
-												JOIN sy ON sy_section.sy_ID = sy.ID
-												where enrolled_student.student_ID = $studentID AND sy.ID = $syID ";
-												$result2 = mysqli_query($con,$sql2);
-												if(mysqli_num_rows($result2)>0)
-												{
-													
-													while($row2 = mysqli_fetch_array($result2))
-													{
-														?>
-														<li><a href="../grades/grade_frame.php?id=<?php echo $row2['ID'];?>">&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $row2['year']."-".$row2['section'] ;?></a></li>
-														<?php
-													}
-												}
-												?>
-												 </ul>
-												</li>
-												<?php
-											}
-										}
-									?>
-                        </ul>
-                        <!-- second-level-items -->
+						
+						$sql2 = "Select A.level, A.ID from level A
+								INNER JOIN sy_level B ON B.level_ID = A.ID
+								INNER JOIN sy_level_section C ON C.sy_level_ID = B.ID
+								INNER JOIN enrolled_student D ON D.sy_level_section_ID = B.ID
+								where D.student_ID = $studentID GROUP BY A.ID
+								ORDER BY RIGHT(A.level,2) ASC";
+						$result2 = mysqli_query($con,$sql2);
+						if(mysqli_num_rows($result2)>0)
+						{
+							while($row2 = mysqli_fetch_array($result2))
+							{
+								?>
+								
+								<li><a href="../grade/grade_frame.php?level_ID=<?php echo $row2['ID']; ?>" >&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $row2['level']; ?></a></li>
+														
+								<?php				
+							}
+						}
+						?>
+						</ul>
+                    </li>
+					<li>
+                        <a href="../summer/summer_frame.php"><i class="fa fa-dashboard fa-fw"></i> Summers</a>
                     </li>
                 </ul>
                 <!-- end side-menu -->

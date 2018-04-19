@@ -330,7 +330,7 @@ if(isset($_POST['selectSY']))
 										{	
 										?>
 											<tr>
-											<td><?php echo $row['username']; ?></td>
+											<td><a href="viewStudent.php?id=<?php echo $row['ID']; ?>" style=""><?php echo $row['username']; ?></a></td>
                                             <td><?php echo $row['Lname'].", ".$row['Fname']." ".$row['Mname']; ?></td>
 											<td><?php echo  date('F d, Y', strtotime($row['birthdate'])); ?></td>
 											<td><?php echo $row['gender']; ?></td>
@@ -446,8 +446,8 @@ if(isset($_POST['selectSY']))
 			var url = 'changeID.php?postID='+newID+'&actiontype='+type;
 			xhr.open('GET', url, false);
 			xhr.onreadystatechange = function () {
-                            if(type==='edit')
-                            {
+                    if(type==='edit')
+                    {
                          document.getElementById("editform").innerHTML = xhr.responseText;
                      }
                     else if(type==='delete')
@@ -472,19 +472,16 @@ if(isset($_POST['selectSY']))
 	function requirePassword()
 	{
 
-		var oldPassword = document.getElementById("oldPasswordText").value;
 		var newPassword = document.getElementById("newPasswordText").value;
 		var newPassword2 = document.getElementById("newPassword2Text").value;
 		
-	if(oldPassword != '' || newPassword != '' || newPassword2 != '')
+		if(newPassword != '' || newPassword2 != '')
 		{
-			document.getElementById("oldPasswordText").required = true;
 			document.getElementById("newPasswordText").required = true;
 			document.getElementById("newPassword2Text").required = true;
 		}
 		else
 		{
-			document.getElementById("oldPasswordText").required = false;
 			document.getElementById("newPasswordText").required = false;
 			document.getElementById("newPassword2Text").required = false;
 		}
