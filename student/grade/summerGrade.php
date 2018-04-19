@@ -162,7 +162,7 @@ else
                 </div>
 				<div class="col-lg-1">
 					<div style="float:right; margin-top:40px" >
-                        <button class="btn btn-primary btn-md" onclick="window.location.href='summerGrades.php?'">
+                        <button class="btn btn-primary btn-md" onclick="window.history.back();">
                         Back
                         </button>
 					</div>
