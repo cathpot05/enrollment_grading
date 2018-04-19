@@ -187,9 +187,6 @@ $sql2 = "Select *from student where ID=$studentID";
 						?>
 						</ul>
                     </li>
-					<li>
-                        <a href="../summer/summer_frame.php"><i class="fa fa-dashboard fa-fw"></i> Summers</a>
-                    </li>
                 </ul>
                 <!-- end side-menu -->
             </div>
