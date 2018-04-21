@@ -61,6 +61,17 @@ $sql2 = "Select *from teacher where ID=$teacherID";
 			$since=date($row2['dateCreated']); 									
 		}
 	}
+
+	$since=0;
+	$sql2 = "Select *from teacher where ID=$teacherID";
+	$result2 = mysqli_query($con,$sql2);
+	if(mysqli_num_rows($result2)>0)
+	{
+		while($row2 = mysqli_fetch_array($result2))
+		{
+			$since=date($row2['dateCreated']); 									
+		}
+	}
 ?>
 <!DOCTYPE html>
 <html>
