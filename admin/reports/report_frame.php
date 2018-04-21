@@ -2,7 +2,7 @@
 
 include "../../dbcon.php";
 include "../sessionAdmin.php";
-$chosenSY = '';
+
 $username='';
 $sql = "Select *from admin where ID=$adminID";
 $result = mysqli_query($con,$sql);
@@ -17,18 +17,7 @@ else
 {
 
 }
-if(isset($_SESSION['selectSY']))
-{
-	
-}
-else{
-	
-	$_SESSION['selectSY']='';
-}
-if(isset($_POST['selectSY']))
-{
-	$_SESSION['selectSY']=$_POST['selectSY'];
-}
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -46,7 +35,6 @@ if(isset($_POST['selectSY']))
     <link href="../../assets/css/main-style.css" rel="stylesheet" />
     <!-- Page-Level CSS -->
     <link href="../../assets/plugins/morris/morris-0.4.3.min.css" rel="stylesheet" />
-	<link href="../../assets/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet" />
 </head>
 <style>
 #icon{
@@ -198,8 +186,7 @@ if(isset($_POST['selectSY']))
                 <!-- end main dropdown -->
             </ul>
             <!-- end navbar-top-links -->
-            <!-- end navbar-top-links -->
-
+								
         </nav>
         <!-- end navbar top -->
         <!-- navbar side -->
@@ -216,24 +203,28 @@ if(isset($_POST['selectSY']))
                                 <div class="user-text-online" align="left">
                                     <span></span>&nbsp;Admin
                                 </div>
+								
                             </div>
+							
                         </div>
+						
                         <!--end user image section-->
                     </li>
-                    <li>
+					 <li class="selected">
                         <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
                     </li>
                     <li>
 					 <a href="#"><i class="fa fa-sitemap fa-fw"></i>Initials<span class="fa arrow"></span></a>
-					 <div class="nav-collapse">
                         <ul class="nav nav-second-level">
+                    
+                   
 					<li>
                         <a href="../sy/sy_frame.php">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>School Years</a>
                     </li>
                     <li>
                         <a href="../year_level/year_level_frame.php">&nbsp;&nbsp;<i class="fa fa-industry fa-fw"></i>Year Level</a>
                     </li>
-                    <li class="selected">
+                    <li>
                         <a href="../section/section_frame.php">&nbsp;&nbsp;<i class="fa fa-list-ul fa-fw"></i>Sections</a>
                     </li>
                     <li>
@@ -249,22 +240,27 @@ if(isset($_POST['selectSY']))
                         <a href="../encoder/encoder_frame.php">&nbsp;&nbsp;<i class="fa fa-keyboard-o fa-fw"></i>Encoder</a>
                     </li>
 					</ul>
-					</div>
 					</li>
-
-                    <li>
+					
+					 <li>
                         <a href="#"><i class="fa fa-sitemap fa-fw"></i>School Year<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            <li>
-                                <a href="../manage/managesy.php?schoolYearID=">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>Enrollment Setup</a>
-                            </li>
-                            <li>
-                                <a href="../summersetup/managesy.php?schoolYearID=">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>Summer Setup</a>
-                            </li>
+						<?php
+										$sql = "Select *from SY ORDER BY schoolYear DESC";
+										$result = mysqli_query($con,$sql);
+										if(mysqli_num_rows($result)>0)
+										{
+											
+											while($row = mysqli_fetch_array($result))
+											{
+												?>
+												<li><a href="../manage/manage.php?schoolYearID=<?php echo $row['ID']?>">&nbsp;&nbsp;<?php echo $row['schoolYear']; ?></a></li>
+												<?php
+											}
+										}
+						?>
                         </ul>
-                    </li>
-                    <li>
-                        <a href="../teacher_subject/teacherSubj_frame.php"><i class="fa fa-user-circle fa-fw"></i>Teacher Subject</a>
+                        <!-- second-level-items -->
                     </li>
 					<li>
 						<a href="../log/log_frame.php" ><i class ="fa fa-industry fa-fw"></i>Log Activities</a>
@@ -282,199 +278,106 @@ if(isset($_POST['selectSY']))
         <div id="page-wrapper">
             <div class="row">
                 <!-- Page Header -->
-                <div class="col-lg-10">
-                    <h1 class="page-header">Sections</h1>
+                <div class="col-lg-12">
+                    <h1 class="page-header">Reports<br>
+					<div class=btn-group >
+					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('sy');" ><span class ="fa fa-industry fa-fw" ></span> School Year</button>
+					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('student');"><span class ="fa fa-users fa-fw" ></span> Students</button>
+					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('teacher');"><span class ="fa fa-user fa-fw" ></span> Teachers</button>
+					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('section');"><span class ="fa fa-list-ul fa-fw" ></span> Sections</button>
+					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('subject');"><span class ="fa fa-book fa-fw" ></span> Subjects</button>
+					</div>
+					</h1>
+					
+					
                 </div>
-				<div class="col-lg-2">
-							<div style="float:right; margin-top:40px" >
-                            <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#addModal" >
-                                Add New Section
-                            </button>
-							</div>
-                            <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h4 class="modal-title" id="myModalLabel">Add New Section</h4>
-                                        </div>
-										<form role="form" action="addSection.php" method=post>
-                                        <div class="modal-body">
-										<label>Year</label>
-										<select class="form-control" name="year">
-										<?php
-										$sql = "Select *from level ORDER BY RIGHT(level,2) ASC";
-										$result = mysqli_query($con,$sql);
-										if(mysqli_num_rows($result)>0)
-										{
-											
-											while($row = mysqli_fetch_array($result))
-											{
-												?>
-												<option value="<?php echo $row['ID']; ?>"><?php echo $row['level']; ?></option>
-												<?php
-											}
-										}
-										?>	
-										</select>
-										<label>Section</label>
-										<input type=text class="form-control" name="section">
-                                        </div>
-                                        <div class="modal-footer">
-											<button type="submit" class="btn btn-primary">Save</button>
-                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                            
-                                        </div>
-										</form>
-                                    </div>
-                                </div>
-                            </div>
-				</div>
-
-
                 <!--End Page Header -->
             </div>
-			<br>
 			<div class="row">
-                <div class="col-lg-12">
-                    <!-- Advanced Tables -->
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                             List of Sections 
-                        </div>
-                        <div class="panel-body">
-                            <div class="table-responsive">
-                                <table class="table table-hover" id="dataTables-example">
-                                    <thead>
-                                        <tr>
-											<th>Year Level</th>
-                                            <th>Section</th>
-											<th width=5%>Edit</th>
-											<th width=5%>Delete</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-									<?php
-									$sql = "Select A.*, B.level from section as A
-									INNER JOIN level as B ON A.level_id = B.ID";
-									$result = mysqli_query($con,$sql);
-
-									if(mysqli_num_rows($result)>0)
-									{
-										while($row = mysqli_fetch_array($result))
-										{	
-										?>
-											<tr>
-											<td><?php echo $row['level']; ?></td>
-                                            <td><?php echo $row['section']; ?></td>
-											<td><center><span id="icon" class="fa fa-edit fa-fw" data-toggle="modal" data-target="#editModal"  onclick="changeID(<?php echo $row['ID']; ?>,'edit');"></span></center></td>
-											<td><center><span id="icon"class="fa fa-times fa-fw" data-toggle="modal" data-target="#deleteModal" onclick="changeID(<?php echo $row['ID']; ?>,'delete');"></span></center></td>
-											</tr>
-										<?php
-										}
-									}
-									
-									?>
-                                       
-                                    </tbody>
-                                </table>
-								<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h4 class="modal-title" id="myModalLabel">Delete Section</h4>
-                                        </div>
-										<form role="form" action="" method=post id=delForm>
-                                        <div class="modal-body">
-										Are you sure you want to delete?
-                                        </div>
-                                        <div class="modal-footer">
-											<button type="submit" class="btn btn-primary">Yes</button>
-                                            <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                                            
-                                        </div>
-										</form>
-                                    </div>
-                                </div>
-                            </div>
-							
-							<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h4 class="modal-title" id="myModalLabel">Edit Section</h4>
-                                        </div>
-										<div id=editform>
-										</div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                        </div>
-                    </div>
-					<div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" style="width:80%">
-                                    
-										<div id=requestform>
-										</div>
-
-                                  
-									
-                                </div>
-                            </div>
-                    <!--End Advanced Tables -->
-                </div>
+			<div class="col-lg-12">
+                <!-- Welcome -->
+				<div id="reportTables">
+					
+				</div>
+                <!--end  Welcome -->
             </div>
+			
         </div>
         <!-- end page-wrapper -->
 
     </div>
     <!-- end wrapper -->
-
+    <!-- Core Scripts - Include with every page -->
     <script src="../../assets/plugins/jquery-1.10.2.js"></script>
     <script src="../../assets/plugins/bootstrap/bootstrap.min.js"></script>
     <script src="../../assets/plugins/metisMenu/jquery.metisMenu.js"></script>
     <script src="../../assets/plugins/pace/pace.js"></script>
     <script src="../../assets/scripts/siminta.js"></script>
     <!-- Page-Level Plugin Scripts-->
-    <script src="../../assets/plugins/dataTables/jquery.dataTables.js"></script>
-    <script src="../../assets/plugins/dataTables/dataTables.bootstrap.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#dataTables-example').dataTable();
-        });
-    </script>
+    <script src="../../assets/plugins/morris/raphael-2.1.0.min.js"></script>
+    <script src="../../assets/plugins/morris/morris.js"></script>
+    <script src="../../assets/scripts/morris-demo.js"></script>
+	<script src="../../assets/scripts/dashboard-demo.js"></script>
 	<script type="text/javascript">
     function reload(){
     document.getElementById("myform").submit();
     }
-	function changeID(newID,type){
-
+	
+	function changeID(type){
         var xhr;
 			if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers 
 			else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
-			var url = 'changeID.php?postID='+newID+'&actiontype='+type;
+			var url = 'changeID.php?actiontype='+type;
 			xhr.open('GET', url, false);
 			xhr.onreadystatechange = function () {
-                            if(type==='edit')
-                            {
-                         document.getElementById("editform").innerHTML = xhr.responseText;
+                    if(type==='sy')
+					{
+                        document.getElementById("reportTables").innerHTML = xhr.responseText;
+                    }
+                    else if(type==='student')
+                     {
+                          document.getElementById("reportTables").innerHTML = xhr.responseText;
                      }
-                    else if(type==='delete')
-                      {
-                         document.getElementById("delForm").action = "deleteSection.php?delID="+xhr.responseText+"";
+					 else if(type==='teacher')
+                     {
+                          document.getElementById("reportTables").innerHTML = xhr.responseText;
                      }
-					 else if(type==='all')
-                      {
-                          document.getElementById("requestform").innerHTML = xhr.responseText;
+					 else if(type==='section')
+                     {
+                          document.getElementById("reportTables").innerHTML = xhr.responseText;
                      }
+					 else if(type==='subject')
+                     {
+                          document.getElementById("reportTables").innerHTML = xhr.responseText;
+                     }
+					 
 			}
 			xhr.send();
 			// ajax stop
 			return false;
   
     }
-	</script>
+	
+	function syFilter(id)
+	{
+		alert(id);
+			var xhr;
+			if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers 
+			else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
+			var url = 'syFilter.php?id='+id;
+			xhr.open('GET', url, false);
+			xhr.onreadystatechange = function () {
+            document.getElementById("syFilterTable").innerHTML = xhr.responseText;
+			}
+			xhr.send();
+			// ajax stop
+			return false;
+	}
+	
 
+	</script>
+	
+	
 </body>
 
 </html>

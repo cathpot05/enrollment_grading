@@ -10,12 +10,20 @@ function __backup_mysqli_database($params)
 	$mtables[] = "section"; 
 	$mtables[] = "teacher"; 
 	$mtables[] = "subject"; 
-	$mtables[] = "sy_section"; 
 	$mtables[] = "enrolled_student"; 
-	$mtables[] = "sy_section_subject"; 
 	$mtables[] = "grade"; 
 	$mtables[] = "grade_actions"; 
 	$mtables[] = "log"; 
+	$mtables[] = "grade_sched"; 
+	$mtables[] = "level"; 
+	$mtables[] = "summer_enrolled"; 
+	$mtables[] = "summer_grade"; 
+	$mtables[] = "summer_grade_sched"; 
+	$mtables[] = "summer_subject"; 
+	$mtables[] = "sy_level"; 
+	$mtables[] = "sy_level_section"; 
+	$mtables[] = "teacher_section_subject";
+	$mtables[] = "encoder"; 	
 	$contents = "-- Database: `".$params['db_to_backup']."` --\n";
     
     $mysqli = new mysqli($params['db_host'], $params['db_uname'], $params['db_password'], $params['db_to_backup']);
