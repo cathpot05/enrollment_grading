@@ -269,10 +269,10 @@ if(mysqli_num_rows($result)>0)
             <li>
                 <a href="#"><i class="fa fa-sitemap fa-fw"></i>School Year<span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
-                    <li class="selected">
+                    <li>
                         <a href="../manage/managesy.php?schoolYearID=">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>Enrollment Setup</a>
                     </li>
-                    <li>
+                    <li class="selected">
                         <a href="../summersetup/managesy.php?schoolYearID=">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>Summer Setup</a>
                     </li>
                 </ul>
@@ -297,15 +297,11 @@ if(mysqli_num_rows($result)>0)
 <div class="row">
     <!-- Page Header -->
     <div class="col-lg-6">
-        <h1 class="page-header text-primary">School Year Management</h1>
+        <h1 class="page-header text-primary">Summer Setup Management</h1>
     </div>
     <div class="col-lg-6">
         <div class="form-inline" style="float:right; margin-top:40px" >
 
-
-
-            <!--<button class="btn btn-primary"><span class="fa fa-wrench fa-fw"></span></span>Summer Setup</button>-->
-            <!--<button class="btn btn-primary"><span class="fa fa-calendar-o fa-fw"></span></span>Add Schedule</button>-->
             <label>SY:</label>
             <select class="form-control chosen" name="cboSY" id="cboSY">
                 <?php

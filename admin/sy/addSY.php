@@ -33,11 +33,23 @@ $result = mysqli_query($con,$sql);
 			$username=$rowAdmin['username'];
 		}
 	}
+
 	
 	
 	
 	$sql2 = "INSERT INTO log(user,userType,logType) VALUES('$username','Admin','Added New SchoolYear')";
 	$result2 = mysqli_query($con,$sql2);
 
-header('Location:../manage/managesy.php');
+$sqlMax = "Select MAX(ID) as id from sy";
+$resultMax = mysqli_query($con,$sqlMax);
+if(mysqli_num_rows($resultMax)>0)
+{
+    while($rowMax = mysqli_fetch_array($resultMax))
+    {
+        $syId=$rowMax['id'];
+    }
+}
+
+
+header('Location:../manage/managesy.php?schoolYearID='.$syId);
 ?>

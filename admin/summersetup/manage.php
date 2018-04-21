@@ -2,8 +2,7 @@
 
 include "../../dbcon.php";
 include "../sessionAdmin.php";
-$chosenSY = '';
-$username='';
+$schoolYearID=$_GET['schoolYearID'];
 $sql = "Select *from admin where ID=$adminID";
 $result = mysqli_query($con,$sql);
 if(mysqli_num_rows($result)>0)
@@ -13,6 +12,16 @@ if(mysqli_num_rows($result)>0)
 		$username=$row['username'];
 	}
 }
+$sql = "Select *from sy where ID=$schoolYearID";
+$result = mysqli_query($con,$sql);
+if(mysqli_num_rows($result)>0)
+{
+	while($row = mysqli_fetch_array($result))
+	{
+		$SYname=$row['schoolYear'];
+	}
+}
+
 
 ?>
 <!DOCTYPE html>
@@ -41,6 +50,7 @@ if(mysqli_num_rows($result)>0)
     font-size:1.3em;
      
 }
+
 </style>
 <body>
     <!--  wrapper -->
@@ -56,7 +66,7 @@ if(mysqli_num_rows($result)>0)
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="#">
-                   <img style="height:60px; width:60px; " src="../../pdfmnhs.png" alt="" /><strong style="color:white; font-size:1.2em">&nbsp;&nbsp;PRUDENCIA D. FULE MEMORIAL NATIONAL HIGH SCHOOL</strong>
+                    <img style="height:60px; width:60px; " src="../../pdfmnhs.png" alt="" /><strong style="color:white; font-size:1.2em">&nbsp;&nbsp;PRUDENCIA D. FULE MEMORIAL NATIONAL HIGH SCHOOL</strong>
                 </a>
             </div>
             <!-- end navbar-header -->
@@ -204,12 +214,11 @@ if(mysqli_num_rows($result)>0)
                         </div>
                         <!--end user image section-->
                     </li>
-                    <li>
+<li>
                         <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
                     </li>
                     <li>
 					 <a href="#"><i class="fa fa-sitemap fa-fw"></i>Initials<span class="fa arrow"></span></a>
-					 <div class="nav-collapse">
                         <ul class="nav nav-second-level">
 					<li>
                         <a href="../sy/sy_frame.php">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>School Years</a>
@@ -217,13 +226,13 @@ if(mysqli_num_rows($result)>0)
                     <li>
                         <a href="../year_level/year_level_frame.php">&nbsp;&nbsp;<i class="fa fa-industry fa-fw"></i>Year Level</a>
                     </li>
-                    <li >
+                    <li>
                         <a href="../section/section_frame.php">&nbsp;&nbsp;<i class="fa fa-list-ul fa-fw"></i>Sections</a>
                     </li>
-                    <li class="selected">
+                    <li>
                         <a href="../subject/subject_frame.php">&nbsp;&nbsp;<i class="fa fa-book fa-fw"></i>Subjects</a>
                     </li>
-                    <li>
+                    <li  >
                         <a href="../teacher/teacher_frame.php">&nbsp;&nbsp;<i class="fa fa-users fa-fw"></i>Teachers</a>
                     </li>
 					<li>
@@ -233,22 +242,28 @@ if(mysqli_num_rows($result)>0)
                         <a href="../encoder/encoder_frame.php">&nbsp;&nbsp;<i class="fa fa-keyboard-o fa-fw"></i>Encoder</a>
                     </li>
 					</ul>
-					<div>
 					</li>
-
-                    <li>
+					<li>
                         <a href="#"><i class="fa fa-sitemap fa-fw"></i>School Year<span class="fa arrow"></span></a>
+						<div class="nav-collapse">
                         <ul class="nav nav-second-level">
-                            <li>
-                                <a href="../manage/managesy.php?schoolYearID=">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>Enrollment Setup</a>
-                            </li>
-                            <li>
-                                <a href="../summersetup/managesy.php?schoolYearID=">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>Summer Setup</a>
-                            </li>
+						<?php
+										$sql = "Select *from SY ORDER BY schoolYear DESC";
+										$result = mysqli_query($con,$sql);
+										if(mysqli_num_rows($result)>0)
+										{
+											
+											while($row = mysqli_fetch_array($result))
+											{
+												?>
+												<li  class=<?php if($row['ID']==$schoolYearID) echo "selected"; ?>><a href="manage.php?schoolYearID=<?php echo $row['ID']; ?>"><?php echo $row['schoolYear']; ?></a></li>
+												<?php
+											}
+										}
+									?>
                         </ul>
-                    </li>
-                    <li>
-                        <a href="../teacher_subject/teacherSubj_frame.php"><i class="fa fa-user-circle fa-fw"></i>Teacher Subject</a>
+						</div>
+                        <!-- second-level-items -->
                     </li>
 					<li>
 						<a href="../log/log_frame.php" ><i class ="fa fa-industry fa-fw"></i>Log Activities</a>
@@ -267,37 +282,51 @@ if(mysqli_num_rows($result)>0)
             <div class="row">
                 <!-- Page Header -->
                 <div class="col-lg-10">
-                    <h1 class="page-header">Subjects</h1>
+                    <h1 class="page-header">SY: <?php echo $SYname; ?> Sections</h1>
                 </div>
 				<div class="col-lg-2">
-							<div style="float:right; margin-top:40px" >
-                            <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#addModal" >
-                                Add New Subject
+				<div style="float:right; margin-top:40px" >
+                            <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#addExModal" >
+                                Add Section
                             </button>
-							</div>
-                            <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				</div>
+                            <div class="modal fade" id="addExModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h4 class="modal-title" id="myModalLabel">Add New Subject</h4>
+                                            <h4 class="modal-title" id="myModalLabel">Add Section</h4>
                                         </div>
-										<form role="form" action="addSubject.php" method=post>
+										<form role="form" action="addSectionToSY.php?schoolYearID=<?php echo $schoolYearID; ?>" method=post>
                                         <div class="modal-body">
-										<label>Subject Code</label>
-										<input type=text class="form-control" name="code" required>
-										<label>Subject Name</label>
-										<input type=text class="form-control" name="subject" required>
+										<label>Select Section
+										</label>
+										<select  class="form-control" name="section">
+										<?php
+											echo $sql = "Select *from section where ID not in (select section_ID from sy_section where sy_ID=$schoolYearID)";
+											$result = mysqli_query($con,$sql);
+											if(mysqli_num_rows($result)>0)
+											{
+												while($row = mysqli_fetch_array($result))
+												{
+													?>
+													<option value="<?php echo $row['ID']; ?>"><?php echo $row['year']."-".$row['section'];?></option>
+													<?php
+												}
+											}
+											?>
+										</select>
+										
                                         </div>
                                         <div class="modal-footer">
 											<button type="submit" class="btn btn-primary">Save</button>
                                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                            
                                         </div>
 										</form>
                                     </div>
                                 </div>
                             </div>
 				</div>
-				
 
                 <!--End Page Header -->
             </div>
@@ -306,23 +335,25 @@ if(mysqli_num_rows($result)>0)
                     <!-- Advanced Tables -->
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            List of Subjects
+                             List of Sections 
                         </div>
                         <div class="panel-body">
                             <div class="table-responsive">
-                                <table class="table table-hover" id="dataTables-example">
+							<div>
+                                <table class="table table-hover" id="dataTables-example" >
                                     <thead>
                                         <tr>
-                                            <th>Subject Code</th>
-											<th>Subject Name</th>
+                                            <th>Section</th>
+											<th width=5%>Grades</th>
+											<th width=5%>Subjects</th>
+											<th width=5%>Students</th>
 											<th width=5%>Edit</th>
 											<th width=5%>Delete</th>
                                         </tr>
                                     </thead>
                                     <tbody>
 									<?php
-									
-									$sql = "Select *from subject";
+									$sql = "Select sy_section.ID,section.year, section.section from sy_section JOIN section ON sy_section.section_ID = section.ID where sy_section.sy_ID = $schoolYearID";
 									$result = mysqli_query($con,$sql);
 									if(mysqli_num_rows($result)>0)
 									{
@@ -330,11 +361,12 @@ if(mysqli_num_rows($result)>0)
 										{	
 										?>
 											<tr>
-                                            <td><?php echo $row['code']; ?></td>
-											<td><?php echo $row['subject']; ?></td>
+                                            <td><?php echo $row['year']."-".$row['section']; ?></td>
+											<td><center><span id="icon" class="fa fa-th fa-fw" data-toggle="modal" data-target="#gradeModal"  onclick="changeID(<?php echo $row['ID']; ?>,'grade');"></span></center></td>
+											<td><center><span id="icon" class="fa fa-book fa-fw" data-toggle="modal" data-target="#subjectModal"  onclick="changeID(<?php echo $row['ID']; ?>,'subject');"></span></center></td>
+											<td><center><span id="icon" class="fa fa-users fa-fw" data-toggle="modal" data-target="#studentModal" onclick="changeID(<?php echo $row['ID']; ?>,'student');"></span></center></td>
 											<td><center><span id="icon" class="fa fa-edit fa-fw" data-toggle="modal" data-target="#editModal"  onclick="changeID(<?php echo $row['ID']; ?>,'edit');"></span></center></td>
 											<td><center><span id="icon" class="fa fa-times fa-fw" data-toggle="modal" data-target="#deleteModal" onclick="changeID(<?php echo $row['ID']; ?>,'delete');"></span></center></td>
-											
 											</tr>
 										<?php
 										}
@@ -344,21 +376,124 @@ if(mysqli_num_rows($result)>0)
                                        
                                     </tbody>
                                 </table>
+								</div>
+								<button class="btn btn-primary btn-md" onclick="changeID(0,'printsysection');">Print Report</button>
+								
+								<div class="modal fade" id="" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" style="width:1000px">
+										<div id="printTable">
+										</div>
+                                    </div>
+                                </div>
+								
+								<div class="modal fade" id="gradeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" style="width:80%">
+										<div id=gradeform>
+										</div>
+                                    </div>
+                                </div>
+								
+								
+								
+								
+								
+								<div class="modal fade" id="subjectModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" style="width:80%">
+										<div id=subjectform>
+										</div>
+                                    </div>
+                                </div>
+								<div class="modal fade" id="addSubjectModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="myModalLabel">Add Subjects</h4>
+                                        </div>
+										<div id="addsubjectform">
+										</div>
+                                    </div>
+                                </div>
+                            </div>
+							<div class="modal fade" id="removeSubjectModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="myModalLabel">Remove Subject</h4>
+                                        </div>
+										<div id=removesubjectform>
+										</div>
+                                    </div>
+                                </div>
+                            </div>
+							<div class="modal fade" id="studentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" style="width:80%">
+                                    
+										<div id=studentform>
+										</div>
+
+                                  
+									
+                                </div>
+                            </div>
+							<div class="modal fade" id="addStudentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="myModalLabel">Add Student</h4>
+                                        </div>
+										<div id="addstudentform">
+										</div>
+                                    </div>
+                                </div>
+                            </div>
+							<div class="modal fade" id="removeStudentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="myModalLabel">Remove Student</h4>
+                                        </div>
+										<div id=removestudentform>
+										</div>
+                                    </div>
+                                </div>
+                            </div>
+							<div class="modal fade" id="transferStudentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="myModalLabel">Add Student</h4>
+                                        </div>
+										<div id="transferstudentform">
+										</div>
+                                    </div>
+                                </div>
+                            </div>
+							
+							
+							
+							<div class="modal fade" id="dropStudentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="myModalLabel">Drop Student</h4>
+                                        </div>
+										<div id=dropstudentform>
+										</div>
+                                    </div>
+                                </div>
+                            </div>
+							
+                            </div>
+							
+                            </div>
 								<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h4 class="modal-title" id="myModalLabel">Delete Subject</h4>
+                                            <h4 class="modal-title" id="myModalLabel">Delete Section</h4>
                                         </div>
-										<form role="form" action="" method=post id=delForm>
-                                        <div class="modal-body">
-										Are you sure you want to delete?
-                                        </div>
-                                        <div class="modal-footer">
-											<button type="submit" class="btn btn-primary">Yes</button>
-                                            <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                                        </div>
-										</form>
+										<div id=deleteform>
+										</div>
                                     </div>
                                 </div>
                             </div>
@@ -367,37 +502,32 @@ if(mysqli_num_rows($result)>0)
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h4 class="modal-title" id="myModalLabel">Edit Subject</h4>
+                                            <h4 class="modal-title" id="myModalLabel">Edit Section</h4>
                                         </div>
 										<div id=editform>
 										</div>
                                     </div>
                                 </div>
                             </div>
-                            </div>
                             
                         </div>
                     </div>
                     <!--End Advanced Tables -->
                 </div>
-            </div>
-			<div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" style="width:80%">
                                     
 										<div id=requestform>
 										</div>
-
-                                  
-									
                                 </div>
                             </div>
+            </div>
         </div>
         <!-- end page-wrapper -->
 
     </div>
     <!-- end wrapper -->
 
-    <!-- Core Scripts - Include with every page -->
     <script src="../../assets/plugins/jquery-1.10.2.js"></script>
     <script src="../../assets/plugins/bootstrap/bootstrap.min.js"></script>
     <script src="../../assets/plugins/metisMenu/jquery.metisMenu.js"></script>
@@ -407,19 +537,19 @@ if(mysqli_num_rows($result)>0)
     <script src="../../assets/plugins/dataTables/jquery.dataTables.js"></script>
     <script src="../../assets/plugins/dataTables/dataTables.bootstrap.js"></script>
     <script>
-        $(document).ready(function () {
-            $('#dataTables-example').dataTable();
-        });
+
+		
     </script>
 	<script type="text/javascript">
     function reload(){
     document.getElementById("myform").submit();
     }
 	function changeID(newID,type){
+
         var xhr;
 			if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers 
 			else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
-			var url = 'changeID.php?postID='+newID+'&actiontype='+type;
+			var url = 'changeID.php?postID='+newID+'&actiontype='+type+'&schoolYearID=<?php echo $schoolYearID; ?>';
 			xhr.open('GET', url, false);
 			xhr.onreadystatechange = function () {
                             if(type==='edit')
@@ -428,9 +558,70 @@ if(mysqli_num_rows($result)>0)
                      }
                     else if(type==='delete')
                       {
-                         document.getElementById("delForm").action = "deleteSubject.php?delID="+xhr.responseText+"";
+                          document.getElementById("deleteform").innerHTML = xhr.responseText;
                      }
-					 else if(type==='all')
+					 else if(type==='subject')
+                      {
+                          document.getElementById("subjectform").innerHTML = xhr.responseText;
+                     }
+					 else if(type==='student')
+                      {
+                          document.getElementById("studentform").innerHTML = xhr.responseText;
+                     }
+					 else if(type==='addSubject')
+                      {
+                          document.getElementById("addsubjectform").innerHTML = xhr.responseText;
+                     }
+					 else if(type==='removeSubject')
+                      {
+                          document.getElementById("removesubjectform").innerHTML = xhr.responseText;
+                     }
+					 else if(type==='addStudent')
+                      {
+                          document.getElementById("addstudentform").innerHTML = xhr.responseText;
+                     }
+					 else if(type==='removeStudent')
+                      {
+                          document.getElementById("removestudentform").innerHTML = xhr.responseText;
+                     }
+					 else if(type==='dropStudent')
+                      {
+                          document.getElementById("dropstudentform").innerHTML = xhr.responseText;
+                     }
+					 else if(type==='transferStudent')
+                      {
+                          document.getElementById("transferstudentform").innerHTML = xhr.responseText;
+                     }
+					 else if(type==='grade')
+                      {
+                          document.getElementById("gradeform").innerHTML = xhr.responseText;
+                     }
+					  else if(type==='printsysection')
+                      {
+                          document.getElementById("printTable").innerHTML = xhr.responseText;
+						  printData();
+                     }
+					  else if(type==='printsysectionstudent')
+                      {
+                          document.getElementById("printTable").innerHTML = xhr.responseText;
+						  printData();
+                     }
+					 else if(type==='printsysectionsubject')
+                      {
+                          document.getElementById("printTable").innerHTML = xhr.responseText;
+						  printData();
+                     }
+					 else if(type==='printsysectiongrade')
+                      {
+                          document.getElementById("printTable").innerHTML = xhr.responseText;
+						  printData();
+                     }
+					 else if(type==='printstudentgrade')
+                      {
+                          document.getElementById("printTable").innerHTML = xhr.responseText;
+						  printData();
+                     }
+					  else if(type==='all')
                       {
                           document.getElementById("requestform").innerHTML = xhr.responseText;
                      }
@@ -441,6 +632,25 @@ if(mysqli_num_rows($result)>0)
   
     }
 	
+		
+	
+	
+	
+	
+	
+	
+		function printData()
+		{
+			
+	
+		   var divToPrint=document.getElementById("printTable");
+		   newWin= window.open("");
+		   newWin.document.write(divToPrint.outerHTML);
+		   newWin.print();
+		   newWin.close();
+		}
+
+		
 	</script>
 
 </body>

@@ -1,31 +1,15 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Ms. Cath
- * Date: 4/15/18
- * Time: 2:48 PM
+ * User: PB7N0062
+ * Date: 4/18/18
+ * Time: 1:29 PM
  */
 
 
-//error_reporting(0);
-include "../../dbcon.php";
-include "../sessionAdmin.php";
-$schoolYearID=$_GET['schoolYearID'];
-
-if($schoolYearID == ""){
-    $sql_e = "Select MAX(ID) as ID from sy";
-    $result_e = mysqli_query($con,$sql_e);
-    if(mysqli_num_rows($result_e)>0)
-    {
-        while($row_e= mysqli_fetch_array($result_e))
-        {
-            $schoolYearID=$row_e['ID'];
-        }
-    }
-}
-
-
-
+include "../../../dbcon.php";
+include "../../sessionAdmin.php";
+$section=$_GET['sectionId'];
 $sql = "Select *from admin where ID=$adminID";
 $result = mysqli_query($con,$sql);
 if(mysqli_num_rows($result)>0)
@@ -33,15 +17,6 @@ if(mysqli_num_rows($result)>0)
     while($row = mysqli_fetch_array($result))
     {
         $username=$row['username'];
-    }
-}
-$sql = "Select *from sy where ID=$schoolYearID";
-$result = mysqli_query($con,$sql);
-if(mysqli_num_rows($result)>0)
-{
-    while($row = mysqli_fetch_array($result))
-    {
-        $SYname=$row['schoolYear'];
     }
 }
 
@@ -55,15 +30,15 @@ if(mysqli_num_rows($result)>0)
     <title>PDFMNHS</title>
     <link rel="shortcut icon" href="../../pdfmnhs.png" type="image/png">
     <!-- Core CSS - Include with every page -->
-    <link href="../../assets/plugins/bootstrap/bootstrap.css" rel="stylesheet" />
-    <link href="../../assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/font-awesome/css/font-awesome.min.css">
-    <link href="../../assets/plugins/pace/pace-theme-big-counter.css" rel="stylesheet" />
-    <link href="../../assets/css/style.css" rel="stylesheet" />
-    <link href="../../assets/css/main-style.css" rel="stylesheet" />
+    <link href="../../../assets/plugins/bootstrap/bootstrap.css" rel="stylesheet" />
+    <link href="../../../assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../../../assets/font-awesome/css/font-awesome.min.css">
+    <link href="../../../assets/plugins/pace/pace-theme-big-counter.css" rel="stylesheet" />
+    <link href="../../../assets/css/style.css" rel="stylesheet" />
+    <link href="../../../assets/css/main-style.css" rel="stylesheet" />
     <!-- Page-Level CSS -->
-    <link href="../../assets/plugins/morris/morris-0.4.3.min.css" rel="stylesheet" />
-    <link href="../../assets/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet" />
+    <link href="../../../assets/plugins/morris/morris-0.4.3.min.css" rel="stylesheet" />
+    <link href="../../../assets/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet" />
 </head>
 <style>
     #icon{
@@ -269,10 +244,10 @@ if(mysqli_num_rows($result)>0)
             <li>
                 <a href="#"><i class="fa fa-sitemap fa-fw"></i>School Year<span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
-                    <li class="selected">
+                    <li>
                         <a href="../manage/managesy.php?schoolYearID=">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>Enrollment Setup</a>
                     </li>
-                    <li>
+                    <li class="selected">
                         <a href="../summersetup/managesy.php?schoolYearID=">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>Summer Setup</a>
                     </li>
                 </ul>
@@ -294,56 +269,25 @@ if(mysqli_num_rows($result)>0)
 <!-- end navbar side -->
 <!--  page-wrapper -->
 <div id="page-wrapper">
-<div class="row">
-    <!-- Page Header -->
-    <div class="col-lg-6">
-        <h1 class="page-header text-primary">School Year Management</h1>
-    </div>
-    <div class="col-lg-6">
-        <div class="form-inline" style="float:right; margin-top:40px" >
+    <div class="row">
+        <!-- Page Header -->
+        <div class="col-lg-8">
+            <h1 class="page-header text-primary">Summer Student Grade Information </h1>
+                <h4 class="text-success"  name="teacher_assign" id="teacher_assign"></h4>
+                <h4 class="text-success"  name="subject_desc" id="subject_desc"></h4>
 
-
-
-            <!--<button class="btn btn-primary"><span class="fa fa-wrench fa-fw"></span></span>Summer Setup</button>-->
-            <!--<button class="btn btn-primary"><span class="fa fa-calendar-o fa-fw"></span></span>Add Schedule</button>-->
-            <label>SY:</label>
-            <select class="form-control chosen" name="cboSY" id="cboSY">
-                <?php
-                $sql = "SELECT * FROM sy ORDER BY LEFT(schoolYear,4) DESC";
-                $result = mysqli_query($con,$sql);
-                if(mysqli_num_rows($result)> 0)
-                {
-                    while($row = mysqli_fetch_array($result))
-                    {
-                        echo '
-                       <option value='.$row["ID"].'>'.$row["schoolYear"].'</option>
-                       ';
-                    }
-                }
-                ?>
-            </select>
         </div>
-    </div>
-
-    <!--End Page Header -->
-</div>
-<div class="row">
-    <div class="col-lg-12">
-        <!-- Advanced Tables -->
-        <div id="loadLevelData"></div>
-    </div>
-    <!--End Advanced Tables -->
-</div>
-<div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog" style="width:80%">
-
-        <div id=requestform>
+        <div class="col-lg-4">
         </div>
-
-
-
+        <!--End Page Header -->
     </div>
-</div>
+    <div class="row">
+        <div class="col-lg-12">
+            <!-- Advanced Tables -->
+            <div id="loadStudentGradeContainer"></div>
+        </div>
+        <!--End Advanced Tables -->
+    </div>
 </div>
 </div>
 <!-- end page-wrapper -->
@@ -351,48 +295,41 @@ if(mysqli_num_rows($result)>0)
 </div>
 <!-- end wrapper -->
 
-<script src="../../assets/plugins/jquery-1.10.2.js"></script>
-<script src="../../assets/plugins/bootstrap/bootstrap.min.js"></script>
-<script src="../../assets/plugins/metisMenu/jquery.metisMenu.js"></script>
-<script src="../../assets/plugins/pace/pace.js"></script>
-<script src="../../assets/scripts/siminta.js"></script>
-<!-- Page-Level Plugin Scripts-->
-<script src="../../assets/plugins/dataTables/jquery.dataTables.js"></script>
-<script src="../../assets/plugins/dataTables/dataTables.bootstrap.js"></script>
-<link rel="stylesheet" href="../../assets/plugins/jquery-ui-1.12.1/jquery-ui.css">
-<script src="../../assets/plugins/jquery-ui-1.12.1/jquery-ui.js"></script>
-<script src="../../assets/plugins/chosen.jquery.js"></script>
-<link rel="stylesheet" href="../../assets/plugins/chosen.css">
+<script src="../../../assets/plugins/jquery-1.10.2.js"></script>
+<script src="../../../assets/plugins/bootstrap/bootstrap.min.js"></script>
+<script src="../../../assets/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="../../../assets/plugins/pace/pace.js"></script>
+<script src="../../../assets/scripts/siminta.js"></script>
+<script src="../../../assets/plugins/dataTables/jquery.dataTables.js"></script>
+<script src="../../../assets/plugins/dataTables/dataTables.bootstrap.js"></script>
+<link rel="stylesheet" href="../../../assets/plugins/jquery-ui-1.12.1/jquery-ui.css">
+<script src="../../../assets/plugins/jquery-ui-1.12.1/jquery-ui.js"></script>
 <script type="text/javascript">
 
-    ( function ( $ ) {
-        $("#cboSY").on('click', function() {
-            //alert( this.value );
-            var x = this.value;
-            $.ajax({
-                type: "GET",
-                url: "level/loadYearLevel.php?SYid="+x,
-                cache: false,
-                success: function(html){
-                    $("#loadLevelData").empty(html);
-                    $("#loadLevelData").append(html);
-                }
-            });
-        });
-    } )( jQuery );
-    $('#cboSY option[value="<?php echo $schoolYearID; ?>"]').attr('selected', 'selected');
-    //$("#cboSY").chosen();
+    //$("#cbosyLevlSubj").val($("#cbosyLevlSubj option:first").val());
+    var y =$("#cbosyLevlSubj").val();
     $.ajax({
         type: "GET",
-        url: "level/loadYearLevel.php?SYid="+<?php echo $schoolYearID; ?>,
+        url: "loadStudentGradePerSYLevelSec.php?&syLevelSec="+<?php echo $section;?>,
         cache: false,
         success: function(html){
-            $("#loadLevelData").empty(html);
-            $("#loadLevelData").append(html);
+            $("#loadStudentGradeContainer").empty(html);
+            $("#loadStudentGradeContainer").append(html);
         }
     });
+
+  /*  $("#cbosyLevlSubj").on('click', function() {
+        var x = this.value;
+        $.ajax({
+            type: "GET",
+            url: "loadStudentGradePerSYLevelSec.php?subjectId="+x+"&syLevelSec="+<?php echo $section;?>,
+            cache: false,
+            success: function(html){
+                $("#loadStudentGradeContainer").empty(html);
+                $("#loadStudentGradeContainer").append(html);
+            }
+        });
+    })*/
 </script>
-
 </body>
-
 </html>

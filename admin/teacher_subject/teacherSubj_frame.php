@@ -1,4 +1,11 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: Ms. Cath
+ * Date: 4/21/18
+ * Time: 3:44 AM
+ */
+
 
 include "../../dbcon.php";
 include "../sessionAdmin.php";
@@ -13,6 +20,7 @@ if(mysqli_num_rows($result)>0)
         $username=$row['username'];
     }
 }
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -85,6 +93,7 @@ if(mysqli_num_rows($result)>0)
 					INNER JOIN student ON enrolled_student.student_ID = student.ID
 					ORDER BY DATE DESC LIMIT 6";
                 $resultnotif = mysqli_query($con,$sqlnotif);
+
                 if(mysqli_num_rows($resultnotif)>0)
                 {
                     while($rownotif = mysqli_fetch_array($resultnotif))
@@ -228,7 +237,7 @@ if(mysqli_num_rows($result)>0)
                         <li>
                             <a href="../student/student_frame.php">&nbsp;&nbsp;<i class="fa fa-users fa-fw"></i>Students</a>
                         </li>
-                        <li class="selected">
+                        <li>
                             <a href="../encoder/encoder_frame.php">&nbsp;&nbsp;<i class="fa fa-keyboard-o fa-fw"></i>Encoder</a>
                         </li>
                     </ul>
@@ -246,7 +255,7 @@ if(mysqli_num_rows($result)>0)
                     </li>
                 </ul>
             </li>
-            <li>
+            <li class="selected">
                 <a href="../teacher_subject/teacherSubj_frame.php"><i class="fa fa-user-circle fa-fw"></i>Teacher Subject</a>
             </li>
             <li>
@@ -266,45 +275,9 @@ if(mysqli_num_rows($result)>0)
     <div class="row">
         <!-- Page Header -->
         <div class="col-lg-10">
-            <h1 class="page-header">Encoders</h1>
+            <h1 class="page-header text-primary">Teacher - Subject Management</h1>
         </div>
         <div class="col-lg-2">
-            <div style="float:right; margin-top:40px" >
-                <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#addModal" >
-                    Add New Encoder
-                </button>
-            </div>
-            <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" id="myModalLabel">Add New Encoder</h4>
-                        </div>
-                        <form role="form" action="addEncoder.php" method=post>
-                            <div class="modal-body">
-                                <label>Employee No.</label>
-                                <input type=text class="form-control" name="employeeNo" required>
-                                <label>Password</label>
-                                <input type=password class="form-control"  name="password" required>
-                                <label>Confirm Password</label>
-                                <input type=password class="form-control"  name="password2" required>
-                                <label>Last Name</label>
-                                <input type=text class="form-control" name="Lname" required>
-                                <label>First Name</label>
-                                <input type=text class="form-control" name="Fname" required>
-                                <label>Middle Name</label>
-                                <input type=text class="form-control" name="Mname" required>
-                                <label>Contact No.</label>
-                                <input type=text class="form-control" name="contactNo" required>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">Save</button>
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
         </div>
         <!--End Page Header -->
     </div>
@@ -313,23 +286,20 @@ if(mysqli_num_rows($result)>0)
             <!-- Advanced Tables -->
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    List of Encoders
+                    List of Teachers
                 </div>
                 <div class="panel-body">
                     <div class="table-responsive">
                         <table class="table table-hover" id="dataTables-example">
                             <thead>
                             <tr>
-                                <th>Employee No.</th>
                                 <th>Name</th>
-                                <th>Contact No.</th>
-                                <th width=5%>Edit</th>
-                                <th width=5%>Delete</th>
+                                <th>View Subjects</th>
                             </tr>
                             </thead>
                             <tbody>
                             <?php
-                            $sql = "Select *from encoder";
+                            $sql = "Select *from teacher";
                             $result = mysqli_query($con,$sql);
                             if(mysqli_num_rows($result)>0)
                             {
@@ -337,15 +307,9 @@ if(mysqli_num_rows($result)>0)
                                 {
                                     ?>
                                     <tr>
-                                        <td><?php echo $row['employeeNo']; ?></td>
                                         <?php $mid = $row['Mname'];?>
                                         <td><?php echo $row['Lname'].", ".$row['Fname']." ".$mid[0]."." ?></td>
-                                        <td><?php echo $row['contactNo']; ?></td>
-                                        <td>
-                                            <center><span  id="icon" class="fa fa-lock fa-fw" data-toggle="modal" data-target="#changePasswordModal"  onclick="changeID(<?php echo $row['ID']; ?>,'password');"></span>
-                                                <span  id="icon" class="fa fa-edit fa-fw" data-toggle="modal" data-target="#editModal"  onclick="changeID(<?php echo $row['ID']; ?>,'edit');"></span>
-                                            </center></td>
-                                        <td><center><span id="icon" class="fa fa-times fa-fw" data-toggle="modal" data-target="#deleteModal" onclick="changeID(<?php echo $row['ID']; ?>,'delete');"></span></center></td>
+                                        <td><a href="view_teacher_subj.php?teacherId=<?php echo $row['ID']; ?>&sy=0"><span id="icon" class="fa fa-list fa-fw" data-toggle="modal" data-target="#viewSubjectModal" onclick="changeID(<?php echo $row['ID']; ?>);"></span></a></td>
                                     </tr>
                                 <?php
                                 }
@@ -358,7 +322,7 @@ if(mysqli_num_rows($result)>0)
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h4 class="modal-title" id="myModalLabel">Delete Encoder</h4>
+                                        <h4 class="modal-title" id="myModalLabel">Delete Teacher</h4>
                                     </div>
                                     <form role="form" action="" method=post id=delForm>
                                         <div class="modal-body">
@@ -377,7 +341,7 @@ if(mysqli_num_rows($result)>0)
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h4 class="modal-title" id="myModalLabel">Edit Encoder</h4>
+                                        <h4 class="modal-title" id="myModalLabel">Edit Teacher</h4>
                                     </div>
                                     <div id=editform>
                                     </div>
@@ -460,7 +424,7 @@ if(mysqli_num_rows($result)>0)
             }
             else if(type==='delete')
             {
-                document.getElementById("delForm").action = "deleteEncoder.php?delID="+xhr.responseText+"";
+                document.getElementById("delForm").action = "deleteTeacher.php?delID="+xhr.responseText+"";
             }
             else if(type==='password')
             {

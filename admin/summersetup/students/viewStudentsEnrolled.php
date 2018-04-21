@@ -1,9 +1,18 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: Ms. Cath
+ * Date: 4/18/18
+ * Time: 9:42 PM
+ */
 
-include "../../dbcon.php";
-include "../sessionAdmin.php";
+
+include "../../../dbcon.php";
+include "../../sessionAdmin.php";
 $chosenSY = '';
 $username='';
+$section=$_GET['sectionId'];
+
 $sql = "Select *from admin where ID=$adminID";
 $result = mysqli_query($con,$sql);
 if(mysqli_num_rows($result)>0)
@@ -13,6 +22,29 @@ if(mysqli_num_rows($result)>0)
         $username=$row['username'];
     }
 }
+
+ $sql_ = "SELECT A.ID, A.sy_level_ID, A.subject_ID, A.teacher_ID, CONCAT(C.Fname, ' ', C.Lname) as teacher, F.level, B.subject, E.schoolYear
+FROM summer_subject A
+INNER JOIN subject B ON A.subject_ID = B.ID
+INNER JOIN teacher C ON A.teacher_ID = C.ID
+INNER JOIN sy_level D ON A.sy_level_ID = D.ID
+INNER JOIN sy E ON D.sy_ID = E.ID
+INNER JOIN level F ON D.level_ID = F.ID
+WHERE A.ID = $section";
+$result_ = mysqli_query($con,$sql_);
+if(mysqli_num_rows($result_)>0)
+{
+    while($row_ = mysqli_fetch_array($result_))
+    {
+        $sectionname=$row_['subject'];
+        $teachername=$row_['teacher'];
+        $leveldesc =  $row_['level'];
+        $sydesc =  $row_['schoolYear'];
+
+    }
+}
+
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -22,15 +54,15 @@ if(mysqli_num_rows($result)>0)
     <title>PDFMNHS</title>
     <link rel="shortcut icon" href="../../pdfmnhs.png" type="image/png">
     <!-- Core CSS - Include with every page -->
-    <link href="../../assets/plugins/bootstrap/bootstrap.css" rel="stylesheet" />
-    <link href="../../assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/font-awesome/css/font-awesome.min.css">
-    <link href="../../assets/plugins/pace/pace-theme-big-counter.css" rel="stylesheet" />
-    <link href="../../assets/css/style.css" rel="stylesheet" />
-    <link href="../../assets/css/main-style.css" rel="stylesheet" />
+    <link href="../../../assets/plugins/bootstrap/bootstrap.css" rel="stylesheet" />
+    <link href="../../../assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../../../assets/font-awesome/css/font-awesome.min.css">
+    <link href="../../../assets/plugins/pace/pace-theme-big-counter.css" rel="stylesheet" />
+    <link href="../../../assets/css/style.css" rel="stylesheet" />
+    <link href="../../../assets/css/main-style.css" rel="stylesheet" />
     <!-- Page-Level CSS -->
-    <link href="../../assets/plugins/morris/morris-0.4.3.min.css" rel="stylesheet" />
-    <link href="../../assets/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet" />
+    <link href="../../../assets/plugins/morris/morris-0.4.3.min.css" rel="stylesheet" />
+    <link href="../../../assets/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet" />
 </head>
 <style>
     #icon{
@@ -195,7 +227,7 @@ if(mysqli_num_rows($result)>0)
                 <!-- user image section-->
                 <div class="user-section">
                     <div class="user-info">
-                        <div><strong><a href="../account/account_info.php"><?php echo $username; ?></strong></a></div>
+                        <div><a href="../account/account_info.php"><strong><?php echo $username; ?></strong></a></div>
                         <div class="user-text-online" align="left">
                             <span></span>&nbsp;Admin
                         </div>
@@ -208,40 +240,37 @@ if(mysqli_num_rows($result)>0)
             </li>
             <li>
                 <a href="#"><i class="fa fa-sitemap fa-fw"></i>Initials<span class="fa arrow"></span></a>
-                <div class="nav-collapse">
-                    <ul class="nav nav-second-level">
-                        <li>
-                            <a href="../sy/sy_frame.php">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>School Years</a>
-                        </li>
-                        <li>
-                            <a href="../year_level/year_level_frame.php">&nbsp;&nbsp;<i class="fa fa-industry fa-fw"></i>Year Level</a>
-                        </li>
-                        <li >
-                            <a href="../section/section_frame.php">&nbsp;&nbsp;<i class="fa fa-list-ul fa-fw"></i>Sections</a>
-                        </li>
-                        <li>
-                            <a href="../subject/subject_frame.php">&nbsp;&nbsp;<i class="fa fa-book fa-fw"></i>Subjects</a>
-                        </li>
-                        <li>
-                            <a href="../teacher/teacher_frame.php">&nbsp;&nbsp;<i class="fa fa-users fa-fw"></i>Teachers</a>
-                        </li>
-                        <li>
-                            <a href="../student/student_frame.php">&nbsp;&nbsp;<i class="fa fa-users fa-fw"></i>Students</a>
-                        </li>
-                        <li class="selected">
-                            <a href="../encoder/encoder_frame.php">&nbsp;&nbsp;<i class="fa fa-keyboard-o fa-fw"></i>Encoder</a>
-                        </li>
-                    </ul>
-                </div>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a href="../sy/sy_frame.php">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>School Years</a>
+                    </li>
+                    <li>
+                        <a href="../year_level/year_level_frame.php">&nbsp;&nbsp;<i class="fa fa-industry fa-fw"></i>Year Level</a>
+                    </li>
+                    <li>
+                        <a href="../section/section_frame.php">&nbsp;&nbsp;<i class="fa fa-list-ul fa-fw"></i>Sections</a>
+                    </li>
+                    <li>
+                        <a href="../subject/subject_frame.php">&nbsp;&nbsp;<i class="fa fa-book fa-fw"></i>Subjects</a>
+                    </li>
+                    <li  >
+                        <a href="../teacher/teacher_frame.php">&nbsp;&nbsp;<i class="fa fa-users fa-fw"></i>Teachers</a>
+                    </li>
+                    <li>
+                        <a href="../student/student_frame.php">&nbsp;&nbsp;<i class="fa fa-users fa-fw"></i>Students</a>
+                    </li>
+                    <li>
+                        <a href="../encoder/encoder_frame.php">&nbsp;&nbsp;<i class="fa fa-keyboard-o fa-fw"></i>Encoder</a>
+                    </li>
+                </ul>
             </li>
-
             <li>
                 <a href="#"><i class="fa fa-sitemap fa-fw"></i>School Year<span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li>
                         <a href="../manage/managesy.php?schoolYearID=">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>Enrollment Setup</a>
                     </li>
-                    <li>
+                    <li class="selected">
                         <a href="../summersetup/managesy.php?schoolYearID=">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>Summer Setup</a>
                     </li>
                 </ul>
@@ -266,39 +295,28 @@ if(mysqli_num_rows($result)>0)
     <div class="row">
         <!-- Page Header -->
         <div class="col-lg-10">
-            <h1 class="page-header">Encoders</h1>
+            <h3 class="page-header text-primary"><?php echo strtoupper($leveldesc). "-". strtoupper($sectionname)."(" .$sydesc.")"; ?> : <?php echo "Teacher:". strtoupper($teachername); ?></h3>
+
         </div>
         <div class="col-lg-2">
             <div style="float:right; margin-top:40px" >
-                <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#addModal" >
-                    Add New Encoder
+                <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#addModal" id="btnEnroll">
+                    Add Student
                 </button>
             </div>
             <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title" id="myModalLabel">Add New Encoder</h4>
+                            <h4 class="modal-title" id="myModalLabel">Enroll Students</h4>
                         </div>
-                        <form role="form" action="addEncoder.php" method=post>
+                        <form role="form" action="enrollStudents.php" method=post>
                             <div class="modal-body">
-                                <label>Employee No.</label>
-                                <input type=text class="form-control" name="employeeNo" required>
-                                <label>Password</label>
-                                <input type=password class="form-control"  name="password" required>
-                                <label>Confirm Password</label>
-                                <input type=password class="form-control"  name="password2" required>
-                                <label>Last Name</label>
-                                <input type=text class="form-control" name="Lname" required>
-                                <label>First Name</label>
-                                <input type=text class="form-control" name="Fname" required>
-                                <label>Middle Name</label>
-                                <input type=text class="form-control" name="Mname" required>
-                                <label>Contact No.</label>
-                                <input type=text class="form-control" name="contactNo" required>
+                                <input type="hidden" name="sylevelsectionId" value="<?php echo $section;?>">
+                               <div id="loadEnrolledStudents"></div>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button type="submit" class="btn btn-primary" id="saveEnrollStudent">Add Students</button>
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                             </div>
                         </form>
@@ -313,39 +331,43 @@ if(mysqli_num_rows($result)>0)
             <!-- Advanced Tables -->
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    List of Encoders
+                    List of Students
                 </div>
                 <div class="panel-body">
                     <div class="table-responsive">
                         <table class="table table-hover" id="dataTables-example">
                             <thead>
                             <tr>
-                                <th>Employee No.</th>
-                                <th>Name</th>
-                                <th>Contact No.</th>
-                                <th width=5%>Edit</th>
-                                <th width=5%>Delete</th>
+                                <th>Student Name</th>
+                                <th>Delete</th>
                             </tr>
                             </thead>
                             <tbody>
                             <?php
-                            $sql = "Select *from encoder";
-                            $result = mysqli_query($con,$sql);
-                            if(mysqli_num_rows($result)>0)
+                            $sql_stu = "SELECT A.ID as enrolleId, A.student_ID, CONCAT(B.Lname, ',', B.Fname, ' ', B.Mname) as student, A.status
+                                FROM summer_enrolled A
+                                INNER JOIN student B ON A.student_ID = B.ID
+                                WHERE A.summer_subject_ID = $section
+                                ORDER BY B.Lname ASC";
+                            $result_stu = mysqli_query($con,$sql_stu);
+                            if(mysqli_num_rows($result_stu)>0)
                             {
-                                while($row = mysqli_fetch_array($result))
+                                while($row_stu = mysqli_fetch_array($result_stu))
                                 {
+                                    if($row_stu['status']){
+                                        echo '<tr class="bg-danger text-danger">';
+                                        $active = "DROP";
+                                    }
+                                    else{
+                                        echo '<tr>';
+                                        $active = "";
+                                    }
                                     ?>
-                                    <tr>
-                                        <td><?php echo $row['employeeNo']; ?></td>
-                                        <?php $mid = $row['Mname'];?>
-                                        <td><?php echo $row['Lname'].", ".$row['Fname']." ".$mid[0]."." ?></td>
-                                        <td><?php echo $row['contactNo']; ?></td>
+                                        <td><?php echo strtoupper($row_stu['student']); ?></td>
                                         <td>
-                                            <center><span  id="icon" class="fa fa-lock fa-fw" data-toggle="modal" data-target="#changePasswordModal"  onclick="changeID(<?php echo $row['ID']; ?>,'password');"></span>
-                                                <span  id="icon" class="fa fa-edit fa-fw" data-toggle="modal" data-target="#editModal"  onclick="changeID(<?php echo $row['ID']; ?>,'edit');"></span>
-                                            </center></td>
-                                        <td><center><span id="icon" class="fa fa-times fa-fw" data-toggle="modal" data-target="#deleteModal" onclick="changeID(<?php echo $row['ID']; ?>,'delete');"></span></center></td>
+                                            <span id="icon" class="fa fa-trash fa-fw" onClick="confirmDelete(<?php echo $row_stu['enrolleId'];?>,<?php echo $section;?>)"> </span>
+                                            <?php echo $active;?>
+                                        </td>
                                     </tr>
                                 <?php
                                 }
@@ -354,73 +376,10 @@ if(mysqli_num_rows($result)>0)
                             </tbody>
                         </table>
 
-                        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title" id="myModalLabel">Delete Encoder</h4>
-                                    </div>
-                                    <form role="form" action="" method=post id=delForm>
-                                        <div class="modal-body">
-                                            Are you sure you want to delete?
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="submit" class="btn btn-primary">Yes</button>
-                                            <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title" id="myModalLabel">Edit Encoder</h4>
-                                    </div>
-                                    <div id=editform>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                        </div>
                     </div>
                 </div>
                 <!--End Advanced Tables -->
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog" style="width:80%">
-
-            <div id=requestform>
-            </div>
-
-
-
-        </div>
-    </div>
-
-    <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel">Change Password</h4>
-                </div>
-                <form role="form" action="" method=post id="changePasswordForm">
-                    <div class="modal-body">
-                        <label>New Password</label>
-                        <input type=password class="form-control"  name="newPassword" required>
-                        <label>Confirm New Password</label>
-                        <input type=password class="form-control"  name="newPassword2" required>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Save</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
@@ -429,54 +388,47 @@ if(mysqli_num_rows($result)>0)
 <!-- end wrapper -->
 
 <!-- Core Scripts - Include with every page -->
-<script src="../../assets/plugins/jquery-1.10.2.js"></script>
-<script src="../../assets/plugins/bootstrap/bootstrap.min.js"></script>
-<script src="../../assets/plugins/metisMenu/jquery.metisMenu.js"></script>
-<script src="../../assets/plugins/pace/pace.js"></script>
-<script src="../../assets/scripts/siminta.js"></script>
-<!-- Page-Level Plugin Scripts-->
-<script src="../../assets/plugins/dataTables/jquery.dataTables.js"></script>
-<script src="../../assets/plugins/dataTables/dataTables.bootstrap.js"></script>
+<script src="../../../assets/plugins/jquery-1.10.2.js"></script>
+<script src="../../../assets/plugins/bootstrap/bootstrap.min.js"></script>
+<script src="../../../assets/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="../../../assets/plugins/pace/pace.js"></script>
+<script src="../../../assets/scripts/siminta.js"></script>
+<script src="../../../assets/plugins/dataTables/jquery.dataTables.js"></script>
+<script src="../../../assets/plugins/dataTables/dataTables.bootstrap.js"></script>
+<link rel="stylesheet" href="../../../assets/plugins/jquery-ui-1.12.1/jquery-ui.css">
+<script src="../../../../assets/plugins/jquery-ui-1.12.1/jquery-ui.js"></script>
+<script src="../../../assets/plugins/chosen.jquery.js"></script>
+<link rel="stylesheet" href="../../../assets/plugins/chosen.css">
 <script>
     $(document).ready(function () {
         $('#dataTables-example').dataTable();
     });
 </script>
 <script type="text/javascript">
-    function reload(){
-        document.getElementById("myform").submit();
-    }
+    $("#btnEnroll").on('click', function() {
+        $.ajax({
+            type: "GET",
+            url: "loadToEnrollStudents.php?sectionId="+<?php echo $section;?>,
+            cache: false,
+            success: function(html){
+                $("#loadEnrolledStudents").empty(html);
+                $("#loadEnrolledStudents").append(html);
+            }
+        });
+    });
 
-    function changeID(newID,type){
-        var xhr;
-        if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers
-        else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
-        var url = 'changeID.php?postID='+newID+'&actiontype='+type;
-        xhr.open('GET', url, false);
-        xhr.onreadystatechange = function () {
-            if(type==='edit')
-            {
-                document.getElementById("editform").innerHTML = xhr.responseText;
-            }
-            else if(type==='delete')
-            {
-                document.getElementById("delForm").action = "deleteEncoder.php?delID="+xhr.responseText+"";
-            }
-            else if(type==='password')
-            {
-                document.getElementById("changePasswordForm").action = "changePassword.php?id="+xhr.responseText+"";
-            }
-            else if(type==='all')
-            {
-                document.getElementById("requestform").innerHTML = xhr.responseText;
-            }
+    function confirmDelete(id, syId) {
+        if (confirm("Are you sure you want to delete?")) {
+            $.ajax({
+                type: "GET",
+                url: "deleteStudentFromSummer.php?id="+id+'&sy='+syId,
+                cache: false,
+                success: function(html){
+                    window.location.href= 'viewStudentsEnrolled.php?sectionId='+syId;
+                }
+            });
         }
-        xhr.send();
-        // ajax stop
-        return false;
-
     }
-
 
 </script>
 

@@ -251,8 +251,21 @@ if(isset($_POST['selectSY']))
 					</ul>
 					</div>
 					</li>
-					
-					 <li>
+
+                    <li>
+                        <a href="#"><i class="fa fa-sitemap fa-fw"></i>School Year<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="../manage/managesy.php?schoolYearID=">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>Enrollment Setup</a>
+                            </li>
+                            <li>
+                                <a href="../summersetup/managesy.php?schoolYearID=">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>Summer Setup</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="../teacher_subject/teacherSubj_frame.php"><i class="fa fa-user-circle fa-fw"></i>Teacher Subject</a>
+                    </li>
                         <a href="#"><i class="fa fa-sitemap fa-fw"></i>School Year<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
 						<?php

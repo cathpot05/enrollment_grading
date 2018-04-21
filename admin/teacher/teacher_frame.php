@@ -236,27 +236,21 @@ if(mysqli_num_rows($result)>0)
 					</ul>
 					</div>
 					</li>
-					
-					 <li>
-                        <a href="#"><i class="fa fa-sitemap fa-fw"></i>School Year<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-						<?php
-										$sql = "Select *from SY ORDER BY schoolYear DESC";
-										$result = mysqli_query($con,$sql);
-										if(mysqli_num_rows($result)>0)
-										{
-											
-											while($row = mysqli_fetch_array($result))
-											{
-												?>
-												<li><a href="../manage/manage.php?schoolYearID=<?php echo $row['ID']?>">&nbsp;&nbsp;<?php echo $row['schoolYear']; ?></a></li>
-												<?php
-											}
-										}
-									?>
-                        </ul>
-                        <!-- second-level-items -->
-                    </li>
+
+                        <li>
+                            <a href="#"><i class="fa fa-sitemap fa-fw"></i>School Year<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="../manage/managesy.php?schoolYearID=">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>Enrollment Setup</a>
+                                </li>
+                                <li>
+                                    <a href="../summersetup/managesy.php?schoolYearID=">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>Summer Setup</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="../teacher_subject/teacherSubj_frame.php"><i class="fa fa-user-circle fa-fw"></i>Teacher Subject</a>
+                        </li>
 					<li>
 						<a href="../log/log_frame.php" ><i class ="fa fa-industry fa-fw"></i>Log Activities</a>
 					</li>

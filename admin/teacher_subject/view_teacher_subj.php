@@ -1,9 +1,18 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: Ms. Cath
+ * Date: 4/21/18
+ * Time: 4:06 AM
+ */
+
 
 include "../../dbcon.php";
 include "../sessionAdmin.php";
 $chosenSY = '';
 $username='';
+$teacherId = $_GET['teacherId'];
+$sy = $_GET['sy'];
 $sql = "Select *from admin where ID=$adminID";
 $result = mysqli_query($con,$sql);
 if(mysqli_num_rows($result)>0)
@@ -13,6 +22,19 @@ if(mysqli_num_rows($result)>0)
         $username=$row['username'];
     }
 }
+
+if($sy == 0){
+    $sql_sy = "Select MAX(A.ID) as ID from sy A";
+    $result_sy = mysqli_query($con,$sql_sy);
+    if(mysqli_num_rows($result_sy)>0)
+    {
+        while($row_sy = mysqli_fetch_array($result_sy))
+        {
+            $sy=$row_sy['ID'];
+        }
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -85,6 +107,7 @@ if(mysqli_num_rows($result)>0)
 					INNER JOIN student ON enrolled_student.student_ID = student.ID
 					ORDER BY DATE DESC LIMIT 6";
                 $resultnotif = mysqli_query($con,$sqlnotif);
+
                 if(mysqli_num_rows($resultnotif)>0)
                 {
                     while($rownotif = mysqli_fetch_array($resultnotif))
@@ -228,7 +251,7 @@ if(mysqli_num_rows($result)>0)
                         <li>
                             <a href="../student/student_frame.php">&nbsp;&nbsp;<i class="fa fa-users fa-fw"></i>Students</a>
                         </li>
-                        <li class="selected">
+                        <li>
                             <a href="../encoder/encoder_frame.php">&nbsp;&nbsp;<i class="fa fa-keyboard-o fa-fw"></i>Encoder</a>
                         </li>
                     </ul>
@@ -246,7 +269,7 @@ if(mysqli_num_rows($result)>0)
                     </li>
                 </ul>
             </li>
-            <li>
+            <li class="selected">
                 <a href="../teacher_subject/teacherSubj_frame.php"><i class="fa fa-user-circle fa-fw"></i>Teacher Subject</a>
             </li>
             <li>
@@ -265,47 +288,43 @@ if(mysqli_num_rows($result)>0)
 <div id="page-wrapper">
     <div class="row">
         <!-- Page Header -->
-        <div class="col-lg-10">
-            <h1 class="page-header">Encoders</h1>
+        <div class="col-lg-6">
+            <?php
+            $sql_teach = "SELECT CONCAT(A.Lname, ', ', A.Fname) as teacher FROM teacher A where A.ID = $teacherId";
+            $result_teach = mysqli_query($con,$sql_teach);
+            if(mysqli_num_rows($result)>0)
+            {
+                while($row_teach = mysqli_fetch_array($result_teach))
+                {
+                    $teacher=$row_teach['teacher'];
+                }
+            }
+
+            ?>
+            <h1 class="page-header text-primary">Teacher - Subject Management</h1>
+            <h4 class="text-primary">Teacher Name: <?php echo $teacher;?></h4>
         </div>
-        <div class="col-lg-2">
-            <div style="float:right; margin-top:40px" >
-                <button class="btn btn-primary btn-md" data-toggle="modal" data-target="#addModal" >
-                    Add New Encoder
-                </button>
-            </div>
-            <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" id="myModalLabel">Add New Encoder</h4>
-                        </div>
-                        <form role="form" action="addEncoder.php" method=post>
-                            <div class="modal-body">
-                                <label>Employee No.</label>
-                                <input type=text class="form-control" name="employeeNo" required>
-                                <label>Password</label>
-                                <input type=password class="form-control"  name="password" required>
-                                <label>Confirm Password</label>
-                                <input type=password class="form-control"  name="password2" required>
-                                <label>Last Name</label>
-                                <input type=text class="form-control" name="Lname" required>
-                                <label>First Name</label>
-                                <input type=text class="form-control" name="Fname" required>
-                                <label>Middle Name</label>
-                                <input type=text class="form-control" name="Mname" required>
-                                <label>Contact No.</label>
-                                <input type=text class="form-control" name="contactNo" required>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">Save</button>
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+        <div class="col-lg-6">
+            <div class="form-inline" style="float:right; margin-top:40px" >
+                <label>SY:</label>
+                <select class="form-control chosen" name="cboSY" id="cboSY">
+                    <?php
+                    $sql = "SELECT * FROM sy ORDER BY LEFT(schoolYear,4) DESC";
+                    $result = mysqli_query($con,$sql);
+                    if(mysqli_num_rows($result)> 0)
+                    {
+                        while($row = mysqli_fetch_array($result))
+                        {
+                            echo '
+                       <option value='.$row["ID"].'>'.$row["schoolYear"].'</option>
+                       ';
+                        }
+                    }
+                    ?>
+                </select>
             </div>
         </div>
+
         <!--End Page Header -->
     </div>
     <div class="row">
@@ -313,23 +332,38 @@ if(mysqli_num_rows($result)>0)
             <!-- Advanced Tables -->
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    List of Encoders
+                    List of Handled Subjects
+                    <button style="padding:3px;" class="pull-right btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" >
+                        Add Subjects
+                    </button>
+
+
                 </div>
+
                 <div class="panel-body">
                     <div class="table-responsive">
                         <table class="table table-hover" id="dataTables-example">
                             <thead>
                             <tr>
-                                <th>Employee No.</th>
-                                <th>Name</th>
-                                <th>Contact No.</th>
-                                <th width=5%>Edit</th>
-                                <th width=5%>Delete</th>
+                                <th>Subject</th>
+                                <th>Grade</th>
+                                <th>Section</th>
+                                <th>Delete</th>
                             </tr>
                             </thead>
                             <tbody>
                             <?php
-                            $sql = "Select *from encoder";
+                            $sql = "SELECT A.ID, A.sy_level_subject_ID, A.sy_level_section_ID, E.subject, G.section, B.Fname, B.Lname, H.level, H.ID as level_id
+                                FROM teacher_section_subject A
+                                INNER JOIN teacher B ON A.teacher_ID = B.ID
+                                INNER JOIN sy_level_subject C ON A.sy_level_subject_ID = C.ID
+                                INNER JOIN sy_level_section D ON A.sy_level_section_ID = D.ID
+                                INNER JOIN subject E ON C.subject_ID = E.ID
+                                INNER JOIN sy_level F ON D.sy_level_ID = F.ID
+                                INNER JOIN level H ON F.level_id = H.ID
+                                INNER JOIN section G ON D.section_ID = G.ID
+                                WHERE A.teacher_ID = $teacherId AND F.sy_ID = $sy
+";
                             $result = mysqli_query($con,$sql);
                             if(mysqli_num_rows($result)>0)
                             {
@@ -337,15 +371,10 @@ if(mysqli_num_rows($result)>0)
                                 {
                                     ?>
                                     <tr>
-                                        <td><?php echo $row['employeeNo']; ?></td>
-                                        <?php $mid = $row['Mname'];?>
-                                        <td><?php echo $row['Lname'].", ".$row['Fname']." ".$mid[0]."." ?></td>
-                                        <td><?php echo $row['contactNo']; ?></td>
-                                        <td>
-                                            <center><span  id="icon" class="fa fa-lock fa-fw" data-toggle="modal" data-target="#changePasswordModal"  onclick="changeID(<?php echo $row['ID']; ?>,'password');"></span>
-                                                <span  id="icon" class="fa fa-edit fa-fw" data-toggle="modal" data-target="#editModal"  onclick="changeID(<?php echo $row['ID']; ?>,'edit');"></span>
-                                            </center></td>
-                                        <td><center><span id="icon" class="fa fa-times fa-fw" data-toggle="modal" data-target="#deleteModal" onclick="changeID(<?php echo $row['ID']; ?>,'delete');"></span></center></td>
+                                        <td><?php echo strtoupper( $row['subject']); ?></td>
+                                        <td><?php echo strtoupper( $row['level']); ?></td>
+                                        <td><?php echo strtoupper($row['section']); ?></td>
+                                        <td><a href="deleteTeacherSubj.php?id=<?php echo $row['ID'];?>"><span class="fa fa-trash"></span></a></td>
                                     </tr>
                                 <?php
                                 }
@@ -354,11 +383,79 @@ if(mysqli_num_rows($result)>0)
                             </tbody>
                         </table>
 
+
+                        <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title" id="myModalLabel">Add Handled Subject</h4>
+                                    </div>
+                                    <form role="form" action="addTeacherSubjects.php" method=post>
+                                        <div class="modal-body">
+                                            <table class="table table-hover table-inverse" id="dataTables-example" style="border-style:inset; margin-top: 20px;">
+                                                <caption>Chooose Subject</caption>
+                                                <thead>
+                                                <tr>
+                                                    <th><input type="checkbox" name="checkall" id="checkall" value=""/> Check All</th>
+                                                    <th>Level</th>
+                                                    <th>Section</th>
+                                                    <th>Subject</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                <input type="hidden" name="teacherId" value="<?php echo $teacherId; ?>" />
+                                                <input type="hidden" name="sy" value="<?php echo $sy; ?>" />
+                                                <?php
+                                                $sql_section = "SELECT A.ID as sy_level_subject_id, B.ID as sy_level_section_id, D.section, G.subject, F.level, E.schoolYear, H.teacher_ID
+                                                    FROM sy_level_subject A
+                                                    INNER JOIN sy_level_section B ON B.sy_level_ID =  A.sy_level_ID
+                                                    INNER JOIN sy_level C ON A.sy_level_ID = C.level_ID
+                                                    INNER JOIN section D ON B.section_ID = D.ID
+                                                    INNER JOIN sy E ON C.sy_ID = E.ID
+                                                    INNER JOIN level F ON C.level_ID = F.ID
+                                                    INNER JOIN subject G ON A.subject_ID = G.ID
+                                                    LEFT JOIN teacher_section_subject H ON A.ID = H.sy_level_subject_ID AND B.ID = H.sy_level_section_ID
+                                                    WHERE H.teacher_ID IS NULL
+                                                    AND E.ID = $sy
+                                                    ORDER BY D.section, F.level ASC";
+                                                $result_section = mysqli_query($con,$sql_section);
+
+                                                if(mysqli_num_rows($result_section)>0)
+                                                {
+                                                    while($row_section = mysqli_fetch_array($result_section))
+                                                    {
+                                                        $section = $row_section["section"];
+                                                        echo '
+         <tr>
+            <td width="20%" ><input type="checkbox" name="checklist_section[]" value="'.$row_section["sy_level_subject_id"].'_'.$row_section["sy_level_section_id"].'"/>
+             </td>
+            <td>'.$row_section["level"].' <input type=hidden class="form-control" name=sylevelSecId_'.$row_section["sy_level_subject_id"].'_'.$row_section["sy_level_section_id"].'  value="'.$row_section["sy_level_section_id"].'"/></td>
+            <td>'.$row_section["section"].' <input type=hidden class="form-control" name=sylevelSubjId_'.$row_section["sy_level_subject_id"].'_'.$row_section["sy_level_section_id"].'  value="'.$row_section["sy_level_subject_id"].'"/></td>
+            <td>'.$row_section["subject"].'</td>
+         </tr>
+        ';
+                                                    }
+                                                }
+                                                ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+
                         <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h4 class="modal-title" id="myModalLabel">Delete Encoder</h4>
+                                        <h4 class="modal-title" id="myModalLabel">Delete Teacher</h4>
                                     </div>
                                     <form role="form" action="" method=post id=delForm>
                                         <div class="modal-body">
@@ -377,7 +474,7 @@ if(mysqli_num_rows($result)>0)
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h4 class="modal-title" id="myModalLabel">Edit Encoder</h4>
+                                        <h4 class="modal-title" id="myModalLabel">Edit Teacher</h4>
                                     </div>
                                     <div id=editform>
                                     </div>
@@ -394,12 +491,8 @@ if(mysqli_num_rows($result)>0)
     </div>
     <div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog" style="width:80%">
-
             <div id=requestform>
             </div>
-
-
-
         </div>
     </div>
 
@@ -443,39 +536,18 @@ if(mysqli_num_rows($result)>0)
     });
 </script>
 <script type="text/javascript">
-    function reload(){
-        document.getElementById("myform").submit();
-    }
 
-    function changeID(newID,type){
-        var xhr;
-        if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers
-        else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
-        var url = 'changeID.php?postID='+newID+'&actiontype='+type;
-        xhr.open('GET', url, false);
-        xhr.onreadystatechange = function () {
-            if(type==='edit')
-            {
-                document.getElementById("editform").innerHTML = xhr.responseText;
-            }
-            else if(type==='delete')
-            {
-                document.getElementById("delForm").action = "deleteEncoder.php?delID="+xhr.responseText+"";
-            }
-            else if(type==='password')
-            {
-                document.getElementById("changePasswordForm").action = "changePassword.php?id="+xhr.responseText+"";
-            }
-            else if(type==='all')
-            {
-                document.getElementById("requestform").innerHTML = xhr.responseText;
-            }
-        }
-        xhr.send();
-        // ajax stop
-        return false;
+    $('#cboSY option[value="<?php echo $sy; ?>"]').attr('selected', 'selected');
+    $("#cboSY").on('change', function() {
+        var x =$("#cboSY").val();
+        window.location.href = "view_teacher_subj.php?teacherId=<?php echo $teacherId;?>&sy="+x;
+    });
 
-    }
+    $("#checkall").click(function(){
+        $('input:checkbox').not(this).prop('checked', this.checked);
+    });
+
+
 
 
 </script>
