@@ -79,115 +79,7 @@ if(isset($_POST['selectSY']))
             <ul class="nav navbar-top-links navbar-right">
                 <!-- main dropdown -->
 
-				<li class="dropdown">
-				<?php
-					$sqlcount = "Select COUNT(ID) as id from grade_actions where status=0";
-					$resultcount = mysqli_query($con,$sqlcount);
-					$rowcount = mysqli_fetch_array($resultcount);
-					$notifCount=$rowcount['id'];
-				?>
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <span class="top-label label label-warning"><?php echo $notifCount; ?></span>  <i class="fa fa-bell fa-3x"></i>
-                    </a>
-                    <!-- dropdown alerts-->
-					<ul class="dropdown-menu dropdown-alerts">
-					
-					<?php
-					$sqlnotif = "Select teacher.Fname as TFname, teacher.Lname as TLname, student.Fname as SFname, student.Lname as SLname, grade_actions.actionType,grade_actions.status,grade_actions.Date, grade_actions.ID  FROM grade_actions
-					INNER JOIN grade ON grade_actions.grade_ID = grade.ID 
-					INNER JOIN sy_section_subject ON grade.sy_section_subject_ID = sy_section_subject.ID 
-					INNER JOIN teacher ON sy_section_subject.teacher_ID = teacher.ID
-					INNER JOIN enrolled_student ON grade.enrolled_student_ID = enrolled_student.ID
-					INNER JOIN student ON enrolled_student.student_ID = student.ID
-					ORDER BY DATE DESC LIMIT 6";
-					$resultnotif = mysqli_query($con,$sqlnotif);
-					if(mysqli_num_rows($resultnotif)>0)
-					{
-						while($rownotif = mysqli_fetch_array($resultnotif))
-						{
-							if($rownotif['actionType']==1)
-								{
-									if($rownotif['status'] == 0)
-									{
-										
-										?>
-									<li>
-										<a data-toggle="modal" data-target="#requestModal" onclick="changeID(<?php echo $rownotif['ID']; ?>,'all');"  href=#>
-											<div >
-												<i class="fa fa-edit fa-fw"></i><strong><?php echo $rownotif['TFname']." ".$rownotif['TLname']; ?></strong>
-												<span class="pull-right text-muted small"><?php echo date("M-d-y h:i",strtotime($rownotif['Date'])); ?></span>
-												<br>
-												<i>Edited <?php echo $rownotif['SFname']." ".$rownotif['SLname']; ?>'s grades</i>
-												<span class="pull-right text-muted small" >Pending</span>
-											</div>
-										</a>
-									</li>
-									<li class="divider "></li>
-                        
-									<?php	
-									}
-									else if($rownotif['status'] == 1)
-									{
-											?>
-									<li  style="background-color:#f2f2f2 ">
-										<a>
-											<div>
-												<i class="fa fa-edit fa-fw"></i><strong><?php echo $rownotif['TFname']." ".$rownotif['TLname']; ?></strong>
-												<span class="pull-right text-muted small"><?php echo date("M-d-y h:i",strtotime($rownotif['Date'])); ?></span>
-												<br>
-												<i>Edited <?php echo $rownotif['SFname']." ".$rownotif['SLname']; ?>'s grades</i>
-												<span class="pull-right text-muted small"  style="background-color:#f2f2f2 ">Approved</span>
-											</div>
-										</a>
-									</li>
-									<li class="divider " style="background-color:#f2f2f2 "></li>
-                        
-									<?php	
-										
-									}
-									 else if($rownotif['status'] == 2)
-									{
-											?>
-									<li style="background-color:#f2f2f2 ">
-										<a>
-											<div>
-												<i class="fa fa-edit fa-fw"></i><strong><?php echo $rownotif['TFname']." ".$rownotif['TLname']; ?></strong>
-												<span class="pull-right text-muted small"><?php echo date("M-d-y h:i",strtotime($rownotif['Date'])); ?></span>
-												<br>
-												<i>Edited <?php echo $rownotif['SFname']." ".$rownotif['SLname']; ?>'s grades</i>
-												<span class="pull-right text-muted small"  style="background-color:#f2f2f2 ">Rejected</span>
-											</div>
-										</a>
-									</li>
-									<li class="divider " style="background-color:#f2f2f2 "></li>
-									<?php	
-										
-									}
-									
-									
-								}
-							?>
-							
-							
-							<?php
-						}
-					}
-					
-					
-					
-					
-					
-					?>
-					<li>
-                            <a class="text-center" data-toggle="modal" data-target="#requestModal" onclick="changeID(0,'all');">
-                                <strong>Show All Request</strong>
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-                        </li>
-					</ul>
 
-                    <!-- end dropdown-alerts -->
-                </li>
                 <li class="dropdown">
                     <a href="../logoutSessionAdmin.php">
                         <i class="fa fa-sign-out fa-3x"></i>
@@ -265,6 +157,9 @@ if(isset($_POST['selectSY']))
                     </li>
                     <li>
                         <a href="../teacher_subject/teacherSubj_frame.php"><i class="fa fa-user-circle fa-fw"></i>Teacher Subject</a>
+                    </li>
+                    <li>
+                        <a href="../../reports/report_frame.php"><i class="fa fa-list fa-fw"></i>Reports</a>
                     </li>
 					<li>
 						<a href="../log/log_frame.php" ><i class ="fa fa-industry fa-fw"></i>Log Activities</a>

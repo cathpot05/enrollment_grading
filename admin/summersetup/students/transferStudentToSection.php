@@ -1,6 +1,6 @@
 <?php
 include "../../../dbcon.php";
-
+include "../../sessionAdmin.php";
 $stud_enrollID = $_POST['stud_enrollID'];
 $sectionId = $_POST['sectionId'];
 $transferTo = $_POST['cboSection'];
@@ -42,6 +42,25 @@ $transferTo = $_POST['cboSection'];
 	
 	 $sql2 = "UPDATE enrolled_student SET sy_level_section_ID = '$transferTo' where ID=$stud_enrollID";
 	$result2 = mysqli_query($con,$sql2);
+
+
+
+        $username='';
+        $sqlAdmin = "Select *from admin where ID=$adminID";
+        $resultAdmin = mysqli_query($con,$sqlAdmin);
+        if(mysqli_num_rows($resultAdmin)>0)
+        {
+            while($rowAdmin = mysqli_fetch_array($resultAdmin))
+            {
+                $username=$rowAdmin['username'];
+            }
+        }
+
+
+
+        $sql3 = "INSERT INTO log(user,userType,logType) VALUES('$username','Admin','Transfer Student in Summer Subject Per SY')";
+        $result23 = mysqli_query($con,$sql3);
+
 	header("Location:viewStudentsEnrolled.php?sectionId=".$sectionId."");
 }
 

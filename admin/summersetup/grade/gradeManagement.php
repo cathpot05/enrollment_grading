@@ -7,6 +7,7 @@
  */
 
 include "../../../dbcon.php";
+include "../../sessionAdmin.php";
 $syLevelId = $_POST['sylevelId'];
 $gradeId = $_POST['gradeId'];
 $syId = $_POST['grade_sy'];
@@ -22,11 +23,41 @@ if($gradeId > 0){
             end = '".$q1E."'
             where ID=$gradeId";
 $result2 = mysqli_query($con,$sql2);
+
+
+    $username='';
+    $sqlAdmin = "Select *from admin where ID=$adminID";
+    $resultAdmin = mysqli_query($con,$sqlAdmin);
+    if(mysqli_num_rows($resultAdmin)>0)
+    {
+        while($rowAdmin = mysqli_fetch_array($resultAdmin))
+        {
+            $username=$rowAdmin['username'];
+        }
+    }
+
+
+
+    $sql2 = "INSERT INTO log(user,userType,logType) VALUES('$username','Admin','Update Summer Grade Sched')";
+    $result2 = mysqli_query($con,$sql2);
 }else{
     echo $sql = "INSERT INTO summer_grade_sched (sy_level_ID, start, end)
         VALUES('".$syLevelId."', '".$q1S."', '".$q1E."')";
     $result = mysqli_query($con,$sql);
 
+
+    $username='';
+    $sqlAdmin = "Select *from admin where ID=$adminID";
+    $resultAdmin = mysqli_query($con,$sqlAdmin);
+    if(mysqli_num_rows($resultAdmin)>0)
+    {
+        while($rowAdmin = mysqli_fetch_array($resultAdmin))
+        {
+            $username=$rowAdmin['username'];
+        }
+    }
+    $sql2 = "INSERT INTO log(user,userType,logType) VALUES('$username','Admin','Added Summer Grade Sched')";
+    $result2 = mysqli_query($con,$sql2);
 
 }
 

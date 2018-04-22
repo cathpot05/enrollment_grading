@@ -8,6 +8,7 @@
 
 
 include "../../../dbcon.php";
+include "../../sessionAdmin.php";
 $status = $_POST['radio_section'];
 $syLevelId = $_POST['syLevelId_subj'];
 $sy_Id = $_POST['sy_Id_subj'];
@@ -32,6 +33,26 @@ if($status == 'prev_year'){
                 //echo $conn->error();
             }
         }
+
+
+
+
+
+        $username='';
+        $sqlAdmin = "Select *from admin where ID=$adminID";
+        $resultAdmin = mysqli_query($con,$sqlAdmin);
+        if(mysqli_num_rows($resultAdmin)>0)
+        {
+            while($rowAdmin = mysqli_fetch_array($resultAdmin))
+            {
+                $username=$rowAdmin['username'];
+            }
+        }
+
+        $sql3 = "INSERT INTO log(user,userType,logType) VALUES('$username','Admin','Added Subject Per SY')";
+        $result3 = mysqli_query($con,$sql3);
+
+
     }
 
 
@@ -54,5 +75,19 @@ if($status == 'prev_year'){
             header("Location:../managesy.php?schoolYearID=".$sy_Id."");
             }
         }
+
+        $username='';
+        $sqlAdmin = "Select *from admin where ID=$adminID";
+        $resultAdmin = mysqli_query($con,$sqlAdmin);
+        if(mysqli_num_rows($resultAdmin)>0)
+        {
+            while($rowAdmin = mysqli_fetch_array($resultAdmin))
+            {
+                $username=$rowAdmin['username'];
+            }
+        }
+
+        $sql3 = "INSERT INTO log(user,userType,logType) VALUES('$username','Admin','Added Subject Per SY')";
+        $result3 = mysqli_query($con,$sql3);
     }
 }

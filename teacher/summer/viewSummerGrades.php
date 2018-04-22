@@ -151,9 +151,10 @@ $now = date('Y-m-d');
 					</tr>
 					
 				<?php
-				$sql = "SELECT C.*,D.grade,B.status, E.start, E.end, B.ID as seID, A.ID as ssID from summer_subject A
-						INNER JOIN summer_enrolled B ON B.summer_subject_ID = A.ID
-						INNER JOIN student C ON B.student_ID = C.ID
+				$sql = "SELECT C.*,D.grade,B.status, E.start, E.end, B.ID as seID, A.ID as ssID
+				        from summer_subject A
+						LEFT JOIN summer_enrolled B ON B.summer_subject_ID = A.ID
+						LEFT JOIN student C ON B.student_ID = C.ID
 						LEFT JOIN summer_grade D ON D.summer_subject_ID = A.ID AND D.summer_enrolled_ID = B.ID
 						LEFT JOIN summer_grade_sched E ON E.sy_level_ID = A.sy_level_ID
 						where A.ID = $id GROUP BY E.ID";
@@ -167,12 +168,12 @@ $now = date('Y-m-d');
 								
 								<tr>
 									<td><strong>Start</strong></td>
-									<td><?php if($row['grade']!= null)echo date('M d, Y', strtotime($row['grade'])); else echo "N/A"; ?></td>
+									<td><?php if($row['start']!= null)echo date('M d, Y', strtotime($row['start'])); else echo "N/A"; ?></td>
 									
 								</tr>
 								<tr>
 									<td><strong>End</strong></td>
-									<td><?php if($row['grade']!= null)echo date('M d, Y', strtotime($row['grade'])); else echo "N/A"; ?></td>	
+									<td><?php if($row['end']!= null)echo date('M d, Y', strtotime($row['end'])); else echo "N/A"; ?></td>
 								</tr>
 								
 								<?php								
@@ -212,12 +213,13 @@ $now = date('Y-m-d');
 											</thead>
 											<tbody>
 											<?php
-											$sql = "SELECT C.*,D.grade,B.status, E.start, E.end, B.ID as seID, A.ID as ssID from summer_subject A
-													INNER JOIN summer_enrolled B ON B.summer_subject_ID = A.ID
-													INNER JOIN student C ON B.student_ID = C.ID
-													LEFT JOIN summer_grade D ON D.summer_subject_ID = A.ID AND D.summer_enrolled_ID = B.ID
-													LEFT JOIN summer_grade_sched E ON E.sy_level_ID = A.sy_level_ID
-													where A.ID = $id";
+											$sql = "SELECT C.*,D.grade,B.status, E.start, E.end, B.ID as seID, A.ID as ssID
+                                            FROM summer_enrolled B
+                                            INNER JOIN summer_subject A ON A.ID = B.summer_subject_ID
+                                            INNER JOIN student C ON B.student_ID = C.ID
+                                            LEFT JOIN summer_grade D ON B.summer_subject_ID = D.summer_subject_ID
+                                            LEFT JOIN summer_grade_sched E ON E.sy_level_ID = A.sy_level_ID
+                                            where A.ID = $id";
 											$result = mysqli_query($con,$sql);
 											if(mysqli_num_rows($result)>0)
 											{

@@ -7,6 +7,7 @@
  */
 
 include "../../../dbcon.php";
+include "../../sessionAdmin.php";
  $status = $_POST['radio_section'];
  $syLevelId = $_POST['syLevelId'];
 $sy_Id = $_POST['sy_Id'];

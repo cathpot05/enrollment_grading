@@ -82,7 +82,7 @@ WHERE A.ID = $section";
                                          SELECT XX.student_ID FROM summer_enrolled XX
                                  		INNER  JOIN summer_subject BB ON XX.summer_subject_ID = BB.ID
                                          INNER JOIN sy_level YY ON BB.sy_level_ID = YY.ID
-                                        WHERE  YY.sy_ID = $syId
+                                        WHERE  YY.sy_ID = $syId AND XX.summer_subject_ID = $section
                                      ) AND A.status = 0
                                      AND (B.q1+B.q2+B.q3+B.q4)/4 <75
                             GROUP BY A.ID

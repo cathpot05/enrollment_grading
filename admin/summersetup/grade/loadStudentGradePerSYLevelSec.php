@@ -66,6 +66,8 @@ while($row1 = mysqli_fetch_array($result1))
 
                         if($row_section["grade"] == null){
                             $q1 =  "NO GRADE YET";
+                        }else{
+                            $q1 = $row_section["grade"]  ;
                         }
 
 
