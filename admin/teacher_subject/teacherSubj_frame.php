@@ -107,7 +107,7 @@ if(mysqli_num_rows($result)>0)
                 <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
             </li>
             <li>
-                <a href="#"><i class="fa fa-sitemap fa-fw"></i>Initials<span class="fa arrow"></span></a>
+                <a href="#"><i class="fa fa-sitemap fa-fw"></i>Management Setup<span class="fa arrow"></span></a>
                 <div class="nav-collapse">
                     <ul class="nav nav-second-level">
                         <li>
@@ -130,6 +130,9 @@ if(mysqli_num_rows($result)>0)
                         </li>
                         <li>
                             <a href="../encoder/encoder_frame.php">&nbsp;&nbsp;<i class="fa fa-keyboard-o fa-fw"></i>Encoder</a>
+                        </li>
+                        <li>
+                            <a href="../admin/admin_frame.php">&nbsp;&nbsp;<i class="fa fa-user-plus fa-fw"></i>Admin</a>
                         </li>
                     </ul>
                 </div>

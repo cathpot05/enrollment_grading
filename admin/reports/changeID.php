@@ -173,13 +173,14 @@ else if($type == 'student')
 else if($type == 'teacher')
 {
 	?>
+
 	
 	<?php
 }
 else if($type == 'section')
 {
 	?>
-	
+
 	<?php
 }
 else if($type == 'subject')

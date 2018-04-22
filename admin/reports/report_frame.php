@@ -219,7 +219,7 @@ $sqlSY = "Select *from sy ORDER BY RIGHT(schoolYear,4) DESC LIMIT 1";
                         <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
                     </li>
                     <li>
-					 <a href="#"><i class="fa fa-sitemap fa-fw"></i>Initials<span class="fa arrow"></span></a>
+					 <a href="#"><i class="fa fa-sitemap fa-fw"></i>Management Setup<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                     
                    
@@ -243,6 +243,9 @@ $sqlSY = "Select *from sy ORDER BY RIGHT(schoolYear,4) DESC LIMIT 1";
                     </li>
                     <li>
                         <a href="../encoder/encoder_frame.php">&nbsp;&nbsp;<i class="fa fa-keyboard-o fa-fw"></i>Encoder</a>
+                    </li>
+                    <li>
+                        <a href="../admin/admin_frame.php">&nbsp;&nbsp;<i class="fa fa-user-plus fa-fw"></i>Admin</a>
                     </li>
 					</ul>
 					</li>
@@ -281,9 +284,9 @@ $sqlSY = "Select *from sy ORDER BY RIGHT(schoolYear,4) DESC LIMIT 1";
                     <h1 class="page-header">Reports<br>
 					<div class=btn-group >
 					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('sy');" ><span class ="fa fa-industry fa-fw" ></span> School Year</button>
-					<!--<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('section');"><span class ="fa fa-list-ul fa-fw" ></span> Sections</button>
-					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('subject');"><span class ="fa fa-book fa-fw" ></span> Subjects</button>
-					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('subject');"><span class ="fa fa-chart fa-fw" ></span> Summer</button>-->
+					<button class="btn btn-primary btn-sm btnSection" data-toggle="modal" data-target="#addModal" onclick="changeID('section');"><span class ="fa fa-list-ul fa-fw" ></span> Sections</button>
+					<button class="btn btn-primary btn-sm btnLevel" data-toggle="modal" data-target="#addModal" onclick="changeID('level');"><span class ="fa fa-book fa-fw" ></span> Grade Level</button>
+					<button class="btn btn-primary btn-sm btnSummer" data-toggle="modal" data-target="#addModal" onclick="changeID('summer');"><span class ="fa fa-chart fa-fw" ></span> Summer</button>
 					</div>
 					</h1>
 					
@@ -332,22 +335,22 @@ $sqlSY = "Select *from sy ORDER BY RIGHT(schoolYear,4) DESC LIMIT 1";
 					{
                         document.getElementById("reportTables").innerHTML = xhr.responseText;
                     }
-                    else if(type==='student')
+                   /* else if(type==='section')
                      {
                           document.getElementById("reportTables").innerHTML = xhr.responseText;
                      }
-					 else if(type==='teacher')
+					 else if(type==='level')
                      {
                           document.getElementById("reportTables").innerHTML = xhr.responseText;
                      }
-					 else if(type==='section')
+					 else if(type==='summer')
                      {
                           document.getElementById("reportTables").innerHTML = xhr.responseText;
                      }
 					 else if(type==='subject')
                      {
                           document.getElementById("reportTables").innerHTML = xhr.responseText;
-                     }
+                     }*/
 					 
 			}
 			xhr.send();
@@ -371,7 +374,28 @@ $sqlSY = "Select *from sy ORDER BY RIGHT(schoolYear,4) DESC LIMIT 1";
 			// ajax stop
 			return false;
 	}
-	
+
+    $(".btnSection").on('click', function() {
+        $.ajax({
+            type: "GET",
+            url: "schoolYearFilter.php?",
+            cache: false,
+            success: function(html){
+                $("#reportTables").empty(html);
+                $("#reportTables").append(html);
+            }
+        });
+    });
+
+    $(".btnLevel").on('click', function() {
+        $("#reportTables").empty();
+    });
+
+    $(".btnSummer").on('click', function() {
+        $("#reportTables").empty();
+    });
+
+
 
 	</script>
 	
