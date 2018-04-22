@@ -71,7 +71,7 @@ $result2 = mysqli_query($con,$sql2);
 
 }
 
-//header("Location:../managesy.php?schoolYearID=".$syId."");
+header("Location:../managesy.php?schoolYearID=".$syId."");
 
 
 ?>

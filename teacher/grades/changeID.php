@@ -17,19 +17,19 @@ $sql2 = "SELECT *from grade where ID = $id";
 			<div class=row>
 				<div class="col-md-3">
 				<label>1st Qtr</label>
-				<input type=number step="0.01" class="form-control" name=q1 value=<?php echo $row2['q1'];?> max=100>
+				<input type=number step="0.01" class="form-control" min="50" name=q1 value=<?php echo $row2['q1'];?> max=100>
 				</div>
 				<div class="col-md-3">
 				<label>2nd Qtr</label>
-				<input type=number step="0.01" class="form-control" name=q2 value=<?php echo $row2['q2'];?> max=100>
+				<input type=number step="0.01" class="form-control" min="50" name=q2 value=<?php echo $row2['q2'];?> max=100>
 				</div>
 				<div class="col-md-3">
 				<label>3rd Qtr</label>
-				<input type=number step="0.01" class="form-control" name=q3 value=<?php echo $row2['q3'];?> max=100>
+				<input type=number step="0.01" class="form-control" min="50" name=q3 value=<?php echo $row2['q3'];?> max=100>
 				</div>
 				<div class="col-md-3">
 				<label>4th Qtr</label>
-				<input type=number step="0.01" class="form-control" name=q4 value=<?php echo $row2['q4'];?> max=100>
+				<input type=number step="0.01" class="form-control" min="50" name=q4 value=<?php echo $row2['q4'];?> max=100>
 				</div>
 			</div>
 			</div>
@@ -55,19 +55,19 @@ else if($type=="grade2")
 			<div class=row>
 				<div class="col-md-3">
 				<label>1st Qtr</label>
-				<input type=number step="0.01" class="form-control" name=q1 value=0 max=100>
+				<input type=number step="0.01" class="form-control" name=q1 value=0 max=100 min=50/>
 				</div>
 				<div class="col-md-3">
 				<label>2nd Qtr</label>
-				<input type=number step="0.01" class="form-control" name=q2 value=0 max=100>
+				<input type=number step="0.01" class="form-control" name=q2 value=0 max=100 min=50/>
 				</div>
 				<div class="col-md-3">
 				<label>3rd Qtr</label>
-				<input type=number step="0.01" class="form-control" name=q3 value=0 max=100>
+				<input type=number step="0.01" class="form-control" name=q3 value=0 max=100 min=50/>
 				</div>
 				<div class="col-md-3">
 				<label>4th Qtr</label>
-				<input type=number step="0.01" class="form-control" name=q4 value=0 max=100>
+				<input type=number step="0.01" class="form-control" name=q4 value=0 max=100 min=50/>
 				</div>
 			</div>
 			</div>

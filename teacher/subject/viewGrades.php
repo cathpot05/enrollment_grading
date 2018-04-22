@@ -244,7 +244,7 @@ $now = date('Y-m-d');
 															{
 																
 																?>
-																<input max="100" step="0.01" name="q1_<?php echo $row['esID']; ?>_<?php echo $row['tssID']; ?>" type=number value="<?php if($row['q1'] != null && $row['q1'] >0){ echo $row['q1']; }else { echo "50"; }?>" style="width:100%">
+																<input max="100" min="50" step="0.01" name="q1_<?php echo $row['esID']; ?>_<?php echo $row['tssID']; ?>" type=number value="<?php if($row['q1'] != null && $row['q1'] >0){ echo $row['q1']; }else { echo "50"; }?>" style="width:100%">
 																<?php
 															}
 															else if(strtotime($now) > strtotime($row['q1End']) && $row['q1End'] != null)
@@ -266,7 +266,7 @@ $now = date('Y-m-d');
 															if(strtotime($now) >= strtotime($row['q2Start']) && strtotime($now) <= strtotime($row['q2End'])  && $row['status'] == 0)
 															{
 																?>
-															<input max="100" step="0.01" name="q2_<?php echo $row['esID']; ?>_<?php echo $row['tssID']; ?>" type=number value="<?php if($row['q2'] != null && $row['q2'] >0){ echo $row['q2']; }else { echo "50"; } ?>" style="width:100%" >
+															<input max="100" min="50" step="0.01" name="q2_<?php echo $row['esID']; ?>_<?php echo $row['tssID']; ?>" type=number value="<?php if($row['q2'] != null && $row['q2'] >0){ echo $row['q2']; }else { echo "50"; } ?>" style="width:100%" >
 															<?php
 															}
 															else if(strtotime($now) > strtotime($row['q2End']) && $row['q2End'] != null)
@@ -285,7 +285,7 @@ $now = date('Y-m-d');
 															if(strtotime($now) >= strtotime($row['q3Start']) && strtotime($now) <= strtotime($row['q3End']) && $row['status'] == 0)
 															{
 															?>
-																<input max="100" step="0.01" name="q3_<?php echo $row['esID']; ?>_<?php echo $row['tssID']; ?>" type=number value="<?php if($row['q3'] != null && $row['q3'] >0){ echo $row['q3']; }else { echo "50"; } ?>" style="width:100%" >
+																<input max="100" min="50" step="0.01" name="q3_<?php echo $row['esID']; ?>_<?php echo $row['tssID']; ?>" type=number value="<?php if($row['q3'] != null && $row['q3'] >0){ echo $row['q3']; }else { echo "50"; } ?>" style="width:100%" >
 															<?php
 															}
 															else if(strtotime($now) > strtotime($row['q3End'])  && $row['q3End'] != null)

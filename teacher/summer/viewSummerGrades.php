@@ -217,7 +217,7 @@ $now = date('Y-m-d');
                                             FROM summer_enrolled B
                                             INNER JOIN summer_subject A ON A.ID = B.summer_subject_ID
                                             INNER JOIN student C ON B.student_ID = C.ID
-                                            LEFT JOIN summer_grade D ON B.summer_subject_ID = D.summer_subject_ID
+                                            LEFT JOIN summer_grade D ON B.summer_subject_ID = D.summer_subject_ID AND D.summer_enrolled_ID = B.ID
                                             LEFT JOIN summer_grade_sched E ON E.sy_level_ID = A.sy_level_ID
                                             where A.ID = $id";
 											$result = mysqli_query($con,$sql);
@@ -233,7 +233,7 @@ $now = date('Y-m-d');
 															if(strtotime($now) >= strtotime($row['start']) && strtotime($now) <= strtotime($row['end']) && $row['status'] == 0)
 															{
 																?>
-															<input max="100" name="grade_<?php echo $row['seID']; ?>_<?php echo $row['ssID']; ?>" type=number value="<?php if($row['grade'] != null && $row['grade'] >0){ echo $row['grade']; }else { echo "0"; } ?>" style="width:100%" >
+															<input step="0.01" max="100" min="50" name="grade_<?php echo $row['seID']; ?>_<?php echo $row['ssID']; ?>" type=number value="<?php if($row['grade'] != null && $row['grade'] >0){ echo $row['grade']; }else { echo "0"; } ?>" style="width:100%" >
 															<?php
 															}
 															else if(strtotime($now) > strtotime($row['end'])  && $row['end'] != null)

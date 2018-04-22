@@ -149,6 +149,9 @@ $subjectCount = mysqli_num_rows($result);
                     <li>
                         <a href="../encoder/encoder_frame.php">&nbsp;&nbsp;<i class="fa fa-keyboard-o fa-fw"></i>Encoder</a>
                     </li>
+                    <li>
+                        <a href="../admin/admin_frame.php">&nbsp;&nbsp;<i class="fa fa-user-plus fa-fw"></i>Admin</a>
+                    </li>
 					</ul>
 					</li>
 					

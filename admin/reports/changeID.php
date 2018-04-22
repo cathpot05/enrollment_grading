@@ -83,7 +83,7 @@ if($type == 'sy')
 else if($type == 'section')
 {
 	?>
-	
+
 	<?php
 }
 else if($type == 'subject')
