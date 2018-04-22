@@ -127,14 +127,14 @@ WHERE A.ID = $IdSY";
                                     FROM grade X
                                     WHERE X.enrolled_student_ID = B.enrolled_student_ID
                                     ) AS Grade_Average
-                            FROM enrolled_student A
-                            INNER JOIN grade B ON A.ID = B.enrolled_student_ID
-                            INNER JOIN student C ON A.student_ID = C.ID
-                            INNER JOIN sy_level_section D ON A.sy_level_section_ID = D.ID
-                            INNER JOIN sy_level E ON D.sy_level_ID =  E.ID
-                            INNER JOIN sy F ON E.sy_ID = F.ID
-                            WHERE F.ID = $prevSyID
-                             AND A.student_ID NOT IN (
+									FROM enrolled_student A
+									INNER JOIN grade B ON A.ID = B.enrolled_student_ID
+									INNER JOIN student C ON A.student_ID = C.ID
+									INNER JOIN sy_level_section D ON A.sy_level_section_ID = D.ID
+									INNER JOIN sy_level E ON D.sy_level_ID =  E.ID
+									INNER JOIN sy F ON E.sy_ID = F.ID
+									WHERE F.ID = $prevSyID
+									AND A.student_ID NOT IN (
                                          SELECT XX.student_ID FROM enrolled_student XX
                                          INNER JOIN sy_level_section ZZ ON XX.sy_level_section_ID = ZZ.ID
                                          INNER JOIN sy_level YY ON ZZ.sy_level_ID = YY.ID
