@@ -11,6 +11,7 @@ include "../../dbcon.php";
 include "../sessionAdmin.php";
 $subjId=$_GET['subjectId'];
 $syLevelSec=$_GET['syLevelSec'];
+
 ?>
 <!DOCTYPE html>
 <html>
