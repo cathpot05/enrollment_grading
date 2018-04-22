@@ -214,7 +214,7 @@ if(isset($_POST['selectSY']))
                             <div class="user-info">
                                 <div><a href="../account/account_info.php"><strong><?php echo $username; ?></strong></a></div>
                                 <div class="user-text-online" align="left">
-                                   <span></span>&nbsp;Admin
+                                    <span></span>&nbsp;Admin
                                 </div>
                             </div>
                         </div>
@@ -224,55 +224,60 @@ if(isset($_POST['selectSY']))
                         <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
                     </li>
                     <li>
-					 <a href="#"><i class="fa fa-sitemap fa-fw"></i>Initials<span class="fa arrow"></span></a>
-					 <div class="nav-collapse">
-                        <ul class="nav nav-second-level">
-					<li>
-                        <a href="../sy/sy_frame.php">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>School Years</a>
+                        <a href="#"><i class="fa fa-sitemap fa-fw"></i>Initials<span class="fa arrow"></span></a>
+                        <div class="nav-collapse">
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="../sy/sy_frame.php">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>School Years</a>
+                                </li>
+                                <li>
+                                    <a href="../year_level/year_level_frame.php">&nbsp;&nbsp;<i class="fa fa-industry fa-fw"></i>Year Level</a>
+                                </li>
+                                <li >
+                                    <a href="../section/section_frame.php">&nbsp;&nbsp;<i class="fa fa-list-ul fa-fw"></i>Sections</a>
+                                </li>
+                                <li>
+                                    <a href="../subject/subject_frame.php">&nbsp;&nbsp;<i class="fa fa-book fa-fw"></i>Subjects</a>
+                                </li>
+                                <li  >
+                                    <a href="../teacher/teacher_frame.php">&nbsp;&nbsp;<i class="fa fa-users fa-fw"></i>Teachers</a>
+                                </li>
+                                <li class="selected">
+                                    <a href="../student/student_frame.php">&nbsp;&nbsp;<i class="fa fa-users fa-fw"></i>Students</a>
+                                </li>
+                                <li>
+                                    <a href="../encoder/encoder_frame.php">&nbsp;&nbsp;<i class="fa fa-keyboard-o fa-fw"></i>Encoder</a>
+                                </li>
+
+                            </ul>
+                        </div>
                     </li>
-                    <li >
-                        <a href="../section/section_frame.php">&nbsp;&nbsp;<i class="fa fa-list-ul fa-fw"></i>Sections</a>
-                    </li>
+
                     <li>
-                        <a href="../subject/subject_frame.php">&nbsp;&nbsp;<i class="fa fa-book fa-fw"></i>Subjects</a>
-                    </li>
-                    <li  >
-                        <a href="../teacher/teacher_frame.php">&nbsp;&nbsp;<i class="fa fa-users fa-fw"></i>Teachers</a>
-                    </li>
-					<li class="selected">
-                        <a href="../student/student_frame.php">&nbsp;&nbsp;<i class="fa fa-users fa-fw"></i>Students</a>
-                    </li>
-					
-					</ul>
-					</div>
-					</li>
-					
-					 <li>
                         <a href="#"><i class="fa fa-sitemap fa-fw"></i>School Year<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-						<?php
-										$sql = "Select *from SY ORDER BY schoolYear DESC";
-										$result = mysqli_query($con,$sql);
-										if(mysqli_num_rows($result)>0)
-										{
-											
-											while($row = mysqli_fetch_array($result))
-											{
-												?>
-												<li><a href="../manage/manage.php?schoolYearID=<?php echo $row['ID']?>">&nbsp;&nbsp;<?php echo $row['schoolYear']; ?></a></li>
-												<?php
-											}
-										}
-									?>
+                            <li>
+                                <a href="../manage/managesy.php?schoolYearID=">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>Enrollment Setup</a>
+                            </li>
+                            <li>
+                                <a href="../summersetup/managesy.php?schoolYearID=">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>Summer Setup</a>
+                            </li>
                         </ul>
-                        <!-- second-level-items -->
                     </li>
-					<li>
-						<a href="../log/log_frame.php" ><i class ="fa fa-industry fa-fw"></i>Log Activities</a>
-					</li>
-					<li>
-						<a target="_blank" href="../DatabaseBackup/phpExport.php" ><i class="fa fa-database fa-fw"></i>Backup Database</a>
-					</li>
+                    <li>
+                        <a href="../teacher_subject/teacherSubj_frame.php"><i class="fa fa-user-circle fa-fw"></i>Teacher Subject</a>
+                    </li>
+
+
+                    <li>
+                        <a href="../reports/report_frame.php"><i class="fa fa-list fa-fw"></i>Reports</a>
+                    </li>
+                    <li>
+                        <a href="../log/log_frame.php" ><i class ="fa fa-industry fa-fw"></i>Log Activities</a>
+                    </li>
+                    <li>
+                        <a target="_blank" href="../DatabaseBackup/phpExport.php" ><i class="fa fa-database fa-fw"></i>Backup Database</a>
+                    </li>
                 </ul>
                 <!-- end side-menu -->
             </div>

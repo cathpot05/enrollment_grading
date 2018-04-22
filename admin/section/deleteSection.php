@@ -21,5 +21,6 @@ $result = mysqli_query($con,$sql);
 	$sql2 = "INSERT INTO log(user,userType,logType) VALUES('$username','Admin','Deleted Section')";
 	$result2 = mysqli_query($con,$sql2);
 
+
 header('Location:section_frame.php');
 ?>

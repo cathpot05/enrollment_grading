@@ -141,6 +141,59 @@ $now = date('Y-m-d');
 				
                 <!--End Page Header -->
             </div>
+			<div class=row>
+			                <div class="col-lg-12">
+				<table width=100% >
+					<tr>
+						<th></th>
+						<th>1st Quarter</th>
+						<th>2nd Quarter</th>
+						<th>3rd Quarter</th>
+						<th>4th Quarter</th>
+					</tr>
+				<?php
+				$sql = "Select D.*,C.status,E.q1,E.q2,E.q3,E.q4,(E.q1+E.q2+E.q3+E.q4)/4 as final,C.ID as esID, A.ID as tssID,
+											G.q1Start,G.q1End,G.q2Start,G.q2End,G.q3Start,G.q3End,G.q4Start,G.q4End
+											from teacher_section_subject A 
+											INNER JOIN sy_level_section B ON A.sy_level_section_ID = B.ID
+											INNER JOIN enrolled_student C ON C.sy_level_section_ID = B.ID
+											INNER JOIN student D ON C.student_ID = D.ID
+											LEFT JOIN grade E ON E.enrolled_student_ID = C.ID and E.teacher_section_subject_ID = A.ID 
+											INNER JOIN sy_level_subject F ON A.sy_level_subject_ID = F.ID
+											LEFT JOIN grade_sched G ON B.sy_level_ID = G.sy_level_ID AND F.sy_level_ID = G.sy_level_ID
+											where A.ID = $id Group BY G.ID";
+						$result = mysqli_query($con,$sql);
+						if(mysqli_num_rows($result)>0)
+						{
+							while($row = mysqli_fetch_array($result))
+							{
+								?>
+								
+								<tr>
+									<td><strong>Start</strong></td>
+									<td><?php if($row['q1Start']!= null) echo date('M d, Y', strtotime($row['q1Start'])); else echo "N/A"; ?></td>
+									<td><?php if($row['q2Start']!= null) echo date('M d, Y', strtotime($row['q2Start'])); else echo "N/A"; ?></td>
+									<td><?php if($row['q3Start']!= null) echo date('M d, Y', strtotime($row['q3Start'])); else echo "N/A"; ?></td>
+									<td><?php if($row['q4Start']!= null) echo date('M d, Y', strtotime($row['q4Start'])); else echo "N/A"; ?></td>
+								</tr>
+								<tr>
+									<td><strong>End</strong></td>
+									<td><?php if($row['q1End']!= null)echo date('M d, Y', strtotime($row['q1End'])); else echo "N/A"; ?></td>
+									<td><?php if($row['q2End']!= null)echo date('M d, Y', strtotime($row['q2End'])); else echo "N/A"; ?></td>
+									<td><?php if($row['q3End']!= null)echo date('M d, Y', strtotime($row['q3End'])); else echo "N/A"; ?></td>
+									<td><?php if($row['q4End']!= null)echo date('M d, Y', strtotime($row['q4End'])); else echo "N/A"; ?></td>
+								</tr>
+								
+								<?php								
+							}
+						}
+				?>
+				</table>
+				<br>
+                </div>
+				
+                <!--End Page Header -->
+            </div>
 			
 				<div class="row">
                 <div class="col-lg-12">
@@ -186,18 +239,23 @@ $now = date('Y-m-d');
 														<td><?php echo $row['Fname']." ".$row['Mname']." ".$row['Lname']; ?></td>
 														<td style="text-align:center" >
 															<?php
-															if(strtotime($now) >= strtotime($row['q1Start']) && strtotime($now) <= strtotime($row['q1End']) && $row['status'] == 0)
+															
+															if((strtotime($now) >= strtotime($row['q1Start']) && strtotime($now) <= strtotime($row['q1End'])) && $row['status'] == 0)
 															{
+																
 																?>
-																<input max="100" name="q1_<?php echo $row['esID']; ?>_<?php echo $row['tssID']; ?>" type=number value="<?php if($row['q1'] != null && $row['q1'] >0){ echo $row['q1']; }else { echo "0"; }?>" style="width:100%">
+																<input max="100" min="50" step="0.01" name="q1_<?php echo $row['esID']; ?>_<?php echo $row['tssID']; ?>" type=number value="<?php if($row['q1'] != null && $row['q1'] >0){ echo $row['q1']; }else { echo "50"; }?>" style="width:100%">
 																<?php
 															}
 															else if(strtotime($now) > strtotime($row['q1End']) && $row['q1End'] != null)
+																
 															{
-																if($row['q1'] != null && $row['q1'] >0){ echo $row['q1']; }else { echo "NG"; }
+																
+																if($row['q1'] != null && $row['q1'] >0){ echo $row['q1']; } else { echo "NG"; }
 															}
 															else
 															{
+															
 																if($row['q1'] != null && $row['q1'] >0){ echo $row['q1']; }else { echo "-"; }
 															}
 																
@@ -205,10 +263,10 @@ $now = date('Y-m-d');
 														</td>
 														<td style="text-align:center">
 														<?php
-															if(strtotime($now) >= strtotime($row['q2Start']) && strtotime($now) <= strtotime($row['q2End']))
+															if(strtotime($now) >= strtotime($row['q2Start']) && strtotime($now) <= strtotime($row['q2End'])  && $row['status'] == 0)
 															{
 																?>
-															<input max="100" name="q2_<?php echo $row['esID']; ?>_<?php echo $row['tssID']; ?>" type=number value="<?php if($row['q2'] != null && $row['q2'] >0){ echo $row['q2']; }else { echo "0"; } ?>" style="width:100%" >
+															<input max="100" min="50" step="0.01" name="q2_<?php echo $row['esID']; ?>_<?php echo $row['tssID']; ?>" type=number value="<?php if($row['q2'] != null && $row['q2'] >0){ echo $row['q2']; }else { echo "50"; } ?>" style="width:100%" >
 															<?php
 															}
 															else if(strtotime($now) > strtotime($row['q2End']) && $row['q2End'] != null)
@@ -224,10 +282,10 @@ $now = date('Y-m-d');
 														</td>
 														<td style="text-align:center">
 														<?php
-															if(strtotime($now) >= strtotime($row['q3Start']) && strtotime($now) <= strtotime($row['q3End']))
+															if(strtotime($now) >= strtotime($row['q3Start']) && strtotime($now) <= strtotime($row['q3End']) && $row['status'] == 0)
 															{
-																?>
-															<input max="100" name="q3_<?php echo $row['esID']; ?>_<?php echo $row['tssID']; ?>" type=number value="<?php if($row['q3'] != null && $row['q3'] >0){ echo $row['q3']; }else { echo "0"; } ?>" style="width:100%" >
+															?>
+																<input max="100" min="50" step="0.01" name="q3_<?php echo $row['esID']; ?>_<?php echo $row['tssID']; ?>" type=number value="<?php if($row['q3'] != null && $row['q3'] >0){ echo $row['q3']; }else { echo "50"; } ?>" style="width:100%" >
 															<?php
 															}
 															else if(strtotime($now) > strtotime($row['q3End'])  && $row['q3End'] != null)
@@ -243,10 +301,10 @@ $now = date('Y-m-d');
 														</td>
 														<td style="text-align:center">
 														<?php
-															if(strtotime($now) >= strtotime($row['q4Start']) && strtotime($now) <= strtotime($row['q4End']))
+															if(strtotime($now) >= strtotime($row['q4Start']) && strtotime($now) <= strtotime($row['q4End'])  && $row['status'] == 0)
 															{
 																?>
-															<input max="100" name="q4_<?php echo $row['esID']; ?>_<?php echo $row['tssID']; ?>" type=number value="<?php if($row['q4'] != null && $row['q4'] >0){ echo $row['q4']; }else { echo "0"; } ?>" style="width:100%" >
+															<input max="100" step="0.01" name="q4_<?php echo $row['esID']; ?>_<?php echo $row['tssID']; ?>" type=number value="<?php if($row['q4'] != null && $row['q4'] >0){ echo $row['q4']; }else { echo "50"; } ?>" style="width:100%" >
 															<?php
 															}
 															else if(strtotime($now) > strtotime($row['q4End']) && $row['q4End'] != null)

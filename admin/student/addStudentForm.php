@@ -17,18 +17,6 @@ else
 {
 
 }
-if(isset($_SESSION['selectSY']))
-{
-	
-}
-else{
-	
-	$_SESSION['selectSY']='';
-}
-if(isset($_POST['selectSY']))
-{
-	$_SESSION['selectSY']=$_POST['selectSY'];
-}
 ?>
 <!DOCTYPE html>
 <html>
@@ -84,107 +72,7 @@ th, td {
              <ul class="nav navbar-top-links navbar-right">
                 <!-- main dropdown -->
 
-				<li class="dropdown">
-				<?php
-					$sqlcount = "Select COUNT(ID) as id from grade_actions where status=0";
-					$resultcount = mysqli_query($con,$sqlcount);
-					$rowcount = mysqli_fetch_array($resultcount);
-					$notifCount=$rowcount['id'];
-				?>
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <span class="top-label label label-warning"><?php echo $notifCount; ?></span>  <i class="fa fa-bell fa-3x"></i>
-                    </a>
-                    <!-- dropdown alerts-->
-					<ul class="dropdown-menu dropdown-alerts">
-					
-					<?php
-					$sqlnotif = "Select teacher.Fname as TFname, teacher.Lname as TLname, student.Fname as SFname, student.Lname as SLname, grade_actions.actionType,grade_actions.status,grade_actions.Date, grade_actions.ID  FROM grade_actions
-					INNER JOIN grade ON grade_actions.grade_ID = grade.ID 
-					INNER JOIN sy_section_subject ON grade.sy_section_subject_ID = sy_section_subject.ID 
-					INNER JOIN teacher ON sy_section_subject.teacher_ID = teacher.ID
-					INNER JOIN enrolled_student ON grade.enrolled_student_ID = enrolled_student.ID
-					INNER JOIN student ON enrolled_student.student_ID = student.ID
-					ORDER BY DATE DESC LIMIT 6";
-					$resultnotif = mysqli_query($con,$sqlnotif);
-					if(mysqli_num_rows($resultnotif)>0)
-					{
-						while($rownotif = mysqli_fetch_array($resultnotif))
-						{
-							if($rownotif['actionType']==1)
-								{
-									if($rownotif['status'] == 0)
-									{
-										
-										?>
-									<li>
-										<a data-toggle="modal" data-target="#requestModal" onclick="changeID(<?php echo $rownotif['ID']; ?>,'all');"  href=#>
-											<div >
-												<i class="fa fa-edit fa-fw"></i><strong><?php echo $rownotif['TFname']." ".$rownotif['TLname']; ?></strong>
-												<span class="pull-right text-muted small"><?php echo date("M-d-y h:i",strtotime($rownotif['Date'])); ?></span>
-												<br>
-												<i>Edited <?php echo $rownotif['SFname']." ".$rownotif['SLname']; ?>'s grades</i>
-												<span class="pull-right text-muted small" >Pending</span>
-											</div>
-										</a>
-									</li>
-									<li class="divider "></li>
-                        
-									<?php	
-									}
-									else if($rownotif['status'] == 1)
-									{
-											?>
-									<li  style="background-color:#f2f2f2 ">
-										<a>
-											<div>
-												<i class="fa fa-edit fa-fw"></i><strong><?php echo $rownotif['TFname']." ".$rownotif['TLname']; ?></strong>
-												<span class="pull-right text-muted small"><?php echo date("M-d-y h:i",strtotime($rownotif['Date'])); ?></span>
-												<br>
-												<i>Edited <?php echo $rownotif['SFname']." ".$rownotif['SLname']; ?>'s grades</i>
-												<span class="pull-right text-muted small"  style="background-color:#f2f2f2 ">Approved</span>
-											</div>
-										</a>
-									</li>
-									<li class="divider " style="background-color:#f2f2f2 "></li>
-                        
-									<?php	
-										
-									}
-									 else if($rownotif['status'] == 2)
-									{
-											?>
-									<li style="background-color:#f2f2f2 ">
-										<a>
-											<div>
-												<i class="fa fa-edit fa-fw"></i><strong><?php echo $rownotif['TFname']." ".$rownotif['TLname']; ?></strong>
-												<span class="pull-right text-muted small"><?php echo date("M-d-y h:i",strtotime($rownotif['Date'])); ?></span>
-												<br>
-												<i>Edited <?php echo $rownotif['SFname']." ".$rownotif['SLname']; ?>'s grades</i>
-												<span class="pull-right text-muted small"  style="background-color:#f2f2f2 ">Rejected</span>
-											</div>
-										</a>
-									</li>
-									<li class="divider " style="background-color:#f2f2f2 "></li>
-									<?php	
-										
-									}
-									
-									
-								}
-						}
-					}
-					?>
-					<li>
-                            <a class="text-center" data-toggle="modal" data-target="#requestModal" onclick="changeID(0,'all');">
-                                <strong>Show All Request</strong>
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-                        </li>
-					</ul>
-
-                    <!-- end dropdown-alerts -->
-                </li>
-                <li class="dropdown">
+									<li class="dropdown">
                     <a href="../logoutSessionAdmin.php">
                         <i class="fa fa-sign-out fa-3x"></i>
                     </a>
@@ -209,7 +97,7 @@ th, td {
                             <div class="user-info">
                                 <div><a href="../account/account_info.php"><strong><?php echo $username; ?></strong></a></div>
                                 <div class="user-text-online" align="left">
-                                   <span></span>&nbsp;Admin
+                                    <span></span>&nbsp;Admin
                                 </div>
                             </div>
                         </div>
@@ -219,55 +107,63 @@ th, td {
                         <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
                     </li>
                     <li>
-					 <a href="#"><i class="fa fa-sitemap fa-fw"></i>Initials<span class="fa arrow"></span></a>
-					 <div class="nav-collapse">
-                        <ul class="nav nav-second-level">
-					<li>
-                        <a href="../sy/sy_frame.php">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>School Years</a>
+                        <a href="#"><i class="fa fa-sitemap fa-fw"></i>Management Setup<span class="fa arrow"></span></a>
+                        <div class="nav-collapse">
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="../sy/sy_frame.php">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>School Years</a>
+                                </li>
+                                <li>
+                                    <a href="../year_level/year_level_frame.php">&nbsp;&nbsp;<i class="fa fa-industry fa-fw"></i>Year Level</a>
+                                </li>
+                                <li >
+                                    <a href="../section/section_frame.php">&nbsp;&nbsp;<i class="fa fa-list-ul fa-fw"></i>Sections</a>
+                                </li>
+                                <li>
+                                    <a href="../subject/subject_frame.php">&nbsp;&nbsp;<i class="fa fa-book fa-fw"></i>Subjects</a>
+                                </li>
+                                <li  >
+                                    <a href="../teacher/teacher_frame.php">&nbsp;&nbsp;<i class="fa fa-users fa-fw"></i>Teachers</a>
+                                </li>
+                                <li class="selected">
+                                    <a href="../student/student_frame.php">&nbsp;&nbsp;<i class="fa fa-users fa-fw"></i>Students</a>
+                                </li>
+                                <li>
+                                    <a href="../encoder/encoder_frame.php">&nbsp;&nbsp;<i class="fa fa-keyboard-o fa-fw"></i>Encoder</a>
+                                </li>
+                                <li>
+                                    <a href="../admin/admin_frame.php">&nbsp;&nbsp;<i class="fa fa-user-plus fa-fw"></i>Admin</a>
+                                </li>
+
+                            </ul>
+                        </div>
                     </li>
-                    <li >
-                        <a href="../section/section_frame.php">&nbsp;&nbsp;<i class="fa fa-list-ul fa-fw"></i>Sections</a>
-                    </li>
+
                     <li>
-                        <a href="../subject/subject_frame.php">&nbsp;&nbsp;<i class="fa fa-book fa-fw"></i>Subjects</a>
-                    </li>
-                    <li  >
-                        <a href="../teacher/teacher_frame.php">&nbsp;&nbsp;<i class="fa fa-users fa-fw"></i>Teachers</a>
-                    </li>
-					<li class="selected">
-                        <a href="../student/student_frame.php">&nbsp;&nbsp;<i class="fa fa-users fa-fw"></i>Students</a>
-                    </li>
-					
-					</ul>
-					</div>
-					</li>
-					
-					 <li>
                         <a href="#"><i class="fa fa-sitemap fa-fw"></i>School Year<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-						<?php
-										$sql = "Select *from SY ORDER BY schoolYear DESC";
-										$result = mysqli_query($con,$sql);
-										if(mysqli_num_rows($result)>0)
-										{
-											
-											while($row = mysqli_fetch_array($result))
-											{
-												?>
-												<li><a href="../manage/manage.php?schoolYearID=<?php echo $row['ID']?>">&nbsp;&nbsp;<?php echo $row['schoolYear']; ?></a></li>
-												<?php
-											}
-										}
-									?>
+                            <li>
+                                <a href="../manage/managesy.php?schoolYearID=">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>Enrollment Setup</a>
+                            </li>
+                            <li>
+                                <a href="../summersetup/managesy.php?schoolYearID=">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>Summer Setup</a>
+                            </li>
                         </ul>
-                        <!-- second-level-items -->
                     </li>
-					<li>
-						<a href="../log/log_frame.php" ><i class ="fa fa-industry fa-fw"></i>Log Activities</a>
-					</li>
-					<li>
-						<a target="_blank" href="../DatabaseBackup/phpExport.php" ><i class="fa fa-database fa-fw"></i>Backup Database</a>
-					</li>
+                    <li>
+                        <a href="../teacher_subject/teacherSubj_frame.php"><i class="fa fa-user-circle fa-fw"></i>Teacher Subject</a>
+                    </li>
+
+
+                    <li>
+                        <a href="../reports/report_frame.php"><i class="fa fa-list fa-fw"></i>Reports</a>
+                    </li>
+                    <li>
+                        <a href="../log/log_frame.php" ><i class ="fa fa-industry fa-fw"></i>Log Activities</a>
+                    </li>
+                    <li>
+                        <a target="_blank" href="../DatabaseBackup/phpExport.php" ><i class="fa fa-database fa-fw"></i>Backup Database</a>
+                    </li>
                 </ul>
                 <!-- end side-menu -->
             </div>
@@ -495,7 +391,7 @@ th, td {
 									</tr>
 									<tr>
 										<td colspan =4>
-											<input type="number" class="form-control" name="average" style="width:90%">
+											<input type="number" step="0.01" class="form-control" name="average" style="width:90%">
 										</td>
 										<td colspan =2>
 											 <input type=checkbox name="docs[]" value="BC"> BC
@@ -592,7 +488,7 @@ th, td {
 				var age = parseInt(curr_year) - parseInt(year);
 				if(month == curr_month)
 				{
-					if(day < curr_day)
+					if(curr_day<day)
 					{
 						age--;
 					}					

@@ -140,7 +140,58 @@ $now = date('Y-m-d');
 				
                 <!--End Page Header -->
             </div>
-			
+			<div class="row">
+                <!-- Page Header -->
+                <div class="col-lg-12">
+				<table width=100% border=1>
+					<tr>
+						<th></th>
+						<th>Grading Schedule</th>
+						
+					</tr>
+					
+				<?php
+				$sql = "SELECT C.*,D.grade,B.status, E.start, E.end, B.ID as seID, A.ID as ssID
+				        from summer_subject A
+						LEFT JOIN summer_enrolled B ON B.summer_subject_ID = A.ID
+						LEFT JOIN student C ON B.student_ID = C.ID
+						LEFT JOIN summer_grade D ON D.summer_subject_ID = A.ID AND D.summer_enrolled_ID = B.ID
+						LEFT JOIN summer_grade_sched E ON E.sy_level_ID = A.sy_level_ID
+						where A.ID = $id GROUP BY E.ID";
+						
+						$result = mysqli_query($con,$sql);
+						if(mysqli_num_rows($result)>0)
+						{
+							while($row = mysqli_fetch_array($result))
+							{
+								?>
+								
+								<tr>
+									<td><strong>Start</strong></td>
+									<td><?php if($row['start']!= null)echo date('M d, Y', strtotime($row['start'])); else echo "N/A"; ?></td>
+									
+								</tr>
+								<tr>
+									<td><strong>End</strong></td>
+									<td><?php if($row['end']!= null)echo date('M d, Y', strtotime($row['end'])); else echo "N/A"; ?></td>
+								</tr>
+								
+								<?php								
+							}
+						}
+						else
+						{
+							?>
+							
+							<?php
+						}
+				?>
+				</table>
+				<br>
+                </div>
+				
+                <!--End Page Header -->
+            </div>
 				<div class="row">
                 <div class="col-lg-12">
                     <!-- Advanced Tables -->
@@ -162,12 +213,13 @@ $now = date('Y-m-d');
 											</thead>
 											<tbody>
 											<?php
-											$sql = "SELECT C.*,D.grade,B.status, E.start, E.end, B.ID as seID, A.ID as ssID from summer_subject A
-													INNER JOIN summer_enrolled B ON B.summer_subject_ID = A.ID
-													INNER JOIN student C ON B.student_ID = C.ID
-													LEFT JOIN summer_grade D ON D.summer_subject_ID = A.ID AND D.summer_enrolled_ID = B.ID
-													LEFT JOIN summer_grade_sched E ON E.sy_level_ID = A.sy_level_ID
-													where A.ID = $id";
+											$sql = "SELECT C.*,D.grade,B.status, E.start, E.end, B.ID as seID, A.ID as ssID
+                                            FROM summer_enrolled B
+                                            INNER JOIN summer_subject A ON A.ID = B.summer_subject_ID
+                                            INNER JOIN student C ON B.student_ID = C.ID
+                                            LEFT JOIN summer_grade D ON B.summer_subject_ID = D.summer_subject_ID AND D.summer_enrolled_ID = B.ID
+                                            LEFT JOIN summer_grade_sched E ON E.sy_level_ID = A.sy_level_ID
+                                            where A.ID = $id";
 											$result = mysqli_query($con,$sql);
 											if(mysqli_num_rows($result)>0)
 											{
@@ -181,7 +233,7 @@ $now = date('Y-m-d');
 															if(strtotime($now) >= strtotime($row['start']) && strtotime($now) <= strtotime($row['end']) && $row['status'] == 0)
 															{
 																?>
-															<input max="100" name="grade_<?php echo $row['seID']; ?>_<?php echo $row['ssID']; ?>" type=number value="<?php if($row['grade'] != null && $row['grade'] >0){ echo $row['grade']; }else { echo "0"; } ?>" style="width:100%" >
+															<input step="0.01" max="100" min="50" name="grade_<?php echo $row['seID']; ?>_<?php echo $row['ssID']; ?>" type=number value="<?php if($row['grade'] != null && $row['grade'] >0){ echo $row['grade']; }else { echo "0"; } ?>" style="width:100%" >
 															<?php
 															}
 															else if(strtotime($now) > strtotime($row['end'])  && $row['end'] != null)

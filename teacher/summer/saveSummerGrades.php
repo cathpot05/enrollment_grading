@@ -19,13 +19,13 @@ if(mysqli_num_rows($result)>0)
 		
 		if($row['sgID'] == null)
 		{
-			$sqlGrade = "INSERT INTO summer_grade(summer_enrolled_ID,summer_subject_ID) VALUES($seID,$ssID)";
+			 $sqlGrade = "INSERT INTO summer_grade(summer_enrolled_ID,summer_subject_ID) VALUES($seID,$ssID)";
 			$resultGrade = mysqli_query($con,$sqlGrade);
 		}
 		
 		if(isset($_POST['grade_'.$seID.'_'.$ssID]))
 		{
-			$grade=$_POST['grade_'.$seID.'_'.$ssID];
+			 $grade=$_POST['grade_'.$seID.'_'.$ssID];
 			$sqlQ = "Update summer_grade SET grade=$grade where summer_enrolled_ID = $seID AND summer_subject_ID = $ssID";
 			$resultQ = mysqli_query($con,$sqlQ);
 			

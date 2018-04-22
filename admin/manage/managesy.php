@@ -7,9 +7,28 @@
  */
 
 
+//error_reporting(0);
 include "../../dbcon.php";
 include "../sessionAdmin.php";
 $schoolYearID=$_GET['schoolYearID'];
+
+
+
+
+if($schoolYearID == ""){
+    $sql_e = "Select MAX(ID) as ID from sy";
+    $result_e = mysqli_query($con,$sql_e);
+    if(mysqli_num_rows($result_e)>0)
+    {
+        while($row_e= mysqli_fetch_array($result_e))
+        {
+            $schoolYearID=$row_e['ID'];
+        }
+    }
+}
+
+
+
 $sql = "Select *from admin where ID=$adminID";
 $result = mysqli_query($con,$sql);
 if(mysqli_num_rows($result)>0)
@@ -81,115 +100,7 @@ if(mysqli_num_rows($result)>0)
     <ul class="nav navbar-top-links navbar-right">
         <!-- main dropdown -->
 
-        <li class="dropdown">
-            <?php
-            $sqlcount = "Select COUNT(ID) as id from grade_actions where status=0";
-            $resultcount = mysqli_query($con,$sqlcount);
-            $rowcount = mysqli_fetch_array($resultcount);
-            $notifCount=$rowcount['id'];
-            ?>
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                <span class="top-label label label-warning"><?php echo $notifCount; ?></span>  <i class="fa fa-bell fa-3x"></i>
-            </a>
-            <!-- dropdown alerts-->
-            <ul class="dropdown-menu dropdown-alerts">
 
-                <?php
-                $sqlnotif = "Select teacher.Fname as TFname, teacher.Lname as TLname, student.Fname as SFname, student.Lname as SLname, grade_actions.actionType,grade_actions.status,grade_actions.Date, grade_actions.ID  FROM grade_actions
-					INNER JOIN grade ON grade_actions.grade_ID = grade.ID
-					INNER JOIN sy_section_subject ON grade.sy_section_subject_ID = sy_section_subject.ID
-					INNER JOIN teacher ON sy_section_subject.teacher_ID = teacher.ID
-					INNER JOIN enrolled_student ON grade.enrolled_student_ID = enrolled_student.ID
-					INNER JOIN student ON enrolled_student.student_ID = student.ID
-					ORDER BY DATE DESC LIMIT 6";
-                $resultnotif = mysqli_query($con,$sqlnotif);
-                if(mysqli_num_rows($resultnotif)>0)
-                {
-                    while($rownotif = mysqli_fetch_array($resultnotif))
-                    {
-                        if($rownotif['actionType']==1)
-                        {
-                            if($rownotif['status'] == 0)
-                            {
-
-                                ?>
-                                <li>
-                                    <a data-toggle="modal" data-target="#requestModal" onclick="changeID(<?php echo $rownotif['ID']; ?>,'all');"  href=#>
-                                        <div >
-                                            <i class="fa fa-edit fa-fw"></i><strong><?php echo $rownotif['TFname']." ".$rownotif['TLname']; ?></strong>
-                                            <span class="pull-right text-muted small"><?php echo date("M-d-y h:i",strtotime($rownotif['Date'])); ?></span>
-                                            <br>
-                                            <i>Edited <?php echo $rownotif['SFname']." ".$rownotif['SLname']; ?>'s grades</i>
-                                            <span class="pull-right text-muted small" >Pending</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="divider "></li>
-
-                            <?php
-                            }
-                            else if($rownotif['status'] == 1)
-                            {
-                                ?>
-                                <li  style="background-color:#f2f2f2 ">
-                                    <a>
-                                        <div>
-                                            <i class="fa fa-edit fa-fw"></i><strong><?php echo $rownotif['TFname']." ".$rownotif['TLname']; ?></strong>
-                                            <span class="pull-right text-muted small"><?php echo date("M-d-y h:i",strtotime($rownotif['Date'])); ?></span>
-                                            <br>
-                                            <i>Edited <?php echo $rownotif['SFname']." ".$rownotif['SLname']; ?>'s grades</i>
-                                            <span class="pull-right text-muted small"  style="background-color:#f2f2f2 ">Approved</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="divider " style="background-color:#f2f2f2 "></li>
-
-                            <?php
-
-                            }
-                            else if($rownotif['status'] == 2)
-                            {
-                                ?>
-                                <li style="background-color:#f2f2f2 ">
-                                    <a>
-                                        <div>
-                                            <i class="fa fa-edit fa-fw"></i><strong><?php echo $rownotif['TFname']." ".$rownotif['TLname']; ?></strong>
-                                            <span class="pull-right text-muted small"><?php echo date("M-d-y h:i",strtotime($rownotif['Date'])); ?></span>
-                                            <br>
-                                            <i>Edited <?php echo $rownotif['SFname']." ".$rownotif['SLname']; ?>'s grades</i>
-                                            <span class="pull-right text-muted small"  style="background-color:#f2f2f2 ">Rejected</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="divider " style="background-color:#f2f2f2 "></li>
-                            <?php
-
-                            }
-
-
-                        }
-                        ?>
-
-
-                    <?php
-                    }
-                }
-
-
-
-
-
-                ?>
-                <li>
-                    <a class="text-center" data-toggle="modal" data-target="#requestModal" onclick="changeID(0,'all');">
-                        <strong>Show All Request</strong>
-                        <i class="fa fa-angle-right"></i>
-                    </a>
-                </li>
-            </ul>
-
-            <!-- end dropdown-alerts -->
-        </li>
         <li class="dropdown">
             <a href="../logoutSessionAdmin.php">
                 <i class="fa fa-sign-out fa-3x"></i>
@@ -225,7 +136,7 @@ if(mysqli_num_rows($result)>0)
                 <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
             </li>
             <li>
-                <a href="#"><i class="fa fa-sitemap fa-fw"></i>Initials<span class="fa arrow"></span></a>
+                <a href="#"><i class="fa fa-sitemap fa-fw"></i>Management Setup<span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li>
                         <a href="../sy/sy_frame.php">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>School Years</a>
@@ -248,11 +159,27 @@ if(mysqli_num_rows($result)>0)
                     <li>
                         <a href="../encoder/encoder_frame.php">&nbsp;&nbsp;<i class="fa fa-keyboard-o fa-fw"></i>Encoder</a>
                     </li>
+                    <li>
+                        <a href="../admin/admin_frame.php">&nbsp;&nbsp;<i class="fa fa-user-plus fa-fw"></i>Admin</a>
+                    </li>
                 </ul>
             </li>
             <li>
-                <a href="#"><i class="fa fa-sitemap fa-fw"></i>School Year</a>
-                <!-- second-level-items -->
+                <a href="#"><i class="fa fa-sitemap fa-fw"></i>School Year<span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li class="selected">
+                        <a href="../manage/managesy.php?schoolYearID=">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>Enrollment Setup</a>
+                    </li>
+                    <li>
+                        <a href="../summersetup/managesy.php?schoolYearID=">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>Summer Setup</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="../teacher_subject/teacherSubj_frame.php"><i class="fa fa-user-circle fa-fw"></i>Teacher Subject</a>
+            </li>
+            <li>
+                <a href="../reports/report_frame.php"><i class="fa fa-list fa-fw"></i>Reports</a>
             </li>
             <li>
                 <a href="../log/log_frame.php" ><i class ="fa fa-industry fa-fw"></i>Log Activities</a>
@@ -271,7 +198,7 @@ if(mysqli_num_rows($result)>0)
 <div class="row">
     <!-- Page Header -->
     <div class="col-lg-6">
-        <h1 class="page-header">School Year Management</h1>
+        <h1 class="page-header text-primary">School Year Management</h1>
     </div>
     <div class="col-lg-6">
         <div class="form-inline" style="float:right; margin-top:40px" >
@@ -345,7 +272,7 @@ if(mysqli_num_rows($result)>0)
             var x = this.value;
             $.ajax({
                 type: "GET",
-                url: "loadYearLevel.php?SYid="+x,
+                url: "level/loadYearLevel.php?SYid="+x,
                 cache: false,
                 success: function(html){
                     $("#loadLevelData").empty(html);
@@ -358,7 +285,7 @@ if(mysqli_num_rows($result)>0)
     //$("#cboSY").chosen();
     $.ajax({
         type: "GET",
-        url: "loadYearLevel.php?SYid="+<?php echo $schoolYearID; ?>,
+        url: "level/loadYearLevel.php?SYid="+<?php echo $schoolYearID; ?>,
         cache: false,
         success: function(html){
             $("#loadLevelData").empty(html);
