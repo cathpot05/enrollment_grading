@@ -18,6 +18,11 @@ else
 
 }
 
+$sqlSY = "Select *from sy ORDER BY RIGHT(schoolYear,4) DESC LIMIT 1";
+		$resultSY = mysqli_query($con,$sqlSY);
+		$rowSY = mysqli_fetch_array($resultSY);
+		$sySel = $rowSY['ID'];
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -271,15 +276,14 @@ else
         <!--  page-wrapper -->
         <div id="page-wrapper">
             <div class="row">
-                <!-- Page Header -->
-                <div class="col-lg-12">
+                <div class="col-lg-12">                <!-- Page Header -->
+
                     <h1 class="page-header">Reports<br>
 					<div class=btn-group >
 					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('sy');" ><span class ="fa fa-industry fa-fw" ></span> School Year</button>
-					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('student');"><span class ="fa fa-users fa-fw" ></span> Students</button>
-					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('teacher');"><span class ="fa fa-user fa-fw" ></span> Teachers</button>
 					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('section');"><span class ="fa fa-list-ul fa-fw" ></span> Sections</button>
 					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('subject');"><span class ="fa fa-book fa-fw" ></span> Subjects</button>
+					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('subject');"><span class ="fa fa-chart fa-fw" ></span> Summer</button>
 					</div>
 					</h1>
 					
@@ -321,7 +325,7 @@ else
         var xhr;
 			if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers 
 			else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
-			var url = 'changeID.php?actiontype='+type;
+			var url = 'changeID.php?actiontype='+type+'&sySel=<?php echo $sySel; ?>';
 			xhr.open('GET', url, false);
 			xhr.onreadystatechange = function () {
                     if(type==='sy')
@@ -352,13 +356,13 @@ else
   
     }
 	
-	function syFilter(id)
+	function syFilter(id,sySel)
 	{
-		alert(id);
+			
 			var xhr;
 			if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers 
 			else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
-			var url = 'syFilter.php?id='+id;
+			var url = 'syFilter.php?id='+id+'&sySel='+sySel;
 			xhr.open('GET', url, false);
 			xhr.onreadystatechange = function () {
             document.getElementById("syFilterTable").innerHTML = xhr.responseText;
