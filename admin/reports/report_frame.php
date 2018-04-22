@@ -259,7 +259,7 @@ $sqlSY = "Select *from sy ORDER BY RIGHT(schoolYear,4) DESC LIMIT 1";
                         </ul>
                     </li>
                     <li class="selected">
-                        <a href="../../reports/report_frame.php"><i class="fa fa-list fa-fw"></i>Reports</a>
+                        <a href="../reports/report_frame.php"><i class="fa fa-list fa-fw"></i>Reports</a>
                     </li>
 					<li>
 						<a href="../log/log_frame.php" ><i class ="fa fa-industry fa-fw"></i>Log Activities</a>
@@ -281,9 +281,9 @@ $sqlSY = "Select *from sy ORDER BY RIGHT(schoolYear,4) DESC LIMIT 1";
                     <h1 class="page-header">Reports<br>
 					<div class=btn-group >
 					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('sy');" ><span class ="fa fa-industry fa-fw" ></span> School Year</button>
-					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('section');"><span class ="fa fa-list-ul fa-fw" ></span> Sections</button>
+					<!--<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('section');"><span class ="fa fa-list-ul fa-fw" ></span> Sections</button>
 					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('subject');"><span class ="fa fa-book fa-fw" ></span> Subjects</button>
-					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('subject');"><span class ="fa fa-chart fa-fw" ></span> Summer</button>
+					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('subject');"><span class ="fa fa-chart fa-fw" ></span> Summer</button>-->
 					</div>
 					</h1>
 					

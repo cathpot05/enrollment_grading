@@ -160,7 +160,7 @@ if(isset($_POST['selectSY']))
                         <a href="../teacher_subject/teacherSubj_frame.php"><i class="fa fa-user-circle fa-fw"></i>Teacher Subject</a>
                     </li>
                     <li>
-                        <a href="../../reports/report_frame.php"><i class="fa fa-list fa-fw"></i>Reports</a>
+                        <a href="../reports/report_frame.php"><i class="fa fa-list fa-fw"></i>Reports</a>
                     </li>
 					<li>
 						<a href="../log/log_frame.php" ><i class ="fa fa-industry fa-fw"></i>Log Activities</a>
