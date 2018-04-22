@@ -71,114 +71,6 @@ $sqlSY = "Select *from sy ORDER BY RIGHT(schoolYear,4) DESC LIMIT 1";
             <!-- navbar-top-links -->
             <ul class="nav navbar-top-links navbar-right">
                 <!-- main dropdown -->
-
-				<li class="dropdown">
-				<?php
-					$sqlcount = "Select COUNT(ID) as id from grade_actions where status=0";
-					$resultcount = mysqli_query($con,$sqlcount);
-					$rowcount = mysqli_fetch_array($resultcount);
-					$notifCount=$rowcount['id'];
-				?>
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <span class="top-label label label-warning"><?php echo $notifCount; ?></span>  <i class="fa fa-bell fa-3x"></i>
-                    </a>
-                    <!-- dropdown alerts-->
-					<ul class="dropdown-menu dropdown-alerts">
-					
-					<?php
-					$sqlnotif = "Select teacher.Fname as TFname, teacher.Lname as TLname, student.Fname as SFname, student.Lname as SLname, grade_actions.actionType,grade_actions.status,grade_actions.Date, grade_actions.ID  FROM grade_actions
-					INNER JOIN grade ON grade_actions.grade_ID = grade.ID 
-					INNER JOIN sy_section_subject ON grade.sy_section_subject_ID = sy_section_subject.ID 
-					INNER JOIN teacher ON sy_section_subject.teacher_ID = teacher.ID
-					INNER JOIN enrolled_student ON grade.enrolled_student_ID = enrolled_student.ID
-					INNER JOIN student ON enrolled_student.student_ID = student.ID
-					ORDER BY DATE DESC LIMIT 6";
-					$resultnotif = mysqli_query($con,$sqlnotif);
-					if(mysqli_num_rows($resultnotif)>0)
-					{
-						while($rownotif = mysqli_fetch_array($resultnotif))
-						{
-							if($rownotif['actionType']==1)
-								{
-									if($rownotif['status'] == 0)
-									{
-										
-										?>
-									<li>
-										<a data-toggle="modal" data-target="#requestModal" onclick="changeID(<?php echo $rownotif['ID']; ?>,'all');"  href=#>
-											<div >
-												<i class="fa fa-edit fa-fw"></i><strong><?php echo $rownotif['TFname']." ".$rownotif['TLname']; ?></strong>
-												<span class="pull-right text-muted small"><?php echo date("M-d-y h:i",strtotime($rownotif['Date'])); ?></span>
-												<br>
-												<i>Edited <?php echo $rownotif['SFname']." ".$rownotif['SLname']; ?>'s grades</i>
-												<span class="pull-right text-muted small" >Pending</span>
-											</div>
-										</a>
-									</li>
-									<li class="divider "></li>
-                        
-									<?php	
-									}
-									else if($rownotif['status'] == 1)
-									{
-											?>
-									<li  style="background-color:#f2f2f2 ">
-										<a>
-											<div>
-												<i class="fa fa-edit fa-fw"></i><strong><?php echo $rownotif['TFname']." ".$rownotif['TLname']; ?></strong>
-												<span class="pull-right text-muted small"><?php echo date("M-d-y h:i",strtotime($rownotif['Date'])); ?></span>
-												<br>
-												<i>Edited <?php echo $rownotif['SFname']." ".$rownotif['SLname']; ?>'s grades</i>
-												<span class="pull-right text-muted small"  style="background-color:#f2f2f2 ">Approved</span>
-											</div>
-										</a>
-									</li>
-									<li class="divider " style="background-color:#f2f2f2 "></li>
-                        
-									<?php	
-										
-									}
-									 else if($rownotif['status'] == 2)
-									{
-											?>
-									<li style="background-color:#f2f2f2 ">
-										<a>
-											<div>
-												<i class="fa fa-edit fa-fw"></i><strong><?php echo $rownotif['TFname']." ".$rownotif['TLname']; ?></strong>
-												<span class="pull-right text-muted small"><?php echo date("M-d-y h:i",strtotime($rownotif['Date'])); ?></span>
-												<br>
-												<i>Edited <?php echo $rownotif['SFname']." ".$rownotif['SLname']; ?>'s grades</i>
-												<span class="pull-right text-muted small"  style="background-color:#f2f2f2 ">Rejected</span>
-											</div>
-										</a>
-									</li>
-									<li class="divider " style="background-color:#f2f2f2 "></li>
-									<?php	
-										
-									}
-									
-									
-								}
-							?>
-							
-							
-							<?php
-						}
-					}
-					
-					
-					
-					
-					
-					?>
-					<li>
-                            <a class="text-center" data-toggle="modal" data-target="#requestModal" onclick="changeID(0,'all');">
-                                <strong>Show All Request</strong>
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-                        </li>
-					</ul>
-
                     <!-- end dropdown-alerts -->
                 </li>
                 <li class="dropdown">
@@ -215,7 +107,7 @@ $sqlSY = "Select *from sy ORDER BY RIGHT(schoolYear,4) DESC LIMIT 1";
 						
                         <!--end user image section-->
                     </li>
-					 <li class="selected">
+					 <li>
                         <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
                     </li>
                     <li>
@@ -258,6 +150,9 @@ $sqlSY = "Select *from sy ORDER BY RIGHT(schoolYear,4) DESC LIMIT 1";
                             </li>
                         </ul>
                     </li>
+					<li>
+                        <a href="../teacher_subject/teacherSubj_frame.php"><i class="fa fa-user-circle fa-fw"></i>Teacher Subject</a>
+                    </li>
                     <li class="selected">
                         <a href="../reports/report_frame.php"><i class="fa fa-list fa-fw"></i>Reports</a>
                     </li>
@@ -281,9 +176,9 @@ $sqlSY = "Select *from sy ORDER BY RIGHT(schoolYear,4) DESC LIMIT 1";
                     <h1 class="page-header">Reports<br>
 					<div class=btn-group >
 					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('sy');" ><span class ="fa fa-industry fa-fw" ></span> School Year</button>
-					<!--<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('section');"><span class ="fa fa-list-ul fa-fw" ></span> Sections</button>
+					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('section');"><span class ="fa fa-list-ul fa-fw" ></span> Sections</button>
 					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('subject');"><span class ="fa fa-book fa-fw" ></span> Subjects</button>
-					<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" onclick="changeID('subject');"><span class ="fa fa-chart fa-fw" ></span> Summer</button>-->
+					
 					</div>
 					</h1>
 					
@@ -301,6 +196,8 @@ $sqlSY = "Select *from sy ORDER BY RIGHT(schoolYear,4) DESC LIMIT 1";
             </div>
 			
         </div>
+		<div id="printTable">
+		</div>
         <!-- end page-wrapper -->
 
     </div>
@@ -332,14 +229,6 @@ $sqlSY = "Select *from sy ORDER BY RIGHT(schoolYear,4) DESC LIMIT 1";
 					{
                         document.getElementById("reportTables").innerHTML = xhr.responseText;
                     }
-                    else if(type==='student')
-                     {
-                          document.getElementById("reportTables").innerHTML = xhr.responseText;
-                     }
-					 else if(type==='teacher')
-                     {
-                          document.getElementById("reportTables").innerHTML = xhr.responseText;
-                     }
 					 else if(type==='section')
                      {
                           document.getElementById("reportTables").innerHTML = xhr.responseText;
@@ -366,6 +255,27 @@ $sqlSY = "Select *from sy ORDER BY RIGHT(schoolYear,4) DESC LIMIT 1";
 			xhr.open('GET', url, false);
 			xhr.onreadystatechange = function () {
             document.getElementById("syFilterTable").innerHTML = xhr.responseText;
+			}
+			xhr.send();
+			// ajax stop
+			return false;
+	}
+	
+	function printData(sql)
+	{
+			
+			var xhr;
+			if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers 
+			else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
+			var url = 'syFilter.php?sq='+sql;
+			xhr.open('GET', url, false);
+			xhr.onreadystatechange = function () {
+            document.getElementById("printTable").innerHTML = xhr.responseText;
+			var divToPrint=document.getElementById("printTable");
+			   newWin= window.open("");
+			   newWin.document.write(divToPrint.outerHTML);
+			   newWin.print();
+			   newWin.close();
 			}
 			xhr.send();
 			// ajax stop

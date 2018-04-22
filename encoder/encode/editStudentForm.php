@@ -338,7 +338,7 @@ $byear = date('Y', strtotime($rowStudent['birthdate']));
 									</tr>
 									<tr>
 										<td colspan =4>
-											<input type="number" class="form-control" name="average" value="<?php echo $rowStudent['average']; ?>" style="width:90%">
+											<input type="number" step="0.01" class="form-control" name="average" value="<?php echo $rowStudent['average']; ?>" style="width:90%">
 										</td>
 										<?php
 										$docs = explode(",", $rowStudent['docs']);	
@@ -410,7 +410,7 @@ $byear = date('Y', strtotime($rowStudent['birthdate']));
 				var age = parseInt(curr_year) - parseInt(year);
 				if(month == curr_month)
 				{
-					if(day < curr_day)
+					if(curr_day<day)
 					{
 						age--;
 					}					

@@ -14,6 +14,7 @@ if(mysqli_num_rows($result)>0)
 	}
 }
 
+$sqlPrint = "Select employeeNo as Employee_No., CONCAT(Fname, ' ', Mname, ' ', Lname ) as Name, contactNo as Contact_No from teacher";
 ?>
 <!DOCTYPE html>
 <html>
@@ -210,6 +211,9 @@ if(mysqli_num_rows($result)>0)
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								List of Teachers
+								 <div style="float:right" id="icon"  onclick="printData('<?php echo $sqlPrint; ?>');">
+								<span class="fa fa-print fa-fw" ></span> Print
+							 </div>
 							</div>
 							<div class="panel-body">
 								<div class="table-responsive">
@@ -323,7 +327,12 @@ if(mysqli_num_rows($result)>0)
 			<!-- end page-wrapper -->
 		</div>
 		<!-- end wrapper -->
-
+	<div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:80%">
+			<div id="printTable">
+			</div>
+		</div>
+	</div>
 		<!-- Core Scripts - Include with every page -->
 		<script src="../../assets/plugins/jquery-1.10.2.js"></script>
 		<script src="../../assets/plugins/bootstrap/bootstrap.min.js"></script>
@@ -374,6 +383,30 @@ if(mysqli_num_rows($result)>0)
     }
 	
 	
+	function printData(sql)
+	{
+			
+			var xhr;
+			if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers 
+			else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
+			var url = '../printTable.php';
+			xhr.onreadystatechange = function () {
+				if(xhr.status == 200)
+				{
+            document.getElementById("printTable").innerHTML = xhr.responseText;
+			var divToPrint=document.getElementById("printTable");
+			   newWin= window.open("");
+			   newWin.document.write(divToPrint.outerHTML);
+			   newWin.print();
+			   newWin.close();
+				}
+			}
+			xhr.open('POST', url, false);
+						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			xhr.send('sql='+sql);
+			// ajax stop
+			return false;
+	}
 	</script>
 
 	</body>

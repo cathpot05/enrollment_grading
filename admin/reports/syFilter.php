@@ -105,7 +105,7 @@ $sql = "SELECT CONCAT(C.Lname, ', ', C.Fname, ' ', C.Mname) as Name ,AA.section 
 									WHERE F.ID = $sySel
                                      AND (B.q1+B.q2+B.q3+B.q4)/4 >=75
                             GROUP BY A.ID
-                            ORDER BY Grade_Average DESC";
+                            ORDER BY Grade_Average DESC LIMIT 10";
 }
 
 
@@ -122,7 +122,8 @@ $result = mysqli_query($con,$sql);
 										if(mysqli_num_rows($result2)>0)
 										{
 											?>
-											<select id="syStudent" style="float:right" onchange="syFilter(<?php echo $id; ?>,this.value);">
+											
+											<label style="float:right">SY : <select id="syStudent" style="float:right" onchange="syFilter(<?php echo $id; ?>,this.value);">
 											<?php
 											while($row2 = mysqli_fetch_array($result2))
 											{
@@ -131,7 +132,7 @@ $result = mysqli_query($con,$sql);
 												<?php
 											}
 											?>
-											</select>
+											</select></label>
 											<?php
 										}
 							 }

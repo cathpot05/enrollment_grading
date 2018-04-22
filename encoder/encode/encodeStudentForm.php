@@ -332,7 +332,7 @@ if(mysqli_num_rows($result)>0)
 									</tr>
 									<tr>
 										<td colspan =4>
-											<input type="number" class="form-control" name="average" style="width:90%">
+											<input type="number" step="0.01" class="form-control" name="average" style="width:90%">
 										</td>
 										<td colspan =2>
 											 <input type=checkbox name="docs[]" value="BC"> BC
@@ -422,7 +422,7 @@ if(mysqli_num_rows($result)>0)
 				var age = parseInt(curr_year) - parseInt(year);
 				if(month == curr_month)
 				{
-					if(day < curr_day)
+					if(curr_day<day)
 					{
 						age--;
 					}					

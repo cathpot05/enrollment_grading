@@ -29,6 +29,8 @@ if(isset($_POST['selectSY']))
 {
 	$_SESSION['selectSY']=$_POST['selectSY'];
 }
+
+$sqlPrint = "Select username as Username, CONCAT(Fname, '', Mname, '', Fname) as Name, birthdate as Birthday, gender as Gender from student";
 ?>
 <!DOCTYPE html>
 <html>
@@ -197,6 +199,9 @@ if(isset($_POST['selectSY']))
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             List of Students
+							 <div style="float:right" id="icon"  onclick="printData('<?php echo $sqlPrint; ?>');">
+								<span class="fa fa-print fa-fw" ></span> Print
+							 </div>
                         </div>
                         <div class="panel-body">
                             <div class="table-responsive">
@@ -307,7 +312,12 @@ if(isset($_POST['selectSY']))
                             </div>
         </div>
         <!-- end page-wrapper -->
-
+	<div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:80%">
+			<div id="printTable">
+			</div>
+		</div>
+	</div>
     </div>
     <!-- end wrapper -->
 
@@ -376,6 +386,32 @@ if(isset($_POST['selectSY']))
 			document.getElementById("newPasswordText").required = false;
 			document.getElementById("newPassword2Text").required = false;
 		}
+	}
+	
+	
+	function printData(sql)
+	{
+			
+			var xhr;
+			if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers 
+			else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
+			var url = '../printTable.php';
+			xhr.onreadystatechange = function () {
+				if(xhr.status == 200)
+				{
+            document.getElementById("printTable").innerHTML = xhr.responseText;
+			var divToPrint=document.getElementById("printTable");
+			   newWin= window.open("");
+			   newWin.document.write(divToPrint.outerHTML);
+			   newWin.print();
+			   newWin.close();
+				}
+			}
+			xhr.open('POST', url, false);
+						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			xhr.send('sql='+sql);
+			// ajax stop
+			return false;
 	}
 	</script>
 

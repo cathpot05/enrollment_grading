@@ -17,6 +17,8 @@ else
 {
 
 }
+
+$sqlPrint = "Select user as User, userType as User_Type, logType as Action, Date as Date_and_Time from log ORDER BY ID DESC";
 ?>
 <!DOCTYPE html>
 <html>
@@ -175,6 +177,9 @@ else
                     <div class="panel panel-default">
                         <div class="panel-heading">
                              List of Log Activies
+							  <div style="float:right" id="icon"  onclick="printData('<?php echo $sqlPrint; ?>');">
+								<span class="fa fa-print fa-fw" ></span> Print
+							 </div>
                         </div>
                         <div class="panel-body">
                             <div class="table-responsive">
@@ -227,7 +232,12 @@ else
 
     </div>
         <!-- end page-wrapper -->
-
+	<div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:80%">
+			<div id="printTable">
+			</div>
+		</div>
+	</div>
     </div>
     <script src="../../assets/plugins/jquery-1.10.2.js"></script>
     <script src="../../assets/plugins/bootstrap/bootstrap.min.js"></script>
@@ -244,6 +254,32 @@ else
         "order": [[ 0	, "desc" ]]
     });
         });
+		
+	
+	function printData(sql)
+	{
+			
+			var xhr;
+			if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers 
+			else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
+			var url = '../printTable.php';
+			xhr.onreadystatechange = function () {
+				if(xhr.status == 200)
+				{
+            document.getElementById("printTable").innerHTML = xhr.responseText;
+			var divToPrint=document.getElementById("printTable");
+			   newWin= window.open("");
+			   newWin.document.write(divToPrint.outerHTML);
+			   newWin.print();
+			   newWin.close();
+				}
+			}
+			xhr.open('POST', url, false);
+						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			xhr.send('sql='+sql);
+			// ajax stop
+			return false;
+	}
     </script>
 	
 </body>
