@@ -234,8 +234,6 @@ $sqlSY = "Select *from sy ORDER BY RIGHT(schoolYear,4) DESC LIMIT 1";
                         document.getElementById("reportTables").innerHTML = xhr.responseText;
                     }
 
-					 else if(type==='section')
-
                    /* else if(type==='section')
                      {
                           document.getElementById("reportTables").innerHTML = xhr.responseText;
@@ -312,10 +310,28 @@ $sqlSY = "Select *from sy ORDER BY RIGHT(schoolYear,4) DESC LIMIT 1";
 
     $(".btnLevel").on('click', function() {
         $("#reportTables").empty();
+        $.ajax({
+            type: "GET",
+            url: "level_schoolYearFilter.php?",
+            cache: false,
+            success: function(html){
+                $("#reportTables").empty(html);
+                $("#reportTables").append(html);
+            }
+        });
     });
 
     $(".btnSummer").on('click', function() {
         $("#reportTables").empty();
+        $.ajax({
+            type: "GET",
+            url: "summer_syFilter.php?",
+            cache: false,
+            success: function(html){
+                $("#reportTables").empty(html);
+                $("#reportTables").append(html);
+            }
+        });
     });
 
 

@@ -8,16 +8,14 @@
 include "../../dbcon.php";
 include "../sessionAdmin.php";
 
-$level = $_GET['sylevel'];
 $syId = $_GET['syId'];
-$sylevelsec = $_GET['sylevelsec'];
 ?>
 <html>
 
 <label>Choose Report:</label>
 <select class="form-control chosen" id="reportType">
-    <option value="1">TOP 10 STUDENTS PER SECTION</option>
-    <option value="2">LIST OF FAILED STUDENTS PER SECTION</option>
+    <option value="1">TOP 10 STUDENTS PER LEVEL</option>
+    <option value="2">LIST OF FAILED STUDENTS PER LEVEL</option>
 </select>
 
 <div id="reportResult">
@@ -31,11 +29,10 @@ $sylevelsec = $_GET['sylevelsec'];
         var x = this.value;
         var sy = $("#cboSY").val();
         var level = $("#cboLevel").val();
-        var sylevelsec = $("#cboSection").val();
 
         $.ajax({
             type: "GET",
-            url: "result_section.php?sylevelsec="+sylevelsec+"&syId="+sy+"&sylevel="+level+"&type="+x,
+            url: "result_level.php?syId="+sy+"&sylevel="+level+"&type="+x,
             cache: false,
             success: function(html){
                 $("#reportResult").empty(html);
