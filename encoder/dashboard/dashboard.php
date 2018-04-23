@@ -153,42 +153,6 @@ $subjectCount = mysqli_num_rows($result);
 					<div class="row">
 						<div class="col-lg-4">
 							<div class="panel panel-primary text-center no-boder">
-								<div class="panel-body yellow">
-									<h1><?php echo $sectionCount; ?></h1>
-									<h3>Total number of section</h3>
-								</div>
-								<div class="panel-footer">
-									<a href="../section/section_frame.php"><span class="panel-eyecandy-title">Sections List
-									</span></a>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-4">
-							<div class="panel panel-primary text-center no-boder">
-								<div class="panel-body blue">
-									<h1><?php echo $subjectCount; ?></h1>
-									<h3>Total number of subjects</h3>
-								</div>
-								<div class="panel-footer">
-									<a href="../subject/subject_frame.php"><span class="panel-eyecandy-title">Subjects List
-									</span></a>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-4">
-							<div class="panel panel-primary text-center no-boder">
-								<div class="panel-body green">
-									<h1><?php echo $teacherCount; ?></h1>
-									<h3>Total number of teachers</h3>
-								</div>
-								<div class="panel-footer">
-									<a href="../teacher/teacher_frame.php"><span class="panel-eyecandy-title">Teachers List
-									</span></a>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-4">
-							<div class="panel panel-primary text-center no-boder">
 								<div class="panel-body red">
 									<h1><?php echo $studentCount; ?></h1>
 									<h3>Total number of students</h3>

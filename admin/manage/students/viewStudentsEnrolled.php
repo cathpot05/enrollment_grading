@@ -269,6 +269,7 @@ else{
                             <tr>
                                 <th>Student Name</th>
                                 <th>Transfer Section</th>
+								<th>Print Grade</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -294,6 +295,8 @@ else{
                                     ?>
                                         <td><?php echo strtoupper($row_stu['student']); ?></td>
                                         <td><span id="icon" class="fa fa-arrow-right fa-fw" data-toggle="modal" data-target="#transferStudent" onClick="transferData(<?php echo $row_stu["enrolleId"];?>, <?php echo '\''. $row_stu["student"] . '\''; ?> )"> </span> <?php echo $active;?></td>
+										 <td><span id="icon" class="fa fa-print fa-fw" onClick="printData(<?php echo  $row_stu["enrolleId"]; ?>)"> </span> <?php echo $active;?></td>
+										
                                     </tr>
                                 <?php
                                 }
@@ -354,6 +357,12 @@ else{
             </div>
         </div>
     </div>
+	<div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:80%">
+			<div id="printTable">
+			</div>
+		</div>
+	</div>
     <!-- end page-wrapper -->
 </div>
 <!-- end wrapper -->
@@ -394,6 +403,28 @@ else{
         document.getElementById("stud_name").value = name;
     }
 
+	
+	function printData(id)
+	{
+			
+			var xhr;
+			if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers 
+			else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
+			var url = '../../form138.php?id='+id;
+			
+			xhr.open('GET', url, false);
+			xhr.onreadystatechange = function () {
+            document.getElementById("printTable").innerHTML = xhr.responseText;
+			var divToPrint=document.getElementById("printTable");
+			   newWin= window.open("");
+			   newWin.document.write(divToPrint.outerHTML);
+			   newWin.print();
+			   newWin.close();
+			}
+			xhr.send();
+			// ajax stop
+			return false;
+	}
 </script>
 
 </body>

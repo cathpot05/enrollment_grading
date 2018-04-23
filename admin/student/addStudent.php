@@ -63,7 +63,7 @@ else
 
 if($password == $password2){
 	
-	echo $sql = "INSERT INTO student(username,password,Lname,Fname,Mname,LRN,classification,
+	$sql = "INSERT INTO student(username,password,Lname,Fname,Mname,LRN,classification,
 	religion,address,contactno,birthdate,age,gender,nameMother,contactMother,occupationMother,
 	nameFather,contactFather,occupationFather,nameGuardian,contactGuardian,prevSchool,prevSY,
 	prevLevel,average,docs,remarks,dateCreated) 

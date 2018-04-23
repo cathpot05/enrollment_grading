@@ -52,6 +52,8 @@ if($type == 'sy')
 										LEFT JOIN sy_level_subject E ON E.sy_level_ID = A.ID
 										LEFT JOIN enrolled_student D ON D.sy_level_section_ID = C.ID
 										GROUP BY B.ID";
+										$sqlPrint = urlencode($sql);
+										$header = urlencode("test header");
 										$result = mysqli_query($con,$sql);
 										if(mysqli_num_rows($result)>0)
 										{
@@ -70,6 +72,9 @@ if($type == 'sy')
 										?>
                                     </tbody>
                                 </table>
+								 <div style="float:left" id="icon"  onclick="printData('<?php echo $sqlPrint; ?>','<?php echo $header; ?>');">
+								<span class="fa fa-print fa-fw" ></span> Print
+							 </div>
                         </div>
                     </div>
                     <!--End Advanced Tables -->

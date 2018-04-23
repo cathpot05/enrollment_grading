@@ -12,6 +12,7 @@ if($id == 1)
 										LEFT JOIN sy_level_subject E ON E.sy_level_ID = A.ID
 										LEFT JOIN enrolled_student D ON D.sy_level_section_ID = C.ID
 										GROUP BY B.ID";
+										$header = urlencode("Yearly Report");
 }
 else if($id == 2)
 {
@@ -24,6 +25,7 @@ else if($id == 2)
 			LEFT JOIN teacher_section_subject F ON F.sy_level_section_ID = C.ID AND F.sy_level_subject_ID = E.ID
 			LEFT JOIN grade G ON G.enrolled_student_ID = D.ID AND G.teacher_section_subject_ID = F.ID
 			GROUP BY B.ID";
+			$header = urlencode("Yearly Student Average");
 }
 else if($id == 3)
 {
@@ -55,6 +57,7 @@ else if($id == 3)
 			LEFT JOIN teacher_section_subject F ON F.sy_level_section_ID = C.ID AND F.sy_level_subject_ID = E.ID
 			LEFT JOIN grade G ON G.enrolled_student_ID = D.ID AND G.teacher_section_subject_ID = F.ID
 			GROUP BY B.ID";
+			$header = urlencode("Passed/Failed Student Report");
 }
 else if($id == 4)
 {
@@ -76,6 +79,7 @@ else if($id == 4)
 			INNER JOIN summer_subject C ON B.ID =C.sy_level_ID
 			INNER JOIN summer_enrolled D ON C.ID =D.summer_subject_ID
 			GROUP BY A.ID";
+			$header = urlencode("Summer Subjects and Enrolled Student");
 }else if($id == 5)
 {
 	$sql = "Select B.ID,B.username, B.Fname, B.Lname, D.section, F.level 
@@ -86,6 +90,7 @@ else if($id == 4)
 			INNER JOIN sy_level E ON E.ID = C.sy_level_ID
 			INNER JOIN level F ON F.ID = E.level_ID
  			where E.sy_ID = $sySel";
+			$header = urlencode("Enrolled Students per School Year");
 }
 else if($id == 6)
 {
@@ -106,9 +111,10 @@ $sql = "SELECT CONCAT(C.Lname, ', ', C.Fname, ' ', C.Mname) as Name ,AA.section 
                                      AND (B.q1+B.q2+B.q3+B.q4)/4 >=75
                             GROUP BY A.ID
                             ORDER BY Grade_Average DESC LIMIT 10";
+							$header = urlencode("Top 10 Student per School Year");
+							
 }
-
-
+$sqlPrint = urlencode($sql);
 $result = mysqli_query($con,$sql);
 
 	?>
@@ -183,6 +189,9 @@ $result = mysqli_query($con,$sql);
 		?>
 		</tbody>
 	</table>
+	  <div style="float:left" id="icon"  onclick="printData('<?php echo $sqlPrint; ?>','<?php echo $header; ?>');">
+								<span class="fa fa-print fa-fw" ></span> Print
+							 </div>
 	</div>
 	</div>
 	<?php

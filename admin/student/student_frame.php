@@ -215,8 +215,9 @@ $header = urlencode("List of Students");
                                             <th>Name</th>
 											<th>Birthday</th>
 											<th>Gender</th>
-											<th width=6%>Edit</th>
-											<th width=7%>Delete</th>
+											<th width=5%>Edit</th>
+											<th width=5%>Delete</th>
+											<th width=5%>Print Grade</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -238,7 +239,7 @@ $header = urlencode("List of Students");
 											<span  id="icon" class="fa fa-lock fa-fw" data-toggle="modal" data-target="#changePasswordModal"  onclick="changeID(<?php echo $row['ID']; ?>,'password');"></span>
 											<span id="icon" class="fa fa-edit fa-fw" onclick="window.location.href='editStudentForm.php?id=<?php echo $row['ID']; ?>';" ></span></center></td>
 											<td><center><span id="icon" class="fa fa-times fa-fw" data-toggle="modal" data-target="#deleteModal" onclick="changeID(<?php echo $row['ID']; ?>,'delete');"></span></center></td>
-														
+											<td><center><span id="icon" class="fa fa-print fa-fw"  onclick="printData2(<?php echo $row['ID']; ?>);"></span></center></td>		
 											</tr>
 										<?php
 										}
@@ -400,6 +401,26 @@ $header = urlencode("List of Students");
 			else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
 			var url = '../printTable.php?sql='+sql+'&header='+header;
 			
+			xhr.open('GET', url, false);
+			xhr.onreadystatechange = function () {
+            document.getElementById("printTable").innerHTML = xhr.responseText;
+			var divToPrint=document.getElementById("printTable");
+			   newWin= window.open("");
+			   newWin.document.write(divToPrint.outerHTML);
+			   newWin.print();
+			   newWin.close();
+			}
+			xhr.send();
+			// ajax stop
+			return false;
+	}
+	function printData2(id)
+	{
+			
+			var xhr;
+			if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers 
+			else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
+			var url = '../form137.php?id='+id;
 			xhr.open('GET', url, false);
 			xhr.onreadystatechange = function () {
             document.getElementById("printTable").innerHTML = xhr.responseText;

@@ -35,6 +35,7 @@ if($sy == 0){
     }
 }
 
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -106,6 +107,7 @@ if($sy == 0){
 					INNER JOIN enrolled_student ON grade.enrolled_student_ID = enrolled_student.ID
 					INNER JOIN student ON enrolled_student.student_ID = student.ID
 					ORDER BY DATE DESC LIMIT 6";
+				
                 $resultnotif = mysqli_query($con,$sqlnotif);
 
                 if(mysqli_num_rows($resultnotif)>0)
@@ -230,8 +232,7 @@ if($sy == 0){
                 <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
             </li>
             <li>
-                <a href="#"><i class="fa fa-sitemap fa-fw"></i>Initials<span class="fa arrow"></span></a>
-                <div class="nav-collapse">
+                <a href="#"><i class="fa fa-sitemap fa-fw"></i>Management Setup<span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li>
                             <a href="../sy/sy_frame.php">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>School Years</a>
@@ -255,7 +256,6 @@ if($sy == 0){
                             <a href="../encoder/encoder_frame.php">&nbsp;&nbsp;<i class="fa fa-keyboard-o fa-fw"></i>Encoder</a>
                         </li>
                     </ul>
-                </div>
             </li>
 
             <li>
@@ -303,6 +303,10 @@ if($sy == 0){
             ?>
             <h1 class="page-header text-primary">Teacher - Subject Management</h1>
             <h4 class="text-primary">Teacher Name: <?php echo $teacher;?></h4>
+			<?php
+			$header = urlencode("Teacher Name: ".$teacher);
+			
+			?>
         </div>
         <div class="col-lg-6">
             <div class="form-inline" style="float:right; margin-top:40px" >
@@ -310,6 +314,7 @@ if($sy == 0){
                 <select class="form-control chosen" name="cboSY" id="cboSY">
                     <?php
                     $sql = "SELECT * FROM sy ORDER BY LEFT(schoolYear,4) DESC";
+					
                     $result = mysqli_query($con,$sql);
                     if(mysqli_num_rows($result)> 0)
                     {
@@ -333,6 +338,7 @@ if($sy == 0){
             <div class="panel panel-default">
                 <div class="panel-heading">
                     List of Handled Subjects
+					
                     <button style="padding:3px;" class="pull-right btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal" >
                         Add Subjects
                     </button>
@@ -362,8 +368,8 @@ if($sy == 0){
                                 INNER JOIN sy_level F ON D.sy_level_ID = F.ID
                                 INNER JOIN level H ON F.level_id = H.ID
                                 INNER JOIN section G ON D.section_ID = G.ID
-                                WHERE A.teacher_ID = $teacherId AND F.sy_ID = $sy
-";
+                                WHERE A.teacher_ID = $teacherId AND F.sy_ID = $sy";
+								$sqlPrint = urlencode($sql);
                             $result = mysqli_query($con,$sql);
                             if(mysqli_num_rows($result)>0)
                             {
@@ -382,6 +388,12 @@ if($sy == 0){
                             ?>
                             </tbody>
                         </table>
+						<?php
+						
+						?>
+						<div style="float:left" id="icon"  onclick="printData('<?php echo $sqlPrint; ?>','<?php echo $header; ?>');">
+								<span class="fa fa-print fa-fw" ></span> Print
+							 </div>
 
 
                         <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -517,6 +529,13 @@ if($sy == 0){
             </div>
         </div>
     </div>
+	
+	<div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:80%">
+			<div id="printTable">
+			</div>
+		</div>
+	</div>
     <!-- end page-wrapper -->
 </div>
 <!-- end wrapper -->
@@ -548,7 +567,26 @@ if($sy == 0){
     });
 
 
-
+function printData(sql,header)
+	{
+			var xhr;
+			if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers 
+			else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
+			var url = '../printTable.php?sql='+sql+'&header='+header;
+			
+			xhr.open('GET', url, false);
+			xhr.onreadystatechange = function () {
+            document.getElementById("printTable").innerHTML = xhr.responseText;
+			var divToPrint=document.getElementById("printTable");
+			   newWin= window.open("");
+			   newWin.document.write(divToPrint.outerHTML);
+			   newWin.print();
+			   newWin.close();
+			}
+			xhr.send();
+			// ajax stop
+			return false;
+	}
 
 </script>
 

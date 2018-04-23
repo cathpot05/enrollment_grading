@@ -212,6 +212,7 @@ else
 					<div class="table-responsive" id="subjectList">
 						
 					</div>
+					 
 				</div>
 			</div>
                     <!--End Advanced Tables -->
@@ -223,7 +224,12 @@ else
             </div>
         </div>
         <!-- end page-wrapper -->
-
+<div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:80%">
+			<div id="printTable">
+			</div>
+		</div>
+	</div>
     </div>
     <!-- end wrapper -->
 
@@ -261,6 +267,28 @@ else
 			// ajax stop
 			return false;
 		
+	}
+	
+	function printData(sql,header)
+	{
+			
+			var xhr;
+			if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers 
+			else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
+			var url = '../printTable.php?sql='+sql+'&header='+header;
+			
+			xhr.open('GET', url, false);
+			xhr.onreadystatechange = function () {
+            document.getElementById("printTable").innerHTML = xhr.responseText;
+			var divToPrint=document.getElementById("printTable");
+			   newWin= window.open("");
+			   newWin.document.write(divToPrint.outerHTML);
+			   newWin.print();
+			   newWin.close();
+			}
+			xhr.send();
+			// ajax stop
+			return false;
 	}
 
 	</script>

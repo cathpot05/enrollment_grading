@@ -227,8 +227,8 @@ $header = urlencode("List of Encoders");
                                 <th>Employee No.</th>
                                 <th>Name</th>
                                 <th>Contact No.</th>
-                                <th width=6%>Edit</th>
-                                <th width=7%>Delete</th>
+                                <th width=5%>Edit</th>
+                                <th width=5%>Delete</th>
                             </tr>
                             </thead>
                             <tbody>

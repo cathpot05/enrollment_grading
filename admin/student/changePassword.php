@@ -21,7 +21,7 @@ if(isset($_POST['newPassword']) && $_POST['newPassword'] != null)
 }
 else
 {
-	echo $sql = "UPDATE student SET username='$username' where ID=$id";
+	$sql = "UPDATE student SET username='$username' where ID=$id";
 	$result = mysqli_query($con,$sql);
 }
 

@@ -2,7 +2,7 @@
 include "../../dbcon.php";
 $id = $_GET['id'];
 $username=$_POST['username'];
-echo $password=$_POST['password'];
+$password=$_POST['password'];
 $password2=$_POST['password2'];
 if($password != "")
 {

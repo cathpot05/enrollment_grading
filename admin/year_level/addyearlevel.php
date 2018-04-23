@@ -2,7 +2,7 @@
 include "../../dbcon.php";
 include "../sessionAdmin.php";
 $level=$_POST['level'];
-echo $sql = "INSERT INTO level (level) VALUES('$level')";
+$sql = "INSERT INTO level (level) VALUES('$level')";
 $result = mysqli_query($con,$sql);
 	$username='';
 	$sqlAdmin = "Select *from admin where ID=$adminID";

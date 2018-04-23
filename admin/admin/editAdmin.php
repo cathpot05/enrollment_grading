@@ -6,7 +6,7 @@ $username = $_POST['username'];
 $Lname = $_POST['Lname'];
 $Fname = $_POST['Fname'];
 $Mname = $_POST['Mname'];
-	echo $sql = "UPDATE admin SET username = '$username', Lname = '$Lname', Fname = '$Fname', Mname = '$Mname' where ID=$id";
+$sql = "UPDATE admin SET username = '$username', Lname = '$Lname', Fname = '$Fname', Mname = '$Mname' where ID=$id";
 	$result = mysqli_query($con,$sql);
 	$username='';
 	$sqlAdmin = "Select *from admin where ID=$adminID";

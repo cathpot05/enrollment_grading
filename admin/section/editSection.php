@@ -4,7 +4,7 @@ include "../sessionAdmin.php";
 $id = $_GET['id'];
 $year=$_POST['year'];
 $section=$_POST['section'];
-	echo $sql = "UPDATE section SET year = '$year', section = '$section' where ID=$id";
+	$sql = "UPDATE section SET year = '$year', section = '$section' where ID=$id";
 	$result = mysqli_query($con,$sql);
 	$username='';
 	$sqlAdmin = "Select *from admin where ID=$adminID";

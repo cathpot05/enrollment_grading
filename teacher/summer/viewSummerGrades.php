@@ -143,7 +143,7 @@ $now = date('Y-m-d');
 			<div class="row">
                 <!-- Page Header -->
                 <div class="col-lg-12">
-				<table width=100% border=1>
+				<table width=100%>
 					<tr>
 						<th></th>
 						<th>Grading Schedule</th>
@@ -198,6 +198,7 @@ $now = date('Y-m-d');
 							    <div class="panel panel-default">
 								<div class="panel-heading">
 								List of Students
+								<?php $header= urlencode("List of Students");?>
 								</div>
 								<div class="panel-body">
 									<div class="table-responsive">
@@ -220,6 +221,13 @@ $now = date('Y-m-d');
                                             LEFT JOIN summer_grade D ON B.summer_subject_ID = D.summer_subject_ID AND D.summer_enrolled_ID = B.ID
                                             LEFT JOIN summer_grade_sched E ON E.sy_level_ID = A.sy_level_ID
                                             where A.ID = $id";
+											$sqlPrint = urlencode("SELECT CONCAT(Fname, ' ',Mname, ' ', Lname) as Name,D.grade as Grade
+                                            FROM summer_enrolled B
+                                            INNER JOIN summer_subject A ON A.ID = B.summer_subject_ID
+                                            INNER JOIN student C ON B.student_ID = C.ID
+                                            LEFT JOIN summer_grade D ON B.summer_subject_ID = D.summer_subject_ID AND D.summer_enrolled_ID = B.ID
+                                            LEFT JOIN summer_grade_sched E ON E.sy_level_ID = A.sy_level_ID
+                                            where A.ID = $id");
 											$result = mysqli_query($con,$sql);
 											if(mysqli_num_rows($result)>0)
 											{
@@ -265,6 +273,9 @@ $now = date('Y-m-d');
 												
 											</tbody>
 										</table>
+										<div style="float:left" id="icon"  onclick="printData('<?php echo $sqlPrint; ?>','<?php echo $header; ?>');">
+								<span class="fa fa-print fa-fw" ></span> Print
+							 </div>
 										<button style="float:right" type="submit" class="btn btn-primary">Save Changes</button>
 										</form>
 									</div>
@@ -299,7 +310,12 @@ $now = date('Y-m-d');
             </div>
         </div>
         <!-- end page-wrapper -->
-
+	<div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:80%">
+			<div id="printTable">
+			</div>
+		</div>
+	</div>
     </div>
     <!-- end wrapper -->
 
@@ -327,7 +343,27 @@ $now = date('Y-m-d');
     document.getElementById("sySelForm").submit();
     }
 	
-
+function printData(sql,header)
+	{
+			
+			var xhr;
+			if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers 
+			else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
+			var url = '../printTable.php?sql='+sql+'&header='+header;
+			
+			xhr.open('GET', url, false);
+			xhr.onreadystatechange = function () {
+            document.getElementById("printTable").innerHTML = xhr.responseText;
+			var divToPrint=document.getElementById("printTable");
+			   newWin= window.open("");
+			   newWin.document.write(divToPrint.outerHTML);
+			   newWin.print();
+			   newWin.close();
+			}
+			xhr.send();
+			// ajax stop
+			return false;
+	}
 	</script>
 
 </body>

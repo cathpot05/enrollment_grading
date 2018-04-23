@@ -4,7 +4,7 @@ include "../sessionAdmin.php";
 $id = $_GET['id'];
 $code=$_POST['code'];
 $subject=$_POST['subject'];
-echo $sql = "UPDATE subject SET code = '$code', subject = '$subject' where ID=$id";
+$sql = "UPDATE subject SET code = '$code', subject = '$subject' where ID=$id";
 $result = mysqli_query($con,$sql);
 
 	$username='';

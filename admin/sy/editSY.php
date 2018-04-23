@@ -5,7 +5,7 @@ $id = $_GET['id'];
 $from=$_POST['from'];
 $to=$_POST['to'];
 $sy=$from."-".$to;
-echo $sql = "UPDATE sy SET schoolYear = '$sy' where ID=$id";
+$sql = "UPDATE sy SET schoolYear = '$sy' where ID=$id";
 $result = mysqli_query($con,$sql);
 
 	$username='';

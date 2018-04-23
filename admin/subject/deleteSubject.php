@@ -2,7 +2,7 @@
 include "../../dbcon.php";
 include "../sessionAdmin.php";
 $id=$_GET['delID'];
-echo $sql = "DELETE FROM subject where ID = $id";
+$sql = "DELETE FROM subject where ID = $id";
 $result = mysqli_query($con,$sql);
 
 	$username='';

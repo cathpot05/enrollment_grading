@@ -201,6 +201,7 @@ $now = date('Y-m-d');
 							    <div class="panel panel-default">
 								<div class="panel-heading">
 								List of Students
+								<?php $header=urlencode("List of Students"); ?>
 								</div>
 								<div class="panel-body">
 									<div class="table-responsive">
@@ -229,6 +230,15 @@ $now = date('Y-m-d');
 											INNER JOIN sy_level_subject F ON A.sy_level_subject_ID = F.ID
 											LEFT JOIN grade_sched G ON B.sy_level_ID = G.sy_level_ID AND F.sy_level_ID = G.sy_level_ID
 											where A.ID = $id";
+											$sqlPrint = urlencode("Select CONCAT(D.Fname, ' ',D.Mname, ' ', D.Lname) as Name,E.q1 as 1st_Quarter,E.q2 as 2nd_Quarter,E.q3 as 3rd_Quarter,E.q4 as 4th_Quarter,(E.q1+E.q2+E.q3+E.q4)/4 as Final
+											from teacher_section_subject A 
+											INNER JOIN sy_level_section B ON A.sy_level_section_ID = B.ID
+											INNER JOIN enrolled_student C ON C.sy_level_section_ID = B.ID
+											INNER JOIN student D ON C.student_ID = D.ID
+											LEFT JOIN grade E ON E.enrolled_student_ID = C.ID and E.teacher_section_subject_ID = A.ID 
+											INNER JOIN sy_level_subject F ON A.sy_level_subject_ID = F.ID
+											LEFT JOIN grade_sched G ON B.sy_level_ID = G.sy_level_ID AND F.sy_level_ID = G.sy_level_ID
+											where A.ID = $id");
 											$result = mysqli_query($con,$sql);
 											if(mysqli_num_rows($result)>0)
 											{
@@ -359,6 +369,9 @@ $now = date('Y-m-d');
 												
 											</tbody>
 										</table>
+										<div style="float:left" id="icon"  onclick="printData('<?php echo $sqlPrint; ?>','<?php echo $header; ?>');">
+								<span class="fa fa-print fa-fw" ></span> Print
+							 </div>
 											<button style="float:right" type="submit" class="btn btn-primary">Save Changes</button>
 										</form>
 									</div>
@@ -390,7 +403,12 @@ $now = date('Y-m-d');
             </div>
         </div>
         <!-- end page-wrapper -->
-
+<div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:80%">
+			<div id="printTable">
+			</div>
+		</div>
+	</div>
     </div>
     <!-- end wrapper -->
 
@@ -418,7 +436,27 @@ $now = date('Y-m-d');
     document.getElementById("sySelForm").submit();
     }
 	
-
+function printData(sql,header)
+	{
+			
+			var xhr;
+			if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers 
+			else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
+			var url = '../printTable.php?sql='+sql+'&header='+header;
+			
+			xhr.open('GET', url, false);
+			xhr.onreadystatechange = function () {
+            document.getElementById("printTable").innerHTML = xhr.responseText;
+			var divToPrint=document.getElementById("printTable");
+			   newWin= window.open("");
+			   newWin.document.write(divToPrint.outerHTML);
+			   newWin.print();
+			   newWin.close();
+			}
+			xhr.send();
+			// ajax stop
+			return false;
+	}
 	</script>
 
 </body>

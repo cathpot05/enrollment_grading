@@ -3,7 +3,7 @@ include "../../dbcon.php";
 include "../sessionAdmin.php";
 $id = $_GET['id'];
 $level=$_POST['level'];
-echo $sql = "UPDATE level SET level = '$level' where ID=$id";
+$sql = "UPDATE level SET level = '$level' where ID=$id";
 $result = mysqli_query($con,$sql);
 
 	$username='';
