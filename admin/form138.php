@@ -134,7 +134,7 @@ $rowInfo = mysqli_fetch_array($resultInfo);
 							<?php  echo $row['finals']; ?>
 						</td>
 						<td>
-							// <?php
+							 <?php
 							if($row['finals']<75)
 							{
 								echo "<strong style='color:red' >Failed</strong>";

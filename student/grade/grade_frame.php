@@ -127,12 +127,14 @@ else
                         <ul class="nav nav-second-level in">
 						<?php
 						
-						$sql2 = "Select A.level, A.ID from level A
-								INNER JOIN sy_level B ON B.level_ID = A.ID
-								INNER JOIN sy_level_section C ON C.sy_level_ID = B.ID
-								INNER JOIN enrolled_student D ON D.sy_level_section_ID = B.ID
-								where D.student_ID = $studentID GROUP BY A.ID
-								ORDER BY RIGHT(A.level,2) ASC";
+						$sql2 = "Select A.student_ID, E.level, E.ID
+								from enrolled_student A 
+								INNER JOIN student B ON A.student_ID = B.ID
+								INNER JOIN sy_level_section C ON A.sy_level_section_ID = C.ID
+								INNER JOIN sy_level D ON C.sy_level_ID = D.ID
+								INNER JOIN level E ON D.level_ID = E.ID
+								WHERE A.student_ID = $studentID
+								ORDER BY RIGHT(E.level,2) ASC";
 						$result2 = mysqli_query($con,$sql2);
 						if(mysqli_num_rows($result2)>0)
 						{

@@ -77,12 +77,14 @@ $rowInfo = mysqli_fetch_array($resultInfo);
 
 <?php
 
-$sql2 = "Select A.level, A.ID, B.ID as ylID from level A
-			INNER JOIN sy_level B ON B.level_ID = A.ID
-			INNER JOIN sy_level_section C ON C.sy_level_ID = B.ID
-			INNER JOIN enrolled_student D ON D.sy_level_section_ID = B.ID
-			where D.student_ID = $id GROUP BY A.ID
-			ORDER BY RIGHT(A.level,2) ASC";
+$sql2 = "Select A.student_ID, E.level, D.ID as ylID
+				from enrolled_student A 
+				INNER JOIN student B ON A.student_ID = B.ID
+				INNER JOIN sy_level_section C ON A.sy_level_section_ID = C.ID
+				INNER JOIN sy_level D ON C.sy_level_ID = D.ID
+				INNER JOIN level E ON D.level_ID = E.ID
+				WHERE A.student_ID = $id 
+			ORDER BY RIGHT(E.level,2) ASC";
 	$result2 = mysqli_query($con,$sql2);
 	if(mysqli_num_rows($result2)>0)
 	{
@@ -91,6 +93,7 @@ $sql2 = "Select A.level, A.ID, B.ID as ylID from level A
 			$ylID = $row2['ylID'];
 			
 	?>	
+	<hr>
 <h4>Year Level : <?php echo $row2['level']; ?></h4>	
 	<table width=100% border=1 style="border-collapse: collapse;">
 		<thead>
@@ -273,9 +276,9 @@ $sql2 = "Select A.level, A.ID, B.ID as ylID from level A
 										   </td>
 										   </tr>
 			</table>
-		<br><br><br>
-		<center><i>****************************** Nothing Follows ******************************</i></center>
 <?php
 
 		}
 		}?>
+				<br><br><br>
+		<center><i>****************************** Nothing Follows ******************************</i></center>

@@ -422,7 +422,7 @@ if($sy == 0){
                                                 $sql_section = "SELECT A.ID as sy_level_subject_id, B.ID as sy_level_section_id, D.section, G.subject, F.level, E.schoolYear, H.teacher_ID
                                                     FROM sy_level_subject A
                                                     INNER JOIN sy_level_section B ON B.sy_level_ID =  A.sy_level_ID
-                                                    INNER JOIN sy_level C ON A.sy_level_ID = C.level_ID
+                                                    INNER JOIN sy_level C ON A.sy_level_ID = C.ID
                                                     INNER JOIN section D ON B.section_ID = D.ID
                                                     INNER JOIN sy E ON C.sy_ID = E.ID
                                                     INNER JOIN level F ON C.level_ID = F.ID
