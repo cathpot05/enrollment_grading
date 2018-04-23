@@ -13,6 +13,9 @@ $id = $_GET['type'];
 $sql = 0;
 if($id == 1)
 {
+
+    $header = urlencode("LIST OF STUDENTS WITH SUMMER SUBJECTS");
+
     $sql = "Select CONCAT(E.LName, ', ', E.Fname, ' ' , E.Mname) as 'Student Name', F.subject AS Subject, G.grade AS Grade
 			from sy A
 			INNER JOIN sy_level B ON A.ID =B.sy_ID
@@ -25,6 +28,9 @@ if($id == 1)
             ORDER BY F.subject ASC";
 }
 else if($id == 2){
+
+    $header = urlencode("SUMMER OFFERED SUBJECTS");
+
     $sql = "Select F.subject AS Subject, CONCAT(G.LName, ', ', G.Fname, ' ' , G.Mname) as 'Teacher Name'
 			from sy A
 			INNER JOIN sy_level B ON A.ID =B.sy_ID
@@ -34,9 +40,13 @@ else if($id == 2){
             WHERE A.ID = $syId
             ORDER BY F.subject ASC";
 }
+$sqlPrint = urlencode($sql);
 $result = mysqli_query($con,$sql);
 ?>
 <div class="panel-body">
+    <div style="float:right" id="icon"  onclick="printData('<?php echo $sqlPrint; ?>','<?php echo $header; ?>');">
+        <span class="fa fa-print fa-fw" ></span> Print
+    </div>
     <div class="table-responsive">
 <?php
 
@@ -81,6 +91,39 @@ if(mysqli_num_rows($result)>0)
         </tbody>
     </table>
     </div>
+
+    <div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width:80%">
+            <div id="printTable">
+            </div>
+        </div>
+    </div>
     </div>
 <?php
-}
+}?>
+
+
+<script type="text/javascript">
+
+    function printData(sql,header)
+    {
+
+        var xhr;
+        if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers
+        else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
+        var url = '../printTable.php?sql='+sql+'&header='+header;
+
+        xhr.open('GET', url, false);
+        xhr.onreadystatechange = function () {
+            document.getElementById("printTable").innerHTML = xhr.responseText;
+            var divToPrint=document.getElementById("printTable");
+            newWin= window.open("");
+            newWin.document.write(divToPrint.outerHTML);
+            newWin.print();
+            newWin.close();
+        }
+        xhr.send();
+        // ajax stop
+        return false;
+    }
+</script>

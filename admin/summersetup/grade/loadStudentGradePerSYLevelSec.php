@@ -87,6 +87,33 @@ while($row1 = mysqli_fetch_array($result1))
     </div>
 </div>
 
+<?php
+$sqlPrint = urlencode("SELECT CONCAT(F.Lname, ' ', F.Fname) as Student, G.subject as Subject
+              , CONCAT(H.Fname, ' ', H.Lname) as Teacher, B.grade as Grade
+                    FROM  summer_enrolled E
+                    LEFT JOIN summer_subject A ON A.ID = E.summer_subject_ID
+                    LEFT JOIN summer_grade B ON E.ID = B.summer_enrolled_ID
+                    LEFT JOIN student F ON E.student_ID = F.ID
+                    LEFT JOIN subject G ON A.subject_ID = G.ID
+                    LEFT JOIN teacher H ON A.teacher_ID = H.ID
+                    LEFT JOIN sy_level J ON J.ID = A.sy_level_ID
+                    LEFT JOIN level K ON J.level_ID = K.ID
+                    WHERE A.ID = $syLevelSec
+                    ORDER BY F.Lname ASC
+    ");
+
+$header = urlencode("Student Summer Grade");
+?>
+<div style="float:right" id="icon"  onclick="printData('<?php echo $sqlPrint; ?>','<?php echo $header; ?>');">
+    <span class="fa fa-print fa-fw" ></span> Print
+</div>
+<div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%">
+        <div id="printTable">
+        </div>
+    </div>
+</div>
+
 <script type="text/javascript">
     //$teach
     <?php

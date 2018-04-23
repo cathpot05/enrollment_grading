@@ -278,6 +278,16 @@ else{
                             INNER JOIN student B ON A.student_ID = B.ID
                             WHERE A.sy_level_section_ID = $section
                             ORDER BY B.Lname ASC";
+
+                            $sqlPrint = urlencode("SELECT A.student_ID, CONCAT(B.Lname, ',', B.Fname, ' ', B.Mname) as student, A.status
+                            FROM enrolled_student A
+                            INNER JOIN student B ON A.student_ID = B.ID
+                            WHERE A.sy_level_section_ID = $section
+                            ORDER BY B.Lname ASC
+    ");
+
+                            $header = urlencode("List of Students in ".strtoupper($leveldesc). '-'. strtoupper($sectionname).'(' .$sydesc.')');
+
                             $result_stu = mysqli_query($con,$sql_stu);
                             if(mysqli_num_rows($result_stu)>0)
                             {
@@ -301,6 +311,15 @@ else{
                             ?>
                             </tbody>
                         </table>
+                        <div style="float:right" id="icon"  onclick="printData('<?php echo $sqlPrint; ?>','<?php echo $header; ?>');">
+                            <span class="fa fa-print fa-fw" ></span> Print
+                        </div>
+                        <div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" style="width:80%">
+                                <div id="printTable">
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="modal fade" id="transferStudent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
@@ -392,6 +411,28 @@ else{
     function transferData(enrollId, name){
         document.getElementById("stud_enrollID").value = enrollId;
         document.getElementById("stud_name").value = name;
+    }
+
+    function printData(sql,header)
+    {
+
+        var xhr;
+        if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers
+        else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
+        var url = '../../printTable.php?sql='+sql+'&header='+header;
+
+        xhr.open('GET', url, false);
+        xhr.onreadystatechange = function () {
+            document.getElementById("printTable").innerHTML = xhr.responseText;
+            var divToPrint=document.getElementById("printTable");
+            newWin= window.open("");
+            newWin.document.write(divToPrint.outerHTML);
+            newWin.print();
+            newWin.close();
+        }
+        xhr.send();
+        // ajax stop
+        return false;
     }
 
 </script>

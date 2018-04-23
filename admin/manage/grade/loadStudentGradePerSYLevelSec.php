@@ -112,6 +112,36 @@ $teach = "";
     </div>
 </div>
 
+<?php
+$sqlPrint = urlencode("SELECT K.level as Grade_Level, I.section as Section,CONCAT(F.Lname, ' ', F.Fname) as Student_Name, G.subject as Subject, CONCAT(H.Fname, ' ', H.Lname) as Teacher, D.q1 as Q1, D.q2 as Q2, D.q3 as Q3, D.q4 as Q4, (( D.q1 + D.q2 + D.q3 + D.q4)/4) as Final
+                    FROM  enrolled_student E
+                    LEFT JOIN sy_level_section A ON A.ID = E.sy_level_section_ID
+                    LEFT JOIN sy_level_subject B ON A.sy_level_ID = B.sy_level_ID
+                    LEFT JOIN teacher_section_subject C ON C.sy_level_subject_ID = B.ID AND A.ID = C.sy_level_section_ID
+                    LEFT JOIN student F ON E.student_ID = F.ID
+                    LEFT JOIN grade D ON C.ID = D.teacher_section_subject_ID AND E.ID = D.enrolled_student_ID
+                    LEFT JOIN subject G ON B.subject_ID = G.ID
+                    LEFT JOIN teacher H ON C.teacher_ID = H.ID
+                    LEFT JOIN section I ON A.section_ID = I.ID
+                    LEFT JOIN sy_level J ON J.ID = B.sy_level_ID AND A.sy_level_ID = J.level_ID
+                    LEFT JOIN level K ON J.level_ID = K.ID
+                    WHERE A.ID = $syLevelSec AND G.ID = $subjId AND F.ID IS NOT NULL
+                    ORDER BY F.Lname ASC
+    ");
+
+$header = urlencode("Student Grade");
+?>
+
+<div style="float:right" id="icon"  onclick="printData('<?php echo $sqlPrint; ?>','<?php echo $header; ?>');">
+    <span class="fa fa-print fa-fw" ></span> Print
+</div>
+<div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%">
+        <div id="printTable">
+        </div>
+    </div>
+</div>
+
 <script type="text/javascript">
     //$teach
     <?php
