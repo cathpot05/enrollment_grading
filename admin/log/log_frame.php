@@ -18,7 +18,8 @@ else
 
 }
 
-$sqlPrint = "Select user as User, userType as User_Type, logType as Action, Date as Date_and_Time from log ORDER BY ID DESC";
+$sqlPrint = urlencode("Select user as User, userType as User_Type, logType as Action, Date as Date_and_Time from log ORDER BY ID DESC");
+$header = urlencode("List of Log Activities");
 ?>
 <!DOCTYPE html>
 <html>
@@ -108,7 +109,7 @@ $sqlPrint = "Select user as User, userType as User_Type, logType as Action, Date
                         <a href="../dashboard/dashboard.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
                     </li>
                     <li>
-					 <a href="#"><i class="fa fa-sitemap fa-fw"></i>Initials<span class="fa arrow"></span></a>
+					 <a href="#"><i class="fa fa-sitemap fa-fw"></i>Management Setup<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                     
                    
@@ -177,7 +178,7 @@ $sqlPrint = "Select user as User, userType as User_Type, logType as Action, Date
                     <div class="panel panel-default">
                         <div class="panel-heading">
                              List of Log Activies
-							  <div style="float:right" id="icon"  onclick="printData('<?php echo $sqlPrint; ?>');">
+							  <div style="float:right" id="icon"  onclick="printData('<?php echo $sqlPrint; ?>','<?php echo $header; ?>');">
 								<span class="fa fa-print fa-fw" ></span> Print
 							 </div>
                         </div>
@@ -256,27 +257,24 @@ $sqlPrint = "Select user as User, userType as User_Type, logType as Action, Date
         });
 		
 	
-	function printData(sql)
+	function printData(sql,header)
 	{
 			
 			var xhr;
 			if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers 
 			else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
-			var url = '../printTable.php';
+			var url = '../printTable.php?sql='+sql+'&header='+header;
+			
+			xhr.open('GET', url, false);
 			xhr.onreadystatechange = function () {
-				if(xhr.status == 200)
-				{
             document.getElementById("printTable").innerHTML = xhr.responseText;
 			var divToPrint=document.getElementById("printTable");
 			   newWin= window.open("");
 			   newWin.document.write(divToPrint.outerHTML);
 			   newWin.print();
 			   newWin.close();
-				}
 			}
-			xhr.open('POST', url, false);
-						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-			xhr.send('sql='+sql);
+			xhr.send();
 			// ajax stop
 			return false;
 	}

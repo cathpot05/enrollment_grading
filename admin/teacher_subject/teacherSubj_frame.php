@@ -108,7 +108,6 @@ if(mysqli_num_rows($result)>0)
             </li>
             <li>
                 <a href="#"><i class="fa fa-sitemap fa-fw"></i>Management Setup<span class="fa arrow"></span></a>
-                <div class="nav-collapse">
                     <ul class="nav nav-second-level">
                         <li>
                             <a href="../sy/sy_frame.php">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>School Years</a>
@@ -135,7 +134,6 @@ if(mysqli_num_rows($result)>0)
                             <a href="../admin/admin_frame.php">&nbsp;&nbsp;<i class="fa fa-user-plus fa-fw"></i>Admin</a>
                         </li>
                     </ul>
-                </div>
             </li>
 
             <li>

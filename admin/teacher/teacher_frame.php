@@ -14,7 +14,8 @@ if(mysqli_num_rows($result)>0)
 	}
 }
 
-$sqlPrint = "Select employeeNo as Employee_No., CONCAT(Fname, ' ', Mname, ' ', Lname ) as Name, contactNo as Contact_No from teacher";
+$sqlPrint = urlencode("Select employeeNo as Employee_No, CONCAT(Fname, ' ', Mname, ' ', Lname ) as Name, contactNo as Contact_No from teacher");
+$header = urlencode("List of Teacher");
 ?>
 <!DOCTYPE html>
 <html>
@@ -102,8 +103,7 @@ $sqlPrint = "Select employeeNo as Employee_No., CONCAT(Fname, ' ', Mname, ' ', L
                     </li>
                     <li>
 					 <a href="#"><i class="fa fa-sitemap fa-fw"></i>Management Setup<span class="fa arrow"></span></a>
-					 <div class="nav-collapse">
-                        <ul class="nav nav-second-level">
+                        <ul class="nav nav-second-level in">
 					<li>
                         <a href="../sy/sy_frame.php">&nbsp;&nbsp;<i class="fa fa-calendar fa-fw"></i>School Years</a>
                     </li>
@@ -129,7 +129,6 @@ $sqlPrint = "Select employeeNo as Employee_No., CONCAT(Fname, ' ', Mname, ' ', L
                         <a href="../admin/admin_frame.php">&nbsp;&nbsp;<i class="fa fa-user-plus fa-fw"></i>Admin</a>
                     </li>
 					</ul>
-					</div>
 					</li>
 
                         <li>
@@ -214,7 +213,7 @@ $sqlPrint = "Select employeeNo as Employee_No., CONCAT(Fname, ' ', Mname, ' ', L
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								List of Teachers
-								 <div style="float:right" id="icon"  onclick="printData('<?php echo $sqlPrint; ?>');">
+								 <div style="float:right" id="icon"  onclick="printData('<?php echo $sqlPrint; ?>','<?php echo $header; ?>');">
 								<span class="fa fa-print fa-fw" ></span> Print
 							 </div>
 							</div>
@@ -386,27 +385,24 @@ $sqlPrint = "Select employeeNo as Employee_No., CONCAT(Fname, ' ', Mname, ' ', L
     }
 	
 	
-	function printData(sql)
+	function printData(sql,header)
 	{
 			
 			var xhr;
 			if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers 
 			else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
-			var url = '../printTable.php';
+			var url = '../printTable.php?sql='+sql+'&header='+header;
+			
+			xhr.open('GET', url, false);
 			xhr.onreadystatechange = function () {
-				if(xhr.status == 200)
-				{
             document.getElementById("printTable").innerHTML = xhr.responseText;
 			var divToPrint=document.getElementById("printTable");
 			   newWin= window.open("");
 			   newWin.document.write(divToPrint.outerHTML);
 			   newWin.print();
 			   newWin.close();
-				}
 			}
-			xhr.open('POST', url, false);
-						xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-			xhr.send('sql='+sql);
+			xhr.send();
 			// ajax stop
 			return false;
 	}

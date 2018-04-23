@@ -1,6 +1,8 @@
 <?php
 include "../dbcon.php";
-$sql = $_POST['sql'];
+
+$sql = $_GET['sql'];
+$header = $_GET['header'];
 $result = mysqli_query($con,$sql);
 
 if(mysqli_num_rows($result)>0)
@@ -11,9 +13,11 @@ if(mysqli_num_rows($result)>0)
 							<h3><strong>PRUDECIA D. FULE MEMORIAL NATIONAL HIGH SCHOOL</strong></h3>
 								<i>Brgy. San Nicolas, San Pablo City</i>
 								<br>
-								<br><br>
-								<br>
+								<br>	 
 								</center>
+								<strong>
+								<h3><?php echo $header; ?></h3>
+								</strong>
 	<table width=100% rules=all border=1>
         <thead>
             <tr>
