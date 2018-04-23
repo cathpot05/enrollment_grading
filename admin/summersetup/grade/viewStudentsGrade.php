@@ -228,6 +228,28 @@ if(mysqli_num_rows($result)>0)
             }
         });
     })*/
+
+    function printData(sql,header)
+    {
+
+        var xhr;
+        if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers
+        else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
+        var url = '../../printTable.php?sql='+sql+'&header='+header;
+
+        xhr.open('GET', url, false);
+        xhr.onreadystatechange = function () {
+            document.getElementById("printTable").innerHTML = xhr.responseText;
+            var divToPrint=document.getElementById("printTable");
+            newWin= window.open("");
+            newWin.document.write(divToPrint.outerHTML);
+            newWin.print();
+            newWin.close();
+        }
+        xhr.send();
+        // ajax stop
+        return false;
+    }
 </script>
 </body>
 </html>

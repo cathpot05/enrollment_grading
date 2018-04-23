@@ -18,6 +18,7 @@ $sylevelsec = $_GET['sylevelsec'];
 <select class="form-control chosen" id="reportType">
     <option value="1">TOP 10 STUDENTS PER SECTION</option>
     <option value="2">LIST OF FAILED STUDENTS PER SECTION</option>
+    <option value="3">SUBJECT PER SECTION</option>
 </select>
 
 <div id="reportResult">
@@ -43,4 +44,7 @@ $sylevelsec = $_GET['sylevelsec'];
             }
         });
     });
+
+
+
 </script>

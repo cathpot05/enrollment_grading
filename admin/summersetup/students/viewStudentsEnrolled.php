@@ -247,6 +247,17 @@ if(mysqli_num_rows($result_)>0)
                                 INNER JOIN student B ON A.student_ID = B.ID
                                 WHERE A.summer_subject_ID = $section
                                 ORDER BY B.Lname ASC";
+
+                            $sqlPrint = urlencode("SELECT CONCAT(B.Lname, ',', B.Fname, ' ', B.Mname) as Student
+                                FROM summer_enrolled A
+                                INNER JOIN student B ON A.student_ID = B.ID
+                                WHERE A.summer_subject_ID = $section
+                                ORDER BY B.Lname ASC
+    ");
+
+                            $header = urlencode("Summer Class Students List for ".strtoupper($leveldesc). '-'. strtoupper($sectionname).'(' .$sydesc.')');
+
+
                             $result_stu = mysqli_query($con,$sql_stu);
                             if(mysqli_num_rows($result_stu)>0)
                             {
@@ -275,6 +286,15 @@ if(mysqli_num_rows($result_)>0)
                         </table>
 
 
+                    </div>
+                    <div style="float:right" id="icon"  onclick="printData('<?php echo $sqlPrint; ?>','<?php echo $header; ?>');">
+                        <span class="fa fa-print fa-fw" ></span> Print
+                    </div>
+                    <div class="modal fade" id="requestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" style="width:80%">
+                            <div id="printTable">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!--End Advanced Tables -->
@@ -327,6 +347,29 @@ if(mysqli_num_rows($result_)>0)
             });
         }
     }
+
+    function printData(sql,header)
+    {
+
+        var xhr;
+        if (window.XMLHttpRequest) xhr = new XMLHttpRequest(); // all browsers
+        else xhr = new ActiveXObject("Microsoft.XMLHTTP"); 	// for IE
+        var url = '../../printTable.php?sql='+sql+'&header='+header;
+
+        xhr.open('GET', url, false);
+        xhr.onreadystatechange = function () {
+            document.getElementById("printTable").innerHTML = xhr.responseText;
+            var divToPrint=document.getElementById("printTable");
+            newWin= window.open("");
+            newWin.document.write(divToPrint.outerHTML);
+            newWin.print();
+            newWin.close();
+        }
+        xhr.send();
+        // ajax stop
+        return false;
+    }
+
 
 </script>
 

@@ -16,6 +16,8 @@ $syId = $_GET['syId'];
 <select class="form-control chosen" id="reportType">
     <option value="1">TOP 10 STUDENTS PER LEVEL</option>
     <option value="2">LIST OF FAILED STUDENTS PER LEVEL</option>
+    <option value="3">LIST OF SECTIONS PER YEAR LEVEL</option>
+    <option value="4">LIST OF SUBJECTS PER YEAR LEVEL</option>
 </select>
 
 <div id="reportResult">
